@@ -2,6 +2,7 @@ import csv
 import os
 import sample_data
 import pathlib
+from datetime import datetime
 
 
 DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/question.csv"
@@ -23,7 +24,10 @@ def get_all_questions():
 def sort_questions_by_time():
     questions = get_all_questions()
     new_list = sorted(questions, key=lambda k: k['submission_time'])
-
+    for question in new_list:
+        time_stamp = int(question["submission_time"])
+        dt_object = datetime.fromtimestamp(time_stamp)
+        question["submission_time"] = dt_object
     return new_list
 
 
