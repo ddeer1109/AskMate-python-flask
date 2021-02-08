@@ -9,7 +9,7 @@
     <a href="/"><h1>Main Page</h1></a>
     <table border="1">
         <tr>
-            {% for header in headers %}
+            {% for header in question_headers %}
             <th>{{ header }}</th>
             {% endfor %}
         </tr>
@@ -23,6 +23,23 @@
             <td>{{ question.image }}</td>
 
         </tr>
+    </table>
+
+    <table border="1">
+        <tr>
+            {% for header in answer_headers %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+
+            {% for answer in answers %}
+                 <tr>
+                    <td>{{ answer.id }}</td>
+                    <td>{{ answer.submission_time }}</td>
+                    <td>{{ answer.vote_number }}</td>
+                    <td>{{ answer.message }}</td>
+                 </tr>
+            {% endfor %}
     </table>
 </body>
 </html>
