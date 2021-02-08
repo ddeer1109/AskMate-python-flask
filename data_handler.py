@@ -7,6 +7,7 @@ import pathlib
 DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/question.csv"
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 
+
 def get_all_questions():
     questions = []
 
@@ -16,4 +17,13 @@ def get_all_questions():
             questions.append(row)
 
         return questions
+
+
+
+def sort_questions_by_time():
+    questions = get_all_questions()
+    new_list = sorted(questions, key=lambda k: k['submission_time'])
+
+    return new_list
+
 
