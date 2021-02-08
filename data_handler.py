@@ -9,6 +9,10 @@ DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ e
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 
 
+def get_formatted_headers():
+    return [header.replace("_", " ").capitalize() for header in DATA_HEADER]
+
+
 def get_all_questions():
     questions = []
 
@@ -20,14 +24,23 @@ def get_all_questions():
         return questions
 
 
-
 def sort_questions_by_time():
     questions = get_all_questions()
     new_list = sorted(questions, key=lambda k: k['submission_time'])
+
     for question in new_list:
         time_stamp = int(question["submission_time"])
         dt_object = datetime.fromtimestamp(time_stamp)
         question["submission_time"] = dt_object
+
     return new_list
+
+
+def get_question_by_id(id):
+    questions = sort_questions_by_time()
+
+    for question in questions:
+        if question["id"] == id:
+            return question
 
 
