@@ -1,8 +1,9 @@
 import csv
 import os
 import sample_data
+from flask import jsonify
 
-DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else 'sample_data\question.csv'
+DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else './sample_data/question.csv'
 DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 
 def get_all_questions():
@@ -13,8 +14,5 @@ def get_all_questions():
         for row in csv_reader:
             questions.append(row)
 
-        print(questions)
-        return questions
-
-get_all_questions()
-
+    print(questions)
+    return questions

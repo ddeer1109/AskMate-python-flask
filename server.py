@@ -10,9 +10,11 @@ def hello():
 
 @app.route("/list")
 def get_list_of_questions():
-    questions = get_all_questions()
+    questions_list = get_all_questions()
+    print(questions_list)
 
     return "list"
+
 
 if __name__ == "__main__":
     app.run()
