@@ -5,8 +5,20 @@
     <title>Title</title>
 </head>
 <body>
-    {% for question in questions %}
-                <p>{{ question }}</p>
-    {% endfor %}
+    <table border="1">
+
+        {% for question in questions %}
+        <tr>
+        <td>{{ question.id }}</td>
+            <td>{{ question.submission_time }}</td>
+            <td>{{ question.view_number }}</td>
+            <td>{{ question.vote_number }}</td>
+            <td>{{ question.title }}</td>
+            <td>{{ question.message }}</td>
+        <td>{{ question.image }}</td>
+
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
