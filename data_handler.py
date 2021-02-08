@@ -11,7 +11,7 @@ def get_all_questions():
     questions = []
 
     with open(DATA_FILE_PATH) as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='|')
+        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
         for row in csv_reader:
             questions.append(row)
 
