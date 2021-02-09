@@ -10,36 +10,37 @@
     <table border="1">
         <tr>
             {% for header in question_headers %}
-            <th>{{ header }}</th>
+                <th>{{ header }}</th>
             {% endfor %}
         </tr>
+        <br>
+        <br>
         <tr>
-            <td>{{ question.id }}</td>
-            <td>{{ question.submission_time }}</td>
-            <td>{{ question.view_number }}</td>
-            <td>{{ question.vote_number }}</td>
-            <td>{{ question.title }}</td>
-            <td>{{ question.message }}</td>
-            <td>{{ question.image }}</td>
-
+            {% for data in question %}
+            <td>{{ question[data] }}</td>
+            {% endfor %}
         </tr>
     </table>
 
-    <table border="1">
-        <tr>
-            {% for header in answer_headers %}
-            <th>{{ header }}</th>
-            {% endfor %}
-        </tr>
+    {% if  answers|length > 0  %}
+        <br>
+        <table border="1">
+            <tr>
+                {% for header in answer_headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
 
-            {% for answer in answers %}
-                 <tr>
-                    <td>{{ answer.id }}</td>
-                    <td>{{ answer.submission_time }}</td>
-                    <td>{{ answer.vote_number }}</td>
-                    <td>{{ answer.message }}</td>
-                 </tr>
-            {% endfor %}
-    </table>
+                {% for answer in answers %}
+
+                     {% for data in answer %}
+                        <td>{{ answer[data] }}</td>
+                     {% endfor %}
+
+                {% endfor %}
+        </table>
+    {% else %}
+    <h3>no answers</h3>
+    {% endif %}
 </body>
 </html>
