@@ -5,16 +5,22 @@
     <title>Title</title>
 </head>
 <body>
-    <table border="1">
 
+    <a href="/"><h1>Main Page</h1></a>
+    <table border="1">
+        <tr>
+            {% for header in headers %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
         {% for question in questions %}
         <tr>
             <td>{{ question.id }}</td>
             <td>{{ question.submission_time }}</td>
             <td>{{ question.view_number }}</td>
             <td>{{ question.vote_number }}</td>
-            <td>{{ question.title }}</td>
-            <td>{{ question.message }}</td>
+            <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
+            <td>{{ question.message[:20] + "..." }}</td>
         <td>{{ question.image }}</td>
 
         </tr>
