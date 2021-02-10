@@ -3,11 +3,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from data_manager import *
 app = Flask(__name__)
 
-
-# @app.route("/")
-# def hello():
-#     return "Hello World!!!"
-
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
@@ -31,6 +26,19 @@ def display_question(question_id):
                            answer_headers=get_formatted_headers(displayed_headers_answers)
                            )
 
+@app.route("/add-question")
+def display_add_question():
+    return render_template("add_question.html")
+
+@app.route("/add-question", methods=['POST'])
+def add_question():
+    requested_data = dict(request.form)
+
+    # id, submission_time, view_number, vote_number, title, message, image
+    requested_data['id'] = 111
+    print(requested_data)
+
+    return redirect(url_for('get_list_of_questions'))
 
 if __name__ == "__main__":
     app.run(
