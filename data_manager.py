@@ -36,7 +36,7 @@ def get_answers_for_question(question_id):
     question_answers = []
 
     for answer in answers:
-        if answer["id"] == question_id:
+        if answer["question_id"] == question_id:
             question_answers.append(convert_timestamp(answer))
 
     return question_answers
