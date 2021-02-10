@@ -13,7 +13,8 @@ app.js (bundled file with webpack, including jquery)","images/image1.png"
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
 4,1612963789,11,7,video 1,aaa,images/image1.png
-5,1612963820,11,7,ninja supreme,"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",images/image1.png
-6,1612963981,11,7,some title,hello world,images/image1.png
-7,1612964026,11,7,color-palette,asdasdfasdf,images/image1.png
-8,1612964271,11,7,video 1,aaa,images/image1.png
+5,1612963820,11,7,ninja supreme,"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",images/image1.png6,1612964507,11,7,video 1,aaa,images/image1.png
+6,1612964533,11,7,video 1,aaa,images/image1.png
+7,1612964571,11,7,ninja supreme,"red bull racing
+",images/image1.png
+8,1612964631,11,7,"video, 1","hello, world, my, friend",images/image1.png
