@@ -16,15 +16,7 @@
 
         {% for question in questions %}
         <tr>
-<<<<<<< HEAD
-            <td>{{ question.id }}</td>
-            <td>{{ question.submission_time }}</td>
-            <td>{{ question.view_number }}</td>
-            <td>{{ question.vote_number }}</td>
-            <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
-            <td>{{ question.message[:20] + "..." }}</td>
-        <td>{{ question.image }}</td>
-=======
+
             {% for data in question.keys() %}
                 {% if data == "title" %}
 
@@ -33,7 +25,6 @@
                     </td>
 
                 {% else %}
->>>>>>> d0374511cf65f93fc633c4cca503c26e75974866
 
                     <td>{{ question[data] }}</td>
 
