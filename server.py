@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 # from data_handler import get_all_questions, sort_data_by_time, get_question_by_id, get_formatted_headers, get_answers_for_question, QUESTIONS_DATA_HEADER, ANSWERS_DATA_HEADER
 from data_manager import *
+from data_handler import save_all_questions
 app = Flask(__name__)
 
 @app.route("/")
@@ -41,7 +42,7 @@ def add_question():
     requested_data['vote_number'] = 7  # TODO - further implementation needed
     requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
 
-    print(requested_data)
+    save_all_questions(requested_data)
 
     return redirect(url_for('get_list_of_questions'))
 
