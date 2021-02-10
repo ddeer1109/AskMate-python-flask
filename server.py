@@ -44,7 +44,7 @@ def add_question():
 
     save_all_questions(requested_data)
 
-    return redirect(url_for('get_list_of_questions'))
+    return redirect(url_for('display_question', question_id=requested_data['id']))
 
 if __name__ == "__main__":
     app.run(
