@@ -34,9 +34,13 @@ def display_add_question():
 def add_question():
     requested_data = dict(request.form)
 
-    # view_number, vote_number, title, message, image
+    # vote_number, title, message, image
     requested_data['id'] = get_next_id()
     requested_data['submission_time'] = get_current_timestamp()
+    requested_data['view_number'] = 11  # TODO - further implementation needed
+    requested_data['vote_number'] = 7  # TODO - further implementation needed
+    requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
+
     print(requested_data)
 
     return redirect(url_for('get_list_of_questions'))

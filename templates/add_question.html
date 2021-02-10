@@ -13,11 +13,11 @@
     <hr>
 
     <form action="{{ url_for('add_question') }}" method="post">
-        <label for="title">Question title:</label><br>
-        <input type="text" name="title" id="title"><br>
+        <label for="title">Question:</label><br>
+        <input type="text" name="title" id="title" required><br>
 
         <label for="message">Message:</label><br>
-        <textarea rows="10" cols="30" name="message" id="message"></textarea><br>
+        <textarea rows="10" cols="30" name="message" id="message" required></textarea><br>
 
         <br>
         <input type="submit" value="Add question">
