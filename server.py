@@ -34,8 +34,8 @@ def display_add_question():
 def add_question():
     requested_data = dict(request.form)
 
-    # id, submission_time, view_number, vote_number, title, message, image
-    requested_data['id'] = 111
+    # submission_time, view_number, vote_number, title, message, image
+    requested_data['id'] = get_next_id()
     print(requested_data)
 
     return redirect(url_for('get_list_of_questions'))
