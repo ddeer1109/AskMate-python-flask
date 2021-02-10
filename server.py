@@ -34,8 +34,9 @@ def display_add_question():
 def add_question():
     requested_data = dict(request.form)
 
-    # submission_time, view_number, vote_number, title, message, image
+    # view_number, vote_number, title, message, image
     requested_data['id'] = get_next_id()
+    requested_data['submission_time'] = get_current_timestamp()
     print(requested_data)
 
     return redirect(url_for('get_list_of_questions'))

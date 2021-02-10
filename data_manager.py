@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 from data_handler import get_all_questions, get_all_answers
 
 
@@ -62,3 +63,6 @@ def get_next_id():
             next_id = question_id
 
     return next_id + 1
+
+def get_current_timestamp():
+    return int(time.time())
