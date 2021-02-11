@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-$END$
+
+    <h1>Add question</h1><br>
+    <button>
+        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
+    </button>
+    <hr>
+
+    <form action="{{ url_for('add_question') }}" method="post">
+        <label for="title">Question:</label><br>
+        <input type="text" name="title" id="title" required><br>
+
+        <label for="message">Message:</label><br>
+        <textarea rows="10" cols="30" name="message" id="message" required></textarea><br>
+
+        <br>
+        <input type="submit" value="Add question">
+    </form>
+
 </body>
 </html>

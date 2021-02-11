@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 from data_handler import get_all_questions, get_all_answers
 
 
@@ -53,6 +54,16 @@ def filter_data(dict_data, headers):
 
     return filtered_data
 
+def get_next_id():
+    questions = get_all_questions();
+    next_id = 0
+    for question in questions:
+        question_id = int(question['id'])
+        if question_id >= next_id:
+            next_id = question_id
+
+    return next_id + 1
+
 
 def get_next_answer_id():
     answers = get_all_answers()
@@ -62,3 +73,6 @@ def get_next_answer_id():
         if answer_id >= next_id:
             next_id = answer_id
     return next_id +1
+
+def get_current_timestamp():
+    return int(time.time())
