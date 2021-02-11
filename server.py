@@ -14,20 +14,20 @@ PATH = app.root_path
 @app.route("/list")
 def get_list_of_questions():
     # git checkout
-    displayed_headers = ['id', 'submission_time', 'view_number', 'title', 'message']
+    # displayed_headers = ['id', 'submission_time', 'view_number', 'title', 'message']
+    displayed_headers = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message']
 
     requested_query_string = request.args
 
     if len(requested_query_string) == 0:
         questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
-        formatted_headers = data_manager.get_formatted_headers(displayed_headers)
-        return render_template('list.html', questions=questions, question_headers=formatted_headers)
+        # formatted_headers = data_manager.get_formatted_headers(displayed_headers)
+        # return render_template('list.html', questions=questions, question_headers=formatted_headers)
     else:
-        print(requested_query_string)
-        print(len(requested_query_string))
         questions = data_manager.filter_data(data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string), displayed_headers)
-        formatted_headers = data_manager.get_formatted_headers(displayed_headers)
-        return render_template('list.html', questions=questions, question_headers=formatted_headers)
+
+    formatted_headers = data_manager.get_formatted_headers(displayed_headers)
+    return render_template('list.html', questions=questions, question_headers=formatted_headers)
 
 
 
