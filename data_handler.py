@@ -30,3 +30,13 @@ def get_all_answers():
 
         return answers
 
+def get_data(PATH, FILENAME, data):
+    with open(PATH + '/sample_data/' + FILENAME, 'r') as csv_file:
+            data = csv.reader(csv_file)
+            rows = list(data)
+    return rows
+
+def add_data(PATH, FILENAME, data):
+    with open(PATH + '/sample_data/' + FILENAME, 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(data)

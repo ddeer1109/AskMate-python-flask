@@ -42,5 +42,11 @@
     {% else %}
     <h3>no answers</h3>
     {% endif %}
+
+<form>
+        <button class="button" formaction='{{ url_for('add_an_answer', question_id=question_id) }}'>Add an
+            answer
+        </button>
+    </form>
 </body>
 </html>
