@@ -12,6 +12,11 @@ def sort_data_by_time(entries_list):
 
     return [convert_timestamp(entry) for entry in new_list]
 
+def sort_data_by_sorting_key(entries_list, sorting_key):
+    print(entries_list)
+    print(sorting_key)
+    pass
+
 
 def convert_timestamp(entry):
 
