@@ -5,8 +5,6 @@ import data_manager
 import time
 import data_handler
 
-# from data_manager import *
-# from data_handler import save_all_questions
 
 app = Flask(__name__)
 PATH = app.root_path
@@ -15,6 +13,7 @@ PATH = app.root_path
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
+    # git checkout
     displayed_headers = ['id', 'submission_time', 'view_number', 'title', 'message']
     questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
     formatted_headers = data_manager.get_formatted_headers(displayed_headers)
@@ -60,11 +59,10 @@ def display_add_question():
 def add_question():
     requested_data = dict(request.form)
 
-    # vote_number, title, message, image
     requested_data['id'] = data_manager.get_next_id()
     requested_data['submission_time'] = data_manager.get_current_timestamp()
-    requested_data['view_number'] = 11  # TODO - further implementation needed
-    requested_data['vote_number'] = 7  # TODO - further implementation needed
+    requested_data['view_number'] = 0  # TODO - further implementation needed
+    requested_data['vote_number'] = 0  # TODO - further implementation needed
     requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
 
     data_handler.save_all_questions(requested_data)

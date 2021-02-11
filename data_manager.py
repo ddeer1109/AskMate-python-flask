@@ -4,7 +4,7 @@ from data_handler import get_all_questions, get_all_answers
 
 
 def get_formatted_headers(headers):
-        return [header.replace("_", " ").capitalize() for header in headers]
+    return [header.replace("_", " ").capitalize() for header in headers]
 
 
 def sort_data_by_time(entries_list):
