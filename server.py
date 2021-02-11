@@ -61,13 +61,13 @@ def add_question():
     requested_data = dict(request.form)
 
     # vote_number, title, message, image
-    requested_data['id'] = get_next_id()
-    requested_data['submission_time'] = get_current_timestamp()
+    requested_data['id'] = data_manager.get_next_id()
+    requested_data['submission_time'] = data_manager.get_current_timestamp()
     requested_data['view_number'] = 11  # TODO - further implementation needed
     requested_data['vote_number'] = 7  # TODO - further implementation needed
     requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
 
-    save_all_questions(requested_data)
+    data_handler.save_all_questions(requested_data)
 
     return redirect(url_for('display_question', question_id=requested_data['id']))
 
