@@ -5,11 +5,18 @@
     <title>Add Answer</title>
 </head>
 <body>
-<h2>Add answer</h2>
+    <h1>Add answer</h1><br>
+    <button>
+        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
+    </button>
+    <hr>
+
 
 <form action ="" method="POST">
     <label for="message">Add an answer</label><br>
     <textarea id="message" name="message" rows="4" cols="60"></textarea><br>
+
+    <br>
     <input type="submit" value="Add answer">
 </form>
 

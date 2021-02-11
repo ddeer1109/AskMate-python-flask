@@ -18,8 +18,6 @@
                 <th>{{ header }}</th>
             {% endfor %}
         </tr>
-        <br>
-        <br>
         <tr>
             {% for data in question %}
             <td>{{ question[data] }}</td>
@@ -49,11 +47,10 @@
     <h3>no answers</h3>
     {% endif %}
 
-    <a href="/question/{{ question['id'] }}/add-answer">Add</a>
-{#<form>#}
-{#        <button class="button" formaction='{{ url_for('add_an_answer', question_id=question_id) }}'>Add an#}
-{#            answer#}
-{#        </button>#}
-{#    </form>#}
+    <br>
+    <button>
+        <a href="/question/{{ question['id'] }}/add-answer">Add</a>
+    </button>
+
 </body>
 </html>
