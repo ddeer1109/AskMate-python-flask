@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 # from data_handler import get_all_questions, sort_data_by_time, get_question_by_id, get_formatted_headers, get_answers_for_question, QUESTIONS_DATA_HEADER, ANSWERS_DATA_HEADER
 import data_manager
+import time
 import data_handler
 app = Flask(__name__)
 PATH = app.root_path
@@ -29,22 +30,22 @@ def display_question(question_id):
                            answer_headers=data_manager.get_formatted_headers(displayed_headers_answers)
                            )
 
-@app.route("/question/<question_id>/add-answer", methods = ['POST', 'GET'])
+@app.route("/question/<question_id>/add-answer")
 def add_an_answer(question_id):
-    if request.method == 'POST':
-        answers = data_handler.get_data('answer.csv', PATH)
-        question_data = data_handler.get_data('question.csv', PATH)
-        question = [q for q in question_data if question_data[0] == question_id]
-        answer = request.form['answer']
-        answer_to_save = [question_id, answer]
-        data_handler.save_data(PATH, 'answer.csv', answer_to_save)
-        return redirect(url_for('question', question_id=question_id))
-    else:
-        answers = data_handler.get_data('answer.csv', PATH)
-        question_data = data_handler.get_data('question.csv', PATH)
-        question = [q for q in question_data if question_data[0] == question_id]
-        answer = [a for a in answers if answers[0] == question_id]
-        return render_template('add_answer.html', question=question, answer=answer, question_id=question_id, )
+    return render_template('add_answer.html')
+
+@app.route("/question/<question_id>/add-answer", methods=["POST"])
+def new_answer(question_id):
+    requested_data = dict(request.form)
+    requested_data['submission_time'] = int(time.time())
+    requested_data['vote_number'] = 0
+    requested_data['image'] = 'image/image.png'
+    requested_data['id'] = data_manager.get_next_answer_id()
+    requested_data['question_id'] = int(question_id)
+    print(requested_data)
+    data_handler.save_all_answers(requested_data)
+
+    return redirect(f'/question/{question_id}')
 
 if __name__ == "__main__":
     app.run(
