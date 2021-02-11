@@ -36,7 +36,7 @@ def get_answers_for_question(question_id):
     question_answers = []
 
     for answer in answers:
-        if answer["id"] == question_id:
+        if answer["question_id"] == question_id:
             question_answers.append(convert_timestamp(answer))
 
     return question_answers
@@ -54,3 +54,11 @@ def filter_data(dict_data, headers):
     return filtered_data
 
 
+def get_next_answer_id():
+    answers = get_all_answers()
+    next_id = 0
+    for answer in answers:
+        answer_id = int(answer['id'])
+        if answer_id >= next_id:
+            next_id = answer_id
+    return next_id +1

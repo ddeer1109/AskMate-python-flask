@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Add Answer</title>
+</head>
+<body>
+<h2>Add answer</h2>
+
+<form action ="" method="POST">
+    <label for="message">Add an answer</label><br>
+    <textarea id="message" name="message" rows="4" cols="60"></textarea><br>
+    <input type="submit" value="Add answer">
+</form>
+
+{#{% if answer_id == -1 %}#}
+{#    <form action="{{ url_for("add_answer", question_id=question_id, answer_id=answer_id) }}" method="POST">#}
+{#{% else %}#}
+{#    <form action="{{ url_for("add_answer", question_id=question_id, answer_id=answer_id) }}" method="POST">#}
+{#{% endif %}#}
+{#<label for="answer-input">New answer:</label><br>#}
+{#{% if answer_id == -1 %}#}
+{#    <textarea id="answer-input" name="answer" rows="4" cols="60"></textarea><br><br>#}
+{#{% else %}#}
+{#    <textarea id="answer-input" name="answer" rows="4" cols="60">{{ answer.message }}</textarea><br><br>#}
+{#{% endif %}#}
+
+</form>
+</body>
+</html>
