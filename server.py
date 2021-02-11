@@ -1,12 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
-# from data_handler import get_all_questions, sort_data_by_time, get_question_by_id, get_formatted_headers, get_answers_for_question, QUESTIONS_DATA_HEADER, ANSWERS_DATA_HEADER
 
 import data_manager
 import time
 import data_handler
-
-# from data_manager import *
-# from data_handler import save_all_questions
 
 app = Flask(__name__)
 PATH = app.root_path
@@ -47,7 +43,6 @@ def new_answer(question_id):
     requested_data['image'] = 'image/image.png'
     requested_data['id'] = data_manager.get_next_answer_id()
     requested_data['question_id'] = int(question_id)
-    print(requested_data)
     data_handler.save_all_answers(requested_data)
 
     return redirect(f'/question/{question_id}')
@@ -59,17 +54,16 @@ def display_add_question():
 @app.route("/add-question", methods=['POST'])
 def add_question():
     requested_data = dict(request.form)
-
-    # vote_number, title, message, image
-    requested_data['id'] = get_next_id()
-    requested_data['submission_time'] = get_current_timestamp()
-    requested_data['view_number'] = 11  # TODO - further implementation needed
-    requested_data['vote_number'] = 7  # TODO - further implementation needed
+    requested_data['id'] = data_manager.get_next_id()
+    requested_data['submission_time'] = data_manager.get_current_timestamp()
+    requested_data['view_number'] = 0  # TODO - further implementation needed
+    requested_data['vote_number'] = 0  # TODO - further implementation needed
     requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
 
-    save_all_questions(requested_data)
+    data_handler.save_all_questions(requested_data)
 
     return redirect(url_for('display_question', question_id=requested_data['id']))
+
 
 if __name__ == "__main__":
     app.run(

@@ -5,26 +5,21 @@
     <title>Add Answer</title>
 </head>
 <body>
-<h2>Add answer</h2>
+<h1>Add answear</h1><br>
+    <button>
+        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
+    </button>
+    <hr>
 
+{#action in this case send us to /question/<question_id>/add-answer as POST#}
 <form action ="" method="POST">
     <label for="message">Add an answer</label><br>
-    <textarea id="message" name="message" rows="4" cols="60"></textarea><br>
+    <textarea id="message" name="message" rows="4" cols="60" required></textarea><br>
+
+    <br>
     <input type="submit" value="Add answer">
 </form>
 
-{#{% if answer_id == -1 %}#}
-{#    <form action="{{ url_for("add_answer", question_id=question_id, answer_id=answer_id) }}" method="POST">#}
-{#{% else %}#}
-{#    <form action="{{ url_for("add_answer", question_id=question_id, answer_id=answer_id) }}" method="POST">#}
-{#{% endif %}#}
-{#<label for="answer-input">New answer:</label><br>#}
-{#{% if answer_id == -1 %}#}
-{#    <textarea id="answer-input" name="answer" rows="4" cols="60"></textarea><br><br>#}
-{#{% else %}#}
-{#    <textarea id="answer-input" name="answer" rows="4" cols="60">{{ answer.message }}</textarea><br><br>#}
-{#{% endif %}#}
 
-</form>
 </body>
 </html>
