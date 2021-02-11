@@ -13,9 +13,16 @@ def sort_data_by_time(entries_list):
     return [convert_timestamp(entry) for entry in new_list]
 
 def sort_data_by_sorting_key(entries_list, sorting_key):
-    print(entries_list)
-    print(sorting_key)
-    pass
+    sorting_key = dict(sorting_key)
+
+    order_by = sorting_key['order_by']
+    order_direction = sorting_key['order_direction']
+    print(order_by)
+    print(order_direction)
+
+
+    new_list = sorted(entries_list, key=lambda k: k[sorting_key['order_by']])
+    return [convert_timestamp(entry) for entry in new_list]
 
 
 def convert_timestamp(entry):
