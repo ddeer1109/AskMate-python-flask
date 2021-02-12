@@ -27,8 +27,20 @@ def get_all_answers():
         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
         for row in csv_reader:
             answers.append(row)
-
         return answers
+print(get_all_answers())
+
+# def get_all_answers():
+#     answers = []
+#
+#     with open(ANSWER_DATA_FILE_PATH) as csv_file:
+#         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
+#         for row in csv_reader:
+#             answers.append(row)
+#         print(answers)
+#         return answers
+# get_all_answers()
+# print(get_all_answers())
 
 def get_data(PATH, FILENAME, data):
     with open(PATH + '/sample_data/' + FILENAME, 'r') as csv_file:
@@ -43,7 +55,29 @@ def get_data(PATH, FILENAME, data):
 #     # print(PATH, FILENAME, data)
 
 
-def save_all_answers(answer):
+def save_all_answers(answers):
+    with open(ANSWER_DATA_FILE_PATH, 'w', newline='') as csv_file:
+        csv_writer = csv.DictWriter(csv_file, fieldnames=ANSWERS_DATA_HEADER_FILE, delimiter=',', quotechar='"')
+        csv_writer.writeheader()
+        csv_writer.writerows(answers)
+        # for answer in answers:
+        #     csv_writer.writerow(answer)
+
+def save_all_questions(questions):
+    with open(QUESTIONS_DATA_FILE_PATH, 'w', newline='') as csv_file:
+        csv_writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_DATA_HEADER, delimiter=',', quotechar='"')
+        csv_writer.writeheader()
+        csv_writer.writerows(questions)
+
+
+
+def save_single_answer(answer):
     with open(ANSWER_DATA_FILE_PATH, 'a', newline='') as csv_file:
         csv_writer = csv.DictWriter(csv_file, fieldnames=ANSWERS_DATA_HEADER_FILE, delimiter=',', quotechar='"')
         csv_writer.writerow(answer)
+
+
+def save_single_question(question):
+    with open(ANSWER_DATA_FILE_PATH, 'a', newline='') as csv_file:
+        csv_writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_DATA_HEADER, delimiter=',', quotechar='"')
+        csv_writer.writerow(question)

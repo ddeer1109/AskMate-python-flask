@@ -43,9 +43,21 @@ def new_answer(question_id):
     requested_data['id'] = data_manager.get_next_answer_id()
     requested_data['question_id'] = int(question_id)
     print(requested_data)
-    data_handler.save_all_answers(requested_data)
+    data_handler.save_single_answer(requested_data)
 
     return redirect(f'/question/{question_id}')
+
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    print(question_id)
+    # id = question_id
+    # new_list = data_manager.delete_question(id)
+    # data_handler.save_all_questions(new_list)
+    # print(id)
+    # print(new_list)
+    data_manager.delete_answers_by_question_id(question_id)
+    data_manager.delete_question_by_id(question_id)
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(
