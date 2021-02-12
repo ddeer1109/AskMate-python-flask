@@ -19,7 +19,7 @@ def sort_data_by_sorting_key(entries_list, sorting_key):
     print(sorting_key)
 
     if sorting_key['order_by'] in ['view_number', 'vote_number']:
-        # it is neccessary to cast value to int to use function sort
+        # it is necessary to cast value to int to use function sort
         for entry in entries_list:
             entry[sorting_key['order_by']] = int(entry[sorting_key['order_by']])
 
