@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
-# from data_handler import get_all_questions, sort_data_by_time, get_question_by_id, get_formatted_headers, get_answers_for_question, QUESTIONS_DATA_HEADER, ANSWERS_DATA_HEADER
+
 import data_manager
 import time
 import data_handler
+
 app = Flask(__name__)
 PATH = app.root_path
 
@@ -58,6 +59,24 @@ def delete_question(question_id):
     data_manager.delete_answers_by_question_id(question_id)
     data_manager.delete_question_by_id(question_id)
     return redirect('/')
+
+@app.route("/add-question")
+def display_add_question():
+    return render_template("add_question.html")
+
+@app.route("/add-question", methods=['POST'])
+def add_question():
+    requested_data = dict(request.form)
+    requested_data['id'] = data_manager.get_next_id()
+    requested_data['submission_time'] = data_manager.get_current_timestamp()
+    requested_data['view_number'] = 0  # TODO - further implementation needed
+    requested_data['vote_number'] = 0  # TODO - further implementation needed
+    requested_data['image'] = 'images/image1.png' # TODO - further implementation needed
+
+    data_handler.save_all_questions(requested_data)
+
+    return redirect(url_for('display_question', question_id=requested_data['id']))
+
 
 if __name__ == "__main__":
     app.run(

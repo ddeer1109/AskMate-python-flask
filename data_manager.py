@@ -1,5 +1,6 @@
 from datetime import datetime
 from data_handler import get_all_questions, get_all_answers, save_all_answers, save_all_questions
+import time
 
 
 def get_formatted_headers(headers):
@@ -53,6 +54,16 @@ def filter_data(dict_data, headers):
 
     return filtered_data
 
+def get_next_id():
+    questions = get_all_questions();
+    next_id = 0
+    for question in questions:
+        question_id = int(question['id'])
+        if question_id >= next_id:
+            next_id = question_id
+
+    return next_id + 1
+
 
 def get_next_answer_id():
     answers = get_all_answers()
@@ -93,3 +104,6 @@ def delete_question_by_id(question_id):
         if question['id'] != question_id:
             temp.append(question)
     save_all_questions(temp)
+
+def get_current_timestamp():
+    return int(time.time())

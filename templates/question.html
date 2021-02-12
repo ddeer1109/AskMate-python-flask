@@ -6,15 +6,18 @@
 </head>
 <body>
 
-    <a href="/"><h1>Main Page</h1></a>
+    <h1>Question</h1><br>
+    <button>
+        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
+    </button>
+    <hr>
+
     <table border="1">
         <tr>
             {% for header in question_headers %}
                 <th>{{ header }}</th>
             {% endfor %}
         </tr>
-        <br>
-        <br>
         <tr>
             {% for data in question %}
             <td>{{ question[data] }}</td>
@@ -49,10 +52,10 @@
     <a href="/question/{{ question['id'] }}/add-answer">Add answer</a>
 
 
-{#<form>#}
-{#        <button class="button" formaction='{{ url_for('add_an_answer', question_id=question_id) }}'>Add an#}
-{#            answer#}
-{#        </button>#}
-{#    </form>#}
+    <br>
+    <button>
+        <a href="/question/{{ question['id'] }}/add-answer">Add</a>
+    </button>
+
 </body>
 </html>
