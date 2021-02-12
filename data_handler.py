@@ -36,8 +36,8 @@ def get_all_answers():
         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
         for row in csv_reader:
             answers.append(row)
-
         return answers
+
 
 def get_data(PATH, FILENAME, data):
     with open(PATH + '/sample_data/' + FILENAME, 'r') as csv_file:
