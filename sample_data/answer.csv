@@ -8,17 +8,4 @@ id,submission_time,vote_number,question_id,message,image
 7,1613047469,0,3,new,image/image.png
 8,1613047478,0,2,iuytrf,image/image.png
 9,1613047487,0,1,drftgyhuji,image/image.png
-<<<<<<< HEAD
-10,1613048182,0,3,sdfsdf,image/image.png
-11,1613048192,0,8,sdfsdfds,image/image.png
-12,1613048196,0,8,asdfasdf,image/image.png
-13,1613050109,0,3,aaaa,image/image.png
-14,1613050118,0,5,aaaa,image/image.png
-15,1613050130,0,6,zxczccz,image/image.png
-16,1613050238,0,4,asdfasf,image/image.png
-17,1613050264,0,4,asdfasdf,image/image.png
-18,1613050320,0,4,sfasdfsdf,image/image.png
-19,1613050378,0,4,zxvzxzxv,image/image.png
-=======
-10,1613073640,0,9,"hello, world my friend",image/image.png
->>>>>>> a0cf45875221d5eabef79e1fc7f3c1c097715dba
+10,1613135098,0,2,this is whatever,image/image.png
