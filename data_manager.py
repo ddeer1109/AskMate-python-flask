@@ -24,10 +24,10 @@ def sort_data_by_sorting_key(entries_list, sorting_key):
             entry[sorting_key['order_by']] = int(entry[sorting_key['order_by']])
 
         new_list = sorted(entries_list, key=lambda k: k[sorting_key['order_by']],
-                          reverse=False if sorting_key['order_direction'] == 'desc' else True)
+                          reverse=True if sorting_key['order_direction'] == 'desc' else False)
     else:
         new_list = sorted(entries_list, key=lambda k: k[sorting_key['order_by']].lower(),
-                          reverse=False if sorting_key['order_direction'] == 'desc' else True)
+                          reverse=True if sorting_key['order_direction'] == 'desc' else False)
     return [convert_timestamp(entry) for entry in new_list]
 
 
