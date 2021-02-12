@@ -54,10 +54,19 @@ def display_add_question():
 @app.route("/add-question", methods=['POST'])
 def add_question():
     requested_data = dict(request.form)
+<<<<<<< HEAD
     requested_data['id'] = data_manager.get_next_id()
     requested_data['submission_time'] = data_manager.get_current_timestamp()
     requested_data['view_number'] = 0  # TODO - further implementation needed
     requested_data['vote_number'] = 0  # TODO - further implementation needed
+=======
+
+    # vote_number, title, message, image
+    requested_data['id'] = data_manager.get_next_id()
+    requested_data['submission_time'] = data_manager.get_current_timestamp()
+    requested_data['view_number'] = 11  # TODO - further implementation needed
+    requested_data['vote_number'] = 7  # TODO - further implementation needed
+>>>>>>> a0cf45875221d5eabef79e1fc7f3c1c097715dba
     requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
 
     data_handler.save_all_questions(requested_data)
