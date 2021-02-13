@@ -1,5 +1,5 @@
 from datetime import datetime
-from data_handler import get_all_questions, get_all_answers, save_all_answers, save_all_questions
+import data_handler
 import time
 import operator
 
@@ -36,18 +36,16 @@ def sort_data_by_sorting_key(entries_list, sorting_key):
 
 def convert_timestamp(entry):
     time_stamp = int(entry["submission_time"])
-    dt_object = datetime.fromtimestamp(time_stamp)
-    entry["submission_time"] = dt_object
+    converted_time = datetime.fromtimestamp(time_stamp)
+    entry["submission_time"] = converted_time
 
     return entry
 
-# TODO - done
 def get_question_by_id(question_id, questions):
     for question in questions:
         if question["id"] == question_id:
             return convert_timestamp(question)
 
-# TODO - done
 def get_answers_for_question(question_id, answers):
     question_answers = []
     for answer in answers:
@@ -72,9 +70,7 @@ def filter_data(dict_data, headers):
         return []
 
 
-# TODO - add questions_list as parameter
-def get_next_id():
-    questions = get_all_questions()
+def get_next_id(questions):
     next_id = 0
     for question in questions:
         question_id = int(question['id'])
@@ -83,9 +79,7 @@ def get_next_id():
 
     return next_id + 1
 
-# TODO - add answers_list as parameter
-def get_next_answer_id():
-    answers = get_all_answers()
+def get_next_answer_id(answers):
     next_id = 0
     for answer in answers:
         answer_id = int(answer['id'])
@@ -93,33 +87,15 @@ def get_next_answer_id():
             next_id = answer_id
     return next_id + 1
 
-# TODO - add questions_list as parameter
-def delete_question(question_id):
-    questions = list(get_all_questions())
-    for question in questions:
-        print(question)
-        if question[0] == question_id:
-            questions.remove(question)
-    return questions
 
+def delete_rows(question_id, criteria, entries_list):
+    temp_list = []
 
-# TODO - add answers_list as parameter and return answers_list
-def delete_answers_by_question_id(question_id):
-    answers = get_all_answers()
-    temp = []
-    for answer in answers:
-        if answer['question_id'] != question_id:
-            temp.append(answer)
-    save_all_answers(temp)
+    for entry in entries_list:
+        if entry[criteria] != question_id:
+            temp_list.append(entry)
 
-# TODO - add questions_list as parameter and return questions_list
-def delete_question_by_id(question_id):
-    questions = get_all_questions()
-    temp = []
-    for question in questions:
-        if question['id'] != question_id:
-            temp.append(question)
-    save_all_questions(temp)
+    return temp_list
 
 def get_current_timestamp():
     return int(time.time())

@@ -8,7 +8,6 @@ app = Flask(__name__)
 PATH = app.root_path
 
 
-# TODO - another sort function
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
@@ -52,7 +51,7 @@ def add_question():
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
 
     requested_data = dict(request.form)
-    requested_data['id'] = str(data_manager.get_next_id())
+    requested_data['id'] = str(data_manager.get_next_id(questions))
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['view_number'] = '0'  # TODO - further implementation needed
     requested_data['vote_number'] = '0'  # TODO - further implementation needed
@@ -77,7 +76,7 @@ def new_answer(question_id):
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['vote_number'] = '0'
     requested_data['image'] = 'image/image.png'
-    requested_data['id'] = str(data_manager.get_next_answer_id())
+    requested_data['id'] = str(data_manager.get_next_answer_id(answers))
     requested_data['question_id'] = str(question_id)
 
     answers.append(requested_data)
@@ -87,22 +86,17 @@ def new_answer(question_id):
     return redirect(f'/question/{question_id}')
 
 
-
-
-
-
-
-
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    print(question_id)
-    # id = question_id
-    # new_list = data_manager.delete_question(id)
-    # data_handler.save_all_questions(new_list)
-    # print(id)
-    # print(new_list)
-    data_manager.delete_answers_by_question_id(question_id)
-    data_manager.delete_question_by_id(question_id)
+    answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+    questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+
+    answers = data_manager.delete_rows(question_id, 'question_id', answers)
+    questions = data_manager.delete_rows(question_id, 'id', questions)
+
+    data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
+    data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
+
     return redirect('/')
 
 
