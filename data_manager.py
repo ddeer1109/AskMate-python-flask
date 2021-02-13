@@ -53,8 +53,7 @@ def filter_data(dict_data, headers):
             filtered_data.append(filtered_entry)
 
         return filtered_data
-
-    # error becouse of returning none when there is empty answers list, catched by this exception
+    # eliminate error occuring when empty dict_data filtered
     except TypeError:
         return []
 

@@ -10,4 +10,4 @@ jquery
 booklet
 app.js (bundled file with webpack, including jquery)",images/image1.png
 3,1493015432,1364,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.",
-4,1613179558,0,0,Daniel's test question,"Hello, its me",images/image1.png
+4,1613200402,0,0,Test question,test message,images/image1.png
