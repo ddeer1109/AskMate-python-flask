@@ -73,9 +73,10 @@ def add_question():
     requested_data['vote_number'] = 0  # TODO - further implementation needed
     requested_data['image'] = 'images/image1.png' # TODO - further implementation needed
 
-    data_handler.save_all_questions(requested_data)
+    data_handler.save_single_question(requested_data)
 
-    return redirect(url_for('display_question', question_id=requested_data['id']))
+    # return redirect(url_for('display_question', question_id=requested_data['id']))
+    return redirect('/')
 
 
 if __name__ == "__main__":
