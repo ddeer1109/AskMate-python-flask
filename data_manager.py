@@ -54,7 +54,7 @@ def filter_data(dict_data, headers):
 
         return filtered_data
     # error becouse of returning None when there is empty answers list, catched by this exception
-
+    #asd
     except TypeError:
         return []
 
