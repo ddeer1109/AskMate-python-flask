@@ -55,7 +55,7 @@ def filter_data(dict_data, headers):
     return filtered_data
 
 def get_next_id():
-    questions = get_all_questions();
+    questions = get_all_questions()
     next_id = 0
     for question in questions:
         question_id = int(question['id'])
