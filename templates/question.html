@@ -25,7 +25,11 @@
         </tr>
     </table>
 
-    <a href="{{ question['id'] }}/delete">Delete question</a>
+    <br>
+    <button>
+        <a href="{{ question['id'] }}/delete">Delete question</a>
+    </button>
+    <br>
 
     {% if  answers|length > 0  %}
         <br>

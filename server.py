@@ -80,6 +80,12 @@ def add_question():
 
     return redirect(url_for('display_question', question_id=requested_data['id']))
 
+
+
+
+
+
+
 @app.route("/question/<question_id>/add-answer")
 def add_an_answer(question_id):
     return render_template('add_answer.html')
@@ -87,14 +93,18 @@ def add_an_answer(question_id):
 
 @app.route("/question/<question_id>/add-answer", methods=["POST"])
 def new_answer(question_id):
+    answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+
     requested_data = dict(request.form)
-    requested_data['submission_time'] = int(time.time())
-    requested_data['vote_number'] = 0
+    requested_data['submission_time'] = str(data_manager.get_current_timestamp())
+    requested_data['vote_number'] = '0'
     requested_data['image'] = 'image/image.png'
-    requested_data['id'] = data_manager.get_next_answer_id()
-    requested_data['question_id'] = int(question_id)
-    print(requested_data)
-    data_handler.save_single_answer(requested_data)
+    requested_data['id'] = str(data_manager.get_next_answer_id())
+    requested_data['question_id'] = str(question_id)
+
+    answers.append(requested_data)
+
+    data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
 
     return redirect(f'/question/{question_id}')
 
