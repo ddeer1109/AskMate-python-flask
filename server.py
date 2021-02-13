@@ -4,10 +4,7 @@ import data_manager
 import time
 import data_handler
 
-<<<<<<< HEAD
-=======
 
->>>>>>> sorting_for_the_question_list
 app = Flask(__name__)
 PATH = app.root_path
 
@@ -88,21 +85,13 @@ def display_add_question():
 @app.route("/add-question", methods=['POST'])
 def add_question():
     requested_data = dict(request.form)
-<<<<<<< HEAD
-=======
-
->>>>>>> sorting_for_the_question_list
     requested_data['id'] = data_manager.get_next_id()
     requested_data['submission_time'] = data_manager.get_current_timestamp()
     requested_data['view_number'] = 0  # TODO - further implementation needed
     requested_data['vote_number'] = 0  # TODO - further implementation needed
-<<<<<<< HEAD
     requested_data['image'] = 'images/image1.png' # TODO - further implementation needed
 
     data_handler.save_single_question(requested_data)
-=======
-    requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
->>>>>>> sorting_for_the_question_list
 
     # return redirect(url_for('display_question', question_id=requested_data['id']))
     return redirect('/')

@@ -38,7 +38,7 @@ def convert_timestamp(entry):
 
     return entry
 
-
+# TODO - add questions_list as parameter
 def get_question_by_id(question_id):
     questions = get_all_questions()
 
@@ -46,7 +46,7 @@ def get_question_by_id(question_id):
         if question["id"] == question_id:
             return convert_timestamp(question)
 
-
+# TODO - add questions_list as parameter
 def get_answers_for_question(question_id):
     answers = get_all_answers()
 
@@ -69,12 +69,12 @@ def filter_data(dict_data, headers):
             filtered_data.append(filtered_entry)
 
         return filtered_data
-    # eliminate error occuring when empty dict_data filtered
+    # eliminate error occurring when empty dict_data filtered
     except TypeError:
         return []
 
 
-
+# TODO - add questions_list as parameter
 def get_next_id():
     questions = get_all_questions()
     next_id = 0
@@ -85,7 +85,7 @@ def get_next_id():
 
     return next_id + 1
 
-
+# TODO - add answers_list as parameter
 def get_next_answer_id():
     answers = get_all_answers()
     next_id = 0
@@ -95,6 +95,7 @@ def get_next_answer_id():
             next_id = answer_id
     return next_id + 1
 
+# TODO - add questions_list as parameter
 def delete_question(question_id):
     questions = list(get_all_questions())
     for question in questions:
@@ -110,6 +111,7 @@ def delete_question(question_id):
 #         temp_answers.append(dict(answer))
 #     return temp_answers
 
+# TODO - add answers_list as parameter and return answers_list
 def delete_answers_by_question_id(question_id):
     answers = get_all_answers()
     temp = []
@@ -118,6 +120,7 @@ def delete_answers_by_question_id(question_id):
             temp.append(answer)
     save_all_answers(temp)
 
+# TODO - add questions_list as parameter and return questions_list
 def delete_question_by_id(question_id):
     questions = get_all_questions()
     temp = []
