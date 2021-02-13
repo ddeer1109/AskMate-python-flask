@@ -4,22 +4,21 @@ import data_manager
 import time
 import data_handler
 
-
 app = Flask(__name__)
 PATH = app.root_path
+
 
 # TODO - another sort function
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
-
     sorting_key = {
         'order_by': 'submission_time',
         'order_direction': 'desc'
     }
     questions_from_file = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     sorted_data = data_manager.sort_data_by_sorting_key(questions_from_file, sorting_key)
-    questions = data_manager.filter_data(sorted_data,  data_handler.QUESTIONS_DATA_HEADER)
+    questions = data_manager.filter_data(sorted_data, data_handler.QUESTIONS_DATA_HEADER)
 
     # TODO - another sort function
     # requested_query_string = request.args
@@ -29,12 +28,11 @@ def get_list_of_questions():
     #         data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string),
     #         displayed_headers)
     #
-        # questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
+    # questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
     #     # formatted_headers = data_manager.get_formatted_headers(displayed_headers)
     #     # return render_template('list.html', questions=questions, question_headers=formatted_headers)
     # else:
     #     questions = data_manager.filter_data(data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string), displayed_headers)
-
 
     # format time to display nice
     formatted_headers = data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER)
@@ -60,9 +58,32 @@ def display_question(question_id):
                            answer_headers=data_manager.get_formatted_headers(data_handler.ANSWERS_DATA_HEADER)
                            )
 
+
+@app.route("/add-question")
+def display_add_question():
+    return render_template("add_question.html")
+
+
+@app.route("/add-question", methods=['POST'])
+def add_question():
+    questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+
+    requested_data = dict(request.form)
+    requested_data['id'] = str(data_manager.get_next_id())
+    requested_data['submission_time'] = str(data_manager.get_current_timestamp())
+    requested_data['view_number'] = '0'  # TODO - further implementation needed
+    requested_data['vote_number'] = '0'  # TODO - further implementation needed
+    requested_data['image'] = 'images/image1.png'  # TODO - further implementation needed
+
+    questions.append(requested_data)
+    data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
+
+    return redirect(url_for('display_question', question_id=requested_data['id']))
+
 @app.route("/question/<question_id>/add-answer")
 def add_an_answer(question_id):
     return render_template('add_answer.html')
+
 
 @app.route("/question/<question_id>/add-answer", methods=["POST"])
 def new_answer(question_id):
@@ -77,6 +98,7 @@ def new_answer(question_id):
 
     return redirect(f'/question/{question_id}')
 
+
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
     print(question_id)
@@ -87,24 +109,6 @@ def delete_question(question_id):
     # print(new_list)
     data_manager.delete_answers_by_question_id(question_id)
     data_manager.delete_question_by_id(question_id)
-    return redirect('/')
-
-@app.route("/add-question")
-def display_add_question():
-    return render_template("add_question.html")
-
-@app.route("/add-question", methods=['POST'])
-def add_question():
-    requested_data = dict(request.form)
-    requested_data['id'] = data_manager.get_next_id()
-    requested_data['submission_time'] = data_manager.get_current_timestamp()
-    requested_data['view_number'] = 0  # TODO - further implementation needed
-    requested_data['vote_number'] = 0  # TODO - further implementation needed
-    requested_data['image'] = 'images/image1.png' # TODO - further implementation needed
-
-    data_handler.save_single_question(requested_data)
-
-    # return redirect(url_for('display_question', question_id=requested_data['id']))
     return redirect('/')
 
 
