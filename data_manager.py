@@ -45,14 +45,19 @@ def get_answers_for_question(question_id):
 
 def filter_data(dict_data, headers):
     filtered_data = []
+    try:
+        for entry in dict_data:
+            filtered_entry = {}
+            for header in headers:
+                filtered_entry[header] = entry[header]
+            filtered_data.append(filtered_entry)
 
-    for entry in dict_data:
-        filtered_entry = {}
-        for header in headers:
-            filtered_entry[header] = entry[header]
-        filtered_data.append(filtered_entry)
+        return filtered_data
 
-    return filtered_data
+    # error becouse of returning none when there is empty answers list, catched by this exception
+    except TypeError:
+        return []
+
 
 def get_next_id():
     questions = get_all_questions();

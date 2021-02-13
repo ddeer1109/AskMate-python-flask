@@ -77,6 +77,6 @@ def save_single_answer(answer):
 
 
 def save_single_question(question):
-    with open(ANSWER_DATA_FILE_PATH, 'a', newline='') as csv_file:
+    with open(QUESTIONS_DATA_FILE_PATH, 'a', newline='') as csv_file:
         csv_writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_DATA_HEADER, delimiter=',', quotechar='"')
         csv_writer.writerow(question)
