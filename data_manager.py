@@ -1,11 +1,7 @@
 from datetime import datetime
 from data_handler import get_all_questions, get_all_answers, save_all_answers, save_all_questions
 import time
-<<<<<<< HEAD
-=======
-from data_handler import get_all_questions, get_all_answers
 import operator
->>>>>>> sorting_for_the_question_list
 
 
 def get_formatted_headers(headers):
@@ -99,7 +95,6 @@ def get_next_answer_id():
             next_id = answer_id
     return next_id + 1
 
-<<<<<<< HEAD
 def delete_question(question_id):
     questions = list(get_all_questions())
     for question in questions:
@@ -130,8 +125,6 @@ def delete_question_by_id(question_id):
         if question['id'] != question_id:
             temp.append(question)
     save_all_questions(temp)
-=======
->>>>>>> sorting_for_the_question_list
 
 def get_current_timestamp():
     return int(time.time())

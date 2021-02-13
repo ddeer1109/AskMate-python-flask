@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 id,submission_time,view_number,vote_number,title,message,image
 1,1493368154,29,7,"How to make lists in Python?","I am totally new to this, any hints?",
 2,1493068124,15,9,"Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
@@ -12,29 +11,4 @@ booklet
 app.js (bundled file with webpack, including jquery)","images/image1.png"
 3,1493015432,1364,57,"Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.4,1613136758,0,0,video 1,asdfasfda,images/image1.png
 4,1613137175,0,0,video 1,safsfdf,images/image1.png
-=======
-id,submission_time,view_number,vote_number,title,message,image
-1,1493368154,1,7,"How to make lists in Python?","I am totally new to this, any hints?",
-2,1493068124,2,9,"Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
-I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
-
-BUT in my theme i also using jquery via webpack so the loading order is now following:
-
-jquery
-booklet
-app.js (bundled file with webpack, including jquery)","images/image1.png"
-3,1493015432,3,57,"Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
-
-This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
-4,1612963789,4,7,video 1,aaa,images/image1.png
-5,1612963820,4,7,ninja supreme,"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",images/image1.png6,1612964507,11,7,video 1,aaa,images/image1.png
-6,1612964533,6,7,video 1,aaa,images/image1.png
-7,1612964571,12,7,ninja supreme,"red bull racing
-",images/image1.png
-8,1612964631,11,7,"video, 1","hello, world, my, friend",images/image1.png
-9,1613073359,8,7,Sicilian Updated,"hello, world",images/image1.png
-10,1613079977,0,0,Sicilian Updated,sdfsdfsfd,images/image1.png
-11,1613129643,0,0,where do you live,warsaw,images/image1.png
-12,1613129701,0,0,fdssfds,sadfsf,images/image1.png
->>>>>>> sorting_for_the_question_list
