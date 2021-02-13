@@ -45,17 +45,21 @@ def get_answers_for_question(question_id):
 
 def filter_data(dict_data, headers):
     filtered_data = []
+    try:
+        for entry in dict_data:
+            filtered_entry = {}
+            for header in headers:
+                filtered_entry[header] = entry[header]
+            filtered_data.append(filtered_entry)
 
-    for entry in dict_data:
-        filtered_entry = {}
-        for header in headers:
-            filtered_entry[header] = entry[header]
-        filtered_data.append(filtered_entry)
+        return filtered_data
+    # eliminate error occuring when empty dict_data filtered
+    except TypeError:
+        return []
 
-    return filtered_data
 
 def get_next_id():
-    questions = get_all_questions();
+    questions = get_all_questions()
     next_id = 0
     for question in questions:
         question_id = int(question['id'])

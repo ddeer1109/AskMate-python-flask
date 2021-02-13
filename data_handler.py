@@ -75,9 +75,8 @@ def save_single_answer(answer):
         csv_writer = csv.DictWriter(csv_file, fieldnames=ANSWERS_DATA_HEADER_FILE, delimiter=',', quotechar='"')
         csv_writer.writerow(answer)
 
-
+# here found bug - ANSWER_DATA_FILE_PATH instead of QUESTION_...
 def save_single_question(question):
-    print('I am working')
     with open(QUESTIONS_DATA_FILE_PATH, 'a', newline='') as csv_file:
         csv_writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_DATA_HEADER, delimiter=',', quotechar='"')
         csv_writer.writerow(question)
