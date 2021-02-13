@@ -9,13 +9,21 @@ QUESTIONS_DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 
 ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'message', 'image']
 ANSWERS_DATA_HEADER_FILE = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
-# TODO - implement this function
 def write_file(path, header, dictionaries_list):
-    pass
+    with open(path, 'w', newline='') as csv_file:
+        csv_writer = csv.DictWriter(csv_file, fieldnames=header, delimiter=',', quotechar='"')
+        csv_writer.writeheader()
+        csv_writer.writerows(dictionaries_list)
 
-# TODO - implement this function, return dictionalies_list
-def read_file(path, header):
-    pass
+
+def read_file(path):
+    dictionaries_list = []
+    with open(path) as csv_file:
+        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
+        for row in csv_reader:
+            dictionaries_list.append(row)
+
+        return dictionaries_list
 
 # TODO - obsolete, to remove
 def save_all_questions(question):
