@@ -12,27 +12,10 @@ PATH = app.root_path
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
-    sorting_key = {
-        'order_by': 'submission_time',
-        'order_direction': 'desc'
-    }
-    questions_from_file = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-    sorted_data = data_manager.sort_data_by_sorting_key(questions_from_file, sorting_key)
-    questions = data_manager.filter_data(sorted_data, data_handler.QUESTIONS_DATA_HEADER)
+    questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+    requested_query_string = request.args
 
-    # TODO - another sort function
-    # requested_query_string = request.args
-    # if len(requested_query_string) == 0:
-    #     requested_query_string = {'order_by': 'submission_time', 'order_direction': 'desc'}
-    #     questions = data_manager.filter_data(
-    #         data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string),
-    #         displayed_headers)
-    #
-    # questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
-    #     # formatted_headers = data_manager.get_formatted_headers(displayed_headers)
-    #     # return render_template('list.html', questions=questions, question_headers=formatted_headers)
-    # else:
-    #     questions = data_manager.filter_data(data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string), displayed_headers)
+    questions = data_manager.sort_data(questions, requested_query_string, data_handler.QUESTIONS_DATA_HEADER)
 
     # format time to display nice
     formatted_headers = data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER)
@@ -81,11 +64,6 @@ def add_question():
     return redirect(url_for('display_question', question_id=requested_data['id']))
 
 
-
-
-
-
-
 @app.route("/question/<question_id>/add-answer")
 def add_an_answer(question_id):
     return render_template('add_answer.html')
@@ -107,6 +85,12 @@ def new_answer(question_id):
     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
 
     return redirect(f'/question/{question_id}')
+
+
+
+
+
+
 
 
 @app.route("/question/<question_id>/delete")

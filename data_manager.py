@@ -7,9 +7,20 @@ import operator
 def get_formatted_headers(headers):
     return [header.replace("_", " ").capitalize() for header in headers]
 
-def sort_data_by_sorting_key(entries_list, sorting_key):
-    sorting_key = dict(sorting_key)
+def sort_data(questions, requested_query_string, header):
+    sorting_key = {
+        'order_by': 'submission_time',
+        'order_direction': 'desc'
+    }
 
+    if len(requested_query_string) == 0:
+        requested_query_string = sorting_key
+
+    questions = filter_data(sort_data_by_sorting_key(questions, requested_query_string), header)
+
+    return questions
+
+def sort_data_by_sorting_key(entries_list, sorting_key):
     if sorting_key['order_by'] in ['view_number', 'vote_number']:
         # it is necessary to cast value to int to use function sort
         for entry in entries_list:
@@ -91,12 +102,6 @@ def delete_question(question_id):
             questions.remove(question)
     return questions
 
-# def convert_ordered_dict_to_regular_dictionary_list(question_id):
-#     answers = get_all_answers()
-#     temp_answers = []
-#     for answer in answers:
-#         temp_answers.append(dict(answer))
-#     return temp_answers
 
 # TODO - add answers_list as parameter and return answers_list
 def delete_answers_by_question_id(question_id):
