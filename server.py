@@ -4,6 +4,10 @@ import data_manager
 import time
 import data_handler
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> sorting_for_the_question_list
 app = Flask(__name__)
 PATH = app.root_path
 
@@ -11,10 +15,27 @@ PATH = app.root_path
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
-    displayed_headers = ['id', 'submission_time', 'view_number', 'title', 'message']
-    questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
+    # git checkout
+    # displayed_headers = ['id', 'submission_time', 'view_number', 'title', 'message']
+    displayed_headers = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message']
+
+    requested_query_string = request.args
+
+    if len(requested_query_string) == 0:
+        requested_query_string = {'order_by': 'submission_time', 'order_direction': 'desc'}
+        questions = data_manager.filter_data(
+            data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string),
+            displayed_headers)
+
+        # questions = data_manager.filter_data(data_manager.sort_data_by_time(data_handler.get_all_questions()), displayed_headers)
+        # formatted_headers = data_manager.get_formatted_headers(displayed_headers)
+        # return render_template('list.html', questions=questions, question_headers=formatted_headers)
+    else:
+        questions = data_manager.filter_data(data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string), displayed_headers)
+
     formatted_headers = data_manager.get_formatted_headers(displayed_headers)
     return render_template('list.html', questions=questions, question_headers=formatted_headers)
+
 
 
 @app.route("/question/<question_id>")
@@ -67,13 +88,21 @@ def display_add_question():
 @app.route("/add-question", methods=['POST'])
 def add_question():
     requested_data = dict(request.form)
+<<<<<<< HEAD
+=======
+
+>>>>>>> sorting_for_the_question_list
     requested_data['id'] = data_manager.get_next_id()
     requested_data['submission_time'] = data_manager.get_current_timestamp()
     requested_data['view_number'] = 0  # TODO - further implementation needed
     requested_data['vote_number'] = 0  # TODO - further implementation needed
+<<<<<<< HEAD
     requested_data['image'] = 'images/image1.png' # TODO - further implementation needed
 
     data_handler.save_single_question(requested_data)
+=======
+    requested_data['image'] = 'images/image1.png' # TODO - further implementation neede
+>>>>>>> sorting_for_the_question_list
 
     # return redirect(url_for('display_question', question_id=requested_data['id']))
     return redirect('/')

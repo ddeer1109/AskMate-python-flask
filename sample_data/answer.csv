@@ -8,5 +8,13 @@ id,submission_time,vote_number,question_id,message,image
 7,1613047469,0,3,new,image/image.png
 8,1613047478,0,2,iuytrf,image/image.png
 9,1613047487,0,1,drftgyhuji,image/image.png
+<<<<<<< HEAD
 10,1613135098,0,2,this is whatever,image/image.png
 1,1613135930,0,0,video 1,sfsasf,images/image1.png
+=======
+10,1613073640,0,9,"hello, world my friend",image/image.png
+11,1613079991,0,10,sdfsdfsdf,image/image.png
+12,1613079995,0,10,sfsfsdf,image/image.png
+13,1613129662,0,11,I live there,image/image.png
+14,1613129710,0,12,,image/image.png
+>>>>>>> sorting_for_the_question_list

@@ -1,20 +1,41 @@
 from datetime import datetime
 from data_handler import get_all_questions, get_all_answers, save_all_answers, save_all_questions
 import time
+<<<<<<< HEAD
+=======
+from data_handler import get_all_questions, get_all_answers
+import operator
+>>>>>>> sorting_for_the_question_list
 
 
 def get_formatted_headers(headers):
-        return [header.replace("_", " ").capitalize() for header in headers]
+    return [header.replace("_", " ").capitalize() for header in headers]
 
 
-def sort_data_by_time(entries_list):
-    new_list = sorted(entries_list, key=lambda k: k['submission_time'])
+# def sort_data_by_time(entries_list):
+#     new_list = sorted(entries_list, key=lambda k: k['submission_time'])
+#
+#     return [convert_timestamp(entry) for entry in new_list]
 
+
+def sort_data_by_sorting_key(entries_list, sorting_key):
+    sorting_key = dict(sorting_key)
+    print(sorting_key)
+
+    if sorting_key['order_by'] in ['view_number', 'vote_number']:
+        # it is necessary to cast value to int to use function sort
+        for entry in entries_list:
+            entry[sorting_key['order_by']] = int(entry[sorting_key['order_by']])
+
+        new_list = sorted(entries_list, key=lambda k: k[sorting_key['order_by']],
+                          reverse=True if sorting_key['order_direction'] == 'desc' else False)
+    else:
+        new_list = sorted(entries_list, key=lambda k: k[sorting_key['order_by']].lower(),
+                          reverse=True if sorting_key['order_direction'] == 'desc' else False)
     return [convert_timestamp(entry) for entry in new_list]
 
 
 def convert_timestamp(entry):
-
     time_stamp = int(entry["submission_time"])
     dt_object = datetime.fromtimestamp(time_stamp)
     entry["submission_time"] = dt_object
@@ -23,7 +44,6 @@ def convert_timestamp(entry):
 
 
 def get_question_by_id(question_id):
-
     questions = get_all_questions()
 
     for question in questions:
@@ -58,6 +78,7 @@ def filter_data(dict_data, headers):
         return []
 
 
+
 def get_next_id():
     questions = get_all_questions()
     next_id = 0
@@ -78,6 +99,7 @@ def get_next_answer_id():
             next_id = answer_id
     return next_id + 1
 
+<<<<<<< HEAD
 def delete_question(question_id):
     questions = list(get_all_questions())
     for question in questions:
@@ -108,6 +130,8 @@ def delete_question_by_id(question_id):
         if question['id'] != question_id:
             temp.append(question)
     save_all_questions(temp)
+=======
+>>>>>>> sorting_for_the_question_list
 
 def get_current_timestamp():
     return int(time.time())
