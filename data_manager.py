@@ -7,13 +7,6 @@ import operator
 def get_formatted_headers(headers):
     return [header.replace("_", " ").capitalize() for header in headers]
 
-# TODO - obsolete, to remove
-# def sort_data_by_time(entries_list):
-#     new_list = sorted(entries_list, key=lambda k: k['submission_time'])
-#
-#     return [convert_timestamp(entry) for entry in new_list]
-
-
 def sort_data_by_sorting_key(entries_list, sorting_key):
     sorting_key = dict(sorting_key)
 
@@ -37,20 +30,15 @@ def convert_timestamp(entry):
 
     return entry
 
-# TODO - add questions_list as parameter
-def get_question_by_id(question_id):
-    questions = get_all_questions()
-
+# TODO - done
+def get_question_by_id(question_id, questions):
     for question in questions:
         if question["id"] == question_id:
             return convert_timestamp(question)
 
-# TODO - add questions_list as parameter
-def get_answers_for_question(question_id):
-    answers = get_all_answers()
-
+# TODO - done
+def get_answers_for_question(question_id, answers):
     question_answers = []
-
     for answer in answers:
         if answer["question_id"] == question_id:
             question_answers.append(convert_timestamp(answer))

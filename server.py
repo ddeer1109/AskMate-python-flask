@@ -8,7 +8,7 @@ import data_handler
 app = Flask(__name__)
 PATH = app.root_path
 
-
+# TODO - another sort function
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
@@ -42,19 +42,22 @@ def get_list_of_questions():
     return render_template('list.html', questions=questions, question_headers=formatted_headers)
 
 
-
 @app.route("/question/<question_id>")
 def display_question(question_id):
+    questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+    answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
 
-    displayed_headers_answers = ['submission_time', 'vote_number', 'message']
-    displayed_headers_question = ['id', 'submission_time', 'view_number', 'title', 'message']
-    question = data_manager.filter_data([data_manager.get_question_by_id(question_id)], displayed_headers_question)[0]
-    answers = data_manager.filter_data(data_manager.get_answers_for_question(question_id), displayed_headers_answers)
+    single_question = data_manager.get_question_by_id(question_id, questions)
+    single_question_answers = data_manager.get_answers_for_question(question_id, answers)
+
+    question = data_manager.filter_data([single_question], data_handler.QUESTIONS_DATA_HEADER)[0]
+    answers = data_manager.filter_data(single_question_answers, data_handler.ANSWERS_DATA_HEADER)
+
     return render_template("question.html",
                            question=question,
                            answers=answers,
-                           question_headers=data_manager.get_formatted_headers(displayed_headers_question),
-                           answer_headers=data_manager.get_formatted_headers(displayed_headers_answers)
+                           question_headers=data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER),
+                           answer_headers=data_manager.get_formatted_headers(data_handler.ANSWERS_DATA_HEADER)
                            )
 
 @app.route("/question/<question_id>/add-answer")
