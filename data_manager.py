@@ -8,10 +8,10 @@ def get_formatted_headers(headers):
     return [header.replace("_", " ").capitalize() for header in headers]
 
 
-# def sort_data_by_time(entries_list):
-#     new_list = sorted(entries_list, key=lambda k: k['submission_time'])
-#
-#     return [convert_timestamp(entry) for entry in new_list]
+def sort_data_by_time(entries_list):
+    new_list = sorted(entries_list, key=lambda k: k['submission_time'])
+
+    return [convert_timestamp(entry) for entry in new_list]
 
 
 def sort_data_by_sorting_key(entries_list, sorting_key):

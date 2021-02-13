@@ -6,8 +6,8 @@ import pathlib
 QUESTIONS_DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/question.csv"
 ANSWER_DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/answer.csv"
 QUESTIONS_DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'message', 'image']
-ANSWERS_DATA_HEADER_FILE = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+# ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'message', 'image']
+ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 def write_file(path, header, dictionaries_list):
     with open(path, 'w', newline='') as csv_file:
