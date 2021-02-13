@@ -53,13 +53,14 @@ def filter_data(dict_data, headers):
             filtered_data.append(filtered_entry)
 
         return filtered_data
-    # error becouse of returning ssnone when there is empty answers list, catched by this exception
+    # error becouse of returning None when there is empty answers list, catched by this exception
+
     except TypeError:
         return []
 
 
 def get_next_id():
-    questions = get_all_questions();
+    questions = get_all_questions()
     next_id = 0
     for question in questions:
         question_id = int(question['id'])
