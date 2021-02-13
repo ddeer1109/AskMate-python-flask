@@ -13,8 +13,12 @@ PATH = app.root_path
 @app.route("/list")
 def get_list_of_questions():
 
+    sorting_key = {
+        'order_by': 'submission_time',
+        'order_direction': 'desc'
+    }
     questions_from_file = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-    sorted_data = data_manager.sort_data_by_time(questions_from_file)
+    sorted_data = data_manager.sort_data_by_sorting_key(questions_from_file, sorting_key)
     questions = data_manager.filter_data(sorted_data,  data_handler.QUESTIONS_DATA_HEADER)
 
     # TODO - another sort function
@@ -30,7 +34,6 @@ def get_list_of_questions():
     #     # return render_template('list.html', questions=questions, question_headers=formatted_headers)
     # else:
     #     questions = data_manager.filter_data(data_manager.sort_data_by_sorting_key(data_handler.get_all_questions(), requested_query_string), displayed_headers)
-
 
 
     # format time to display nice
