@@ -99,6 +99,34 @@ def delete_question(question_id):
 
     return redirect('/')
 
+# @app.route("/question/<question_id>/edit")
+# def edit(question_id):
+#     print(question_id)
+#     return render_template('edit_question.html')
+
+
+@app.route("/question/<question_id>/edit", methods = ["GET", "POST"])
+def edit_question(question_id):
+    print(question_id)
+    questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+    single_question = data_manager.get_question_by_id(question_id, questions)
+    question = data_manager.filter_data([single_question], data_handler.QUESTIONS_DATA_HEADER)[0]
+    print(question)
+    if request.method == "POST":
+        edited_question = dict(request.form)
+        edited_question['id'] = question['id']
+        edited_question['submission_time'] = '0'
+        edited_question['vote_number'] = question['vote_number']
+        edited_question['view_number'] = question['view_number']
+        edited_question['image'] = question['image']
+        print(edited_question)
+        delete_question(question_id)
+        questions.append(edited_question)
+        data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
+        return redirect("/")
+    else:
+        return render_template('edit_question.html', question_id=question_id)
+
 
 if __name__ == "__main__":
     app.run(
