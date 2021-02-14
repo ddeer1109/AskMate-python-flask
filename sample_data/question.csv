@@ -8,6 +8,6 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)",images/image1.png
-11,1613228033,0,0,Time,Which way does it move?,images/image1.png
 13,1613330797,0,0,13,after edit,images/image1.png
 9,1613330881,0,0,9,AE,images/image1.png
+11,1613334069,0,0,Time as a symptom,Which way does it move?,images/image1.png

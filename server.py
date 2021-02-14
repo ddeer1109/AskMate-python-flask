@@ -118,13 +118,12 @@ def edit_question(question_id):
         edited_question['vote_number'] = question['vote_number']
         edited_question['view_number'] = question['view_number']
         edited_question['image'] = question['image']
-        print(edited_question)
         questions = data_manager.delete_rows(question_id, 'id', questions)
         questions.append(edited_question)
         data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
         return redirect(f'/question/{question_id}')
     else:
-        return render_template('edit_question.html', question_id=question_id)
+        return render_template('edit_question.html', question_id=question_id, question=question)
 
 
 if __name__ == "__main__":
