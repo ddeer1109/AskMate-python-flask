@@ -99,12 +99,21 @@ def delete_question(question_id):
 
     return redirect('/')
 
+# @app.route("/answer/<answer_id>/delete")
+# def delete_answer(answer_id, question_id):
+#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+#     answers = data_manager.delete_rows(answer_id, 'id', answers)
+#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
+#
+#     return redirect('/question/<question_id>')
+
+
 # @app.route("/question/<question_id>/edit")
 # def edit():
 #     return render_template('edit_question.html')
 
 
-@app.route("/question/<question_id>/edit", methods = ["GET", "POST"])
+@app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 def edit_question(question_id):
 
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
