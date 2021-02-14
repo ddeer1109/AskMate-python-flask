@@ -5,10 +5,14 @@
     <title>AskMate</title>
 </head>
 <body>
-    <h1>Question</h1><br>
+<h1>ASK MATE</h1>
     <button>
         <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
     </button>
+    <hr>
+    <h1>{{ question['title'] }}</h1>
+    <h2>{{ question['message'] }}</h2>
+
     <hr>
 
     <table border="1">
@@ -32,6 +36,7 @@
         <a href="{{ question['id'] }}/edit">Edit question</a>
     </button>
     <br>
+<h2>Answers:</h2>
 
     {% if  answers|length > 0  %}
         <br>
