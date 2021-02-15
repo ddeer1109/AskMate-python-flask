@@ -55,7 +55,9 @@ def add_question():
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['view_number'] = '0'  # TODO - further implementation needed
     requested_data['vote_number'] = '0'  # TODO - further implementation needed
-    requested_data['image'] = 'images/image1.png'  # TODO - further implementation needed
+    # requested_data['image'] = 'images/image1.png'  # TODO - further implementation needed
+
+    print(requested_data)
 
     questions.append(requested_data)
     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)

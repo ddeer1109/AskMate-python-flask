@@ -18,9 +18,13 @@
             {% endfor %}
         </tr>
         <tr>
-            {% for data in question %}
-            <td>{{ question[data] }}</td>
-            {% endfor %}
+            <td>{{ question['id'] }}</td>
+            <td>{{ question['submission_time'] }}</td>
+            <td>{{ question['view_number'] }}</td>
+            <td>{{ question['vote_number'] }}</td>
+            <td>{{ question['title'] }}</td>
+            <td>{{ question['message'] }}</td>
+            <td><img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/" + question['image'] ) }}" alt=""></td>
         </tr>
     </table>
 

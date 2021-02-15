@@ -51,7 +51,10 @@
                     <td>
                         <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
                     </td>
-
+                {% elif data == "image" %}
+                    <td>
+                        <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/" + question['image'] ) }}" alt="">
+                    </td>
                 {% else %}
 
                     <td>{{ question[data] }}</td>
