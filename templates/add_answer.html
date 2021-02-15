@@ -12,9 +12,12 @@
     <hr>
 
     {#action in this case send us to /question/<question_id>/add-answer as POST#}
-    <form action ="" method="POST">
+    <form action ="" method="POST" enctype="multipart/form-data">
         <label for="message">Add an answer</label><br>
         <textarea required id="message" name="message" rows="4" cols="60"></textarea><br>
+
+        <label for="image">Image</label><br>
+        <input type="file" name="image" id="image" accept="image/jpeg, image/png"><br>
 
         <br>
         <input type="submit" value="Add answer">
