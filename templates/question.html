@@ -45,9 +45,21 @@
 
                 {% for answer in answers %}
                 <tr>
-                     {% for data in answer %}
-                        <td>{{ answer[data] }}</td>
-                     {% endfor %}
+                    <td>{{ answer['id'] }}</td>
+                    <td>{{ answer['submission_time'] }}</td>
+                    <td>{{ answer['vote_number'] }}</td>
+                    <td>{{ answer['question_id'] }}</td>
+                    <td>{{ answer['message'] }}</td>
+                    <td>
+                        <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/" + answer['image'] ) }}" alt="">
+                    </td>
+{#                     {% for data in answer %}#}
+{#                        {% if answer[data] == 'image' %}#}
+{#                            <td><img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/" + answer['image'] ) }}" alt=""></td>#}
+{#                        {% else %}#}
+{#                            <td>{{ answer[data] }}</td>#}
+{#                        {% endif %}#}
+{#                     {% endfor %}#}
                 </tr>
 
                 {% endfor %}
