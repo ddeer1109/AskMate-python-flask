@@ -8,6 +8,7 @@ import os
 def get_formatted_headers(headers):
     return [header.replace("_", " ").capitalize() for header in headers]
 
+
 def sort_data(questions, requested_query_string, header):
     sorting_key = {
         'order_by': 'submission_time',
@@ -20,6 +21,7 @@ def sort_data(questions, requested_query_string, header):
     questions = filter_data(sort_data_by_sorting_key(questions, requested_query_string), header)
 
     return questions
+
 
 def sort_data_by_sorting_key(entries_list, sorting_key):
     if sorting_key['order_by'] in ['view_number', 'vote_number']:
@@ -42,10 +44,12 @@ def convert_timestamp(entry):
 
     return entry
 
+
 def get_question_by_id(question_id, questions):
     for question in questions:
         if question["id"] == question_id:
             return convert_timestamp(question)
+
 
 def get_question_by_id_without_timestamp_conversion(question_id, questions):
     for question in questions:
@@ -85,14 +89,6 @@ def get_next_id(entries_list):
             next_id = entry_id
 
     return next_id + 1
-#
-# def get_next_answer_id(answers):
-#     next_id = 0
-#     for answer in answers:
-#         answer_id = int(answer['id'])
-#         if answer_id >= next_id:
-#             next_id = answer_id
-#     return next_id + 1
 
 
 def delete_rows(question_id, criteria, entries_list):
@@ -109,7 +105,28 @@ def get_current_timestamp():
     return int(time.time())
 
 
-# def save_form_image(form_image, app_config_upload_folder):
-#     image_to_save = form_image
-#     path = os.path.join(app_config_upload_folder, image_to_save.filename)
-#     image_to_save.save(path)
+def add_new_answer(form_data, request_files, question_id):
+    answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+
+    requested_data = dict(form_data)
+
+    requested_data['submission_time'] = str(get_current_timestamp())
+    requested_data['vote_number'] = '0'
+    requested_data['id'] = str(get_next_id(answers))
+    requested_data['question_id'] = str(question_id)
+
+    if request_files['image'].filename == '':
+        image = 'none.jpg'
+        requested_data['image'] = image
+    else:
+        image = request_files["image"]
+        data_handler.save_image(image)
+        requested_data['image'] = image.filename
+
+    answers.append(requested_data)
+
+    data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
+
+
+
+
