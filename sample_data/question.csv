@@ -1,18 +1,5 @@
 id,submission_time,view_number,vote_number,title,message,image
-2,1493068124,15,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
-
-I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
-
-BUT in my theme i also using jquery via webpack so the loading order is now following:
-
-jquery
-booklet
-app.js (bundled file with webpack, including jquery)",picture1.jpg
-7,1613221685,0,0,ninja supreme,sasfasdfaasfsadfsa,picture1.jpg
-9,1613226536,0,0,zxczx,sdsfsd,picture1.jpg
-10,1613226545,0,0,sadfasdf,sadfsadfsa,picture1.jpg
-11,1613420030,0,0,sdfsdfsf,sdfsfddsf,picture1.jpg
-12,1613421858,0,0,ccc,ccc,picture1.jpg
-13,1613422053,0,0,sss,aaaa,picture1.jpg
-14,1613427918,0,0,aaa,aaa,picture4.jpg
-15,1613475518,0,0,some title,aasdad EDIT,photo1.jpg
+4,1613505115,0,0,How to use lists in python?,"ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aspernatur beatae cupiditate deleniti enim esse facilis iusto maxime mollitia nesciunt, quibusdam, quis recusandae. Amet corporis deserunt maxime officiis ratione?",photo1.jpg
+5,1613505144,0,0,How to use dictionaries?,Amet corporis deserunt maxime officiis ratione?,picture1.jpg
+2,1613503025,0,0,How to becom programmer,adfasdfasdsafdfasdfads,nature.png
+7,1613505379,0,0,sdafasd,dsfsadfsad,nature.png

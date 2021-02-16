@@ -20,7 +20,6 @@ def get_list_of_questions():
 
     questions = data_manager.sort_data(questions, requested_query_string, data_handler.QUESTIONS_DATA_HEADER)
 
-    # format time to display nice
     formatted_headers = data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER)
 
     return render_template('list.html', questions=questions, question_headers=formatted_headers)
@@ -52,25 +51,10 @@ def display_add_question():
 
 @app.route("/add-question", methods=['POST'])
 def add_question():
-    questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
 
-    requested_data = dict(request.form)
+    question_id = data_manager.add_new_question(request.form, request.files)
 
-    image_to_save = request.files['image']
-    path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_save.filename)
-    image_to_save.save(path)
-
-    requested_data['id'] = str(data_manager.get_next_id(questions))
-    requested_data['submission_time'] = str(data_manager.get_current_timestamp())
-    requested_data['view_number'] = '0'  # TODO - further implementation needed
-    requested_data['vote_number'] = '0'  # TODO - further implementation needed
-    requested_data['image'] = image_to_save.filename
-
-
-    questions.append(requested_data)
-    data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
-
-    return redirect(url_for('display_question', question_id=requested_data['id']))
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route("/question/<question_id>/add-answer")
@@ -82,22 +66,6 @@ def add_an_answer(question_id):
 def new_answer(question_id):
 
     data_manager.add_new_answer(request.form, request.files, question_id)
-
-    # # image_to_save = request.files['image']
-    # # path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_save.filename)
-    # #
-    # #
-    # # image_to_save.save(path)
-    #
-    # # requested_data['submission_time'] = str(data_manager.get_current_timestamp())
-    # # requested_data['vote_number'] = '0'
-    # # requested_data['image'] = request.files["image"].filename
-    # # requested_data['id'] = str(data_manager.get_next_id(answers))
-    # # requested_data['question_id'] = str(question_id)
-    #
-    # answers.append(requested_data)
-    #
-    # data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
 
     return redirect(f'/question/{question_id}')
 
@@ -114,19 +82,6 @@ def delete_question(question_id):
     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
 
     return redirect('/')
-
-# @app.route("/answer/<answer_id>/delete")
-# def delete_answer(answer_id, question_id):
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     answers = data_manager.delete_rows(answer_id, 'id', answers)
-#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
-#
-#     return redirect('/question/<question_id>')
-
-
-# @app.route("/question/<question_id>/edit")
-# def edit():
-#     return render_template('edit_question.html')
 
 
 @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
@@ -147,6 +102,7 @@ def edit_question(question_id):
         return redirect(f'/question/{question_id}')
     else:
         return render_template('edit_question.html', question_id=question_id, question=question)
+
 
 
 if __name__ == "__main__":

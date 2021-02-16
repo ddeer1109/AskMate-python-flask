@@ -28,7 +28,19 @@ def read_file(path):
         return dictionaries_list
 
 
-def save_image(form_image):
-    path = UPLOADED_IMAGES_FILE_PATH / form_image.filename
-    form_image.save(path)
+def save_image(form_image, sub_dir, entry_id):
+
+    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    form_image.save(path / form_image.filename)
+
+
+def delete_image(image_filename, sub_dir, entry_id):
+    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+    os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
+
+    if len(os.listdir(path)) == 0:
+        os.rmdir(path)
 
