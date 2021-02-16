@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>AskMate</title>
 </head>
 <body>
-    <h1>Question</h1><br>
+<h1>ASK MATE</h1>
     <button>
         <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
     </button>
@@ -28,7 +28,11 @@
     <button>
         <a href="{{ question['id'] }}/delete">Delete question</a>
     </button>
+    <button>
+        <a href="{{ question['id'] }}/edit">Edit question</a>
+    </button>
     <br>
+<h2>Answers:</h2>
 
     {% if  answers|length > 0  %}
         <br>
@@ -54,7 +58,7 @@
 
     <br>
     <button>
-        <a href="/question/{{ question['id'] }}/add-answer">Add</a>
+        <a href="/question/{{ question['id'] }}/add-answer">Add an answer</a>
     </button>
 
 </body>
