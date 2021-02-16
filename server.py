@@ -104,6 +104,14 @@ def edit_question(question_id):
         return render_template('edit_question.html', question_id=question_id, question=question)
 
 
+@app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
+@app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
+def vote_on_post(entry_id, vote_value, entry_type):
+
+    redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
 
 if __name__ == "__main__":
     app.run(

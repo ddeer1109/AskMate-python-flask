@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>AskMate</title>
 </head>
-<body>
+
 <h1>ASK MATE</h1>
     <button>
         <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
@@ -41,6 +41,15 @@
     <button>
         <a href="{{ question['id'] }}/edit">Edit question</a>
     </button>
+    <br>
+
+    <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
+        <button type="submit" class="btn-link">Vote up</button>
+    </form>
+    <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
+        <button type="submit" class="btn-link">Vote down</button>
+    </form>
+
     <br>
 <h2>Answers:</h2>
 

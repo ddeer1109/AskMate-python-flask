@@ -57,6 +57,12 @@ def get_question_by_id_without_timestamp_conversion(question_id, questions):
             return question
 
 
+def get_entry_by_id(entry_id, entries_list):
+    for entry in entries_list:
+        if entry['id'] == entry_id:
+            return entry
+
+
 def get_answers_for_question(question_id, answers):
     question_answers = []
     for answer in answers:
@@ -166,4 +172,32 @@ def process_image_input(image_storage_obj, sub_dir, entry_id):
     return image_name
 
 
+def update_entry(updated_entry, entries_list):
+    for entry in entries_list:
+        if entry['id'] == updated_entry['id']:
+            entries_list[entries_list.index(entry)] = updated_entry
 
+
+def vote_on_post(entry_id, vote_value, entry_type):
+    if entry_type == "question":
+        entries_list = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+    else:
+        entries_list = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH_DATA_FILE_PATH)
+
+    entry = get_entry_by_id(entry_id, entries_list)
+
+    if vote_value == "vote_up":
+        entry["vote_number"] = str(int(entry["vote_number"]) + 1)
+    else:
+        entry["vote_number"] = str(int(entry["vote_number"]) - 1)
+
+    update_entry(entry, entries_list)
+
+    if entry_type == "answer":
+        data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, entries_list)
+        id_of_questions_to_redirect = entry['question_id']
+    else:
+        data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, entries_list)
+        id_of_questions_to_redirect = entry_id
+
+    return id_of_questions_to_redirect
