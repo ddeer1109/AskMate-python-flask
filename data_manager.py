@@ -2,6 +2,7 @@ from datetime import datetime
 import data_handler
 import time
 import operator
+import os
 
 
 def get_formatted_headers(headers):
@@ -103,5 +104,12 @@ def delete_rows(question_id, criteria, entries_list):
 
     return temp_list
 
+
 def get_current_timestamp():
     return int(time.time())
+
+
+# def save_form_image(form_image, app_config_upload_folder):
+#     image_to_save = form_image
+#     path = os.path.join(app_config_upload_folder, image_to_save.filename)
+#     image_to_save.save(path)

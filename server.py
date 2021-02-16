@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
+from pathlib import Path
+
 import data_manager
 import time
 import data_handler
 import os
 
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = Path('static/images')
 
 app = Flask(__name__)
 PATH = app.root_path
@@ -83,14 +85,18 @@ def new_answer(question_id):
     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
 
     requested_data = dict(request.form)
+    #
+    # data_manager.save_form_image(request.files["image"], app.config['UPLOAD_FOLDER'])
 
     image_to_save = request.files['image']
-    path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_save.filename)
+    # path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_save.filename)
+    path = str(app.config['UPLOAD_FOLDER'] / image_to_save.filename).replace("\\\\", "/")
+
     image_to_save.save(path)
 
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['vote_number'] = '0'
-    requested_data['image'] = image_to_save.filename
+    requested_data['image'] = request.files["image"].filename
     requested_data['id'] = str(data_manager.get_next_id(answers))
     requested_data['question_id'] = str(question_id)
 
