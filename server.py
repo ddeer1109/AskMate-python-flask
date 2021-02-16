@@ -115,7 +115,6 @@ def delete_question(question_id):
 
 @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 def edit_question(question_id):
-
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     single_question = data_manager.get_question_by_id(question_id, questions)
     question = data_manager.filter_data([single_question], data_handler.QUESTIONS_DATA_HEADER)[0]
