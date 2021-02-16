@@ -116,13 +116,12 @@ def delete_question(question_id):
 @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 def edit_question(question_id):
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-    single_question = data_manager.get_question_by_id(question_id, questions)
-    question = data_manager.filter_data([single_question], data_handler.QUESTIONS_DATA_HEADER)[0]
+    question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
 
     if request.method == "POST":
         edited_question = dict(request.form)
         edited_question['id'] = question['id']
-        edited_question['submission_time'] = str(data_manager.get_current_timestamp()) # TODO further implementation needed
+        edited_question['submission_time'] = question['submission_time'] # TODO further implementation needed
         edited_question['vote_number'] = question['vote_number']
         edited_question['view_number'] = question['view_number']
         edited_question['image'] = question['image']

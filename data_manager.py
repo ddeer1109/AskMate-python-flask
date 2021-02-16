@@ -46,6 +46,12 @@ def get_question_by_id(question_id, questions):
         if question["id"] == question_id:
             return convert_timestamp(question)
 
+def get_question_by_id_without_timestamp_conversion(question_id, questions):
+    for question in questions:
+        if question["id"] == question_id:
+            return question
+
+
 def get_answers_for_question(question_id, answers):
     question_answers = []
     for answer in answers:
