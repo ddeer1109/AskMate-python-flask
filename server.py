@@ -91,7 +91,7 @@ def new_answer(question_id):
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['vote_number'] = '0'
     requested_data['image'] = image_to_save.filename
-    requested_data['id'] = str(data_manager.get_next_answer_id(answers))
+    requested_data['id'] = str(data_manager.get_next_id(answers))
     requested_data['question_id'] = str(question_id)
 
     answers.append(requested_data)

@@ -76,22 +76,22 @@ def filter_data(dict_data, headers):
         return []
 
 
-def get_next_id(questions):
+def get_next_id(entries_list):
     next_id = 0
-    for question in questions:
-        question_id = int(question['id'])
-        if question_id >= next_id:
-            next_id = question_id
+    for entry in entries_list:
+        entry_id = int(entry['id'])
+        if entry_id >= next_id:
+            next_id = entry_id
 
     return next_id + 1
-
-def get_next_answer_id(answers):
-    next_id = 0
-    for answer in answers:
-        answer_id = int(answer['id'])
-        if answer_id >= next_id:
-            next_id = answer_id
-    return next_id + 1
+#
+# def get_next_answer_id(answers):
+#     next_id = 0
+#     for answer in answers:
+#         answer_id = int(answer['id'])
+#         if answer_id >= next_id:
+#             next_id = answer_id
+#     return next_id + 1
 
 
 def delete_rows(question_id, criteria, entries_list):
