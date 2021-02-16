@@ -1,12 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
-
 import data_manager
 import time
 import data_handler
+import os
+
+UPLOAD_FOLDER = 'static/images'
 
 app = Flask(__name__)
 PATH = app.root_path
 
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 @app.route("/")
 @app.route("/list")
@@ -51,11 +54,18 @@ def add_question():
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
 
     requested_data = dict(request.form)
+
+    image_to_save = request.files['image']
+    path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_save.filename)
+    image_to_save.save(path)
+
+
     requested_data['id'] = str(data_manager.get_next_id(questions))
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['view_number'] = '0'  # TODO - further implementation needed
     requested_data['vote_number'] = '0'  # TODO - further implementation needed
-    requested_data['image'] = 'images/image1.png'  # TODO - further implementation needed
+    requested_data['image'] = image_to_save.filename
+
 
     questions.append(requested_data)
     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
@@ -73,9 +83,14 @@ def new_answer(question_id):
     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
 
     requested_data = dict(request.form)
+
+    image_to_save = request.files['image']
+    path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_save.filename)
+    image_to_save.save(path)
+
     requested_data['submission_time'] = str(data_manager.get_current_timestamp())
     requested_data['vote_number'] = '0'
-    requested_data['image'] = 'image/image.png'
+    requested_data['image'] = image_to_save.filename
     requested_data['id'] = str(data_manager.get_next_answer_id(answers))
     requested_data['question_id'] = str(question_id)
 

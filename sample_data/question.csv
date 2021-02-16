@@ -7,8 +7,12 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 
 jquery
 booklet
-app.js (bundled file with webpack, including jquery)",images/image1.png
-7,1613221685,0,0,ninja supreme,sasfasdfaasfsadfsa,images/image1.png
-9,1613226536,0,0,zxczx,sdsfsd,images/image1.png
-10,1613226545,0,0,sadfasdf,sadfsadfsa,images/image1.png
-11,1613420030,0,0,sdfsdfsf,sdfsfddsf,images/image1.png
+app.js (bundled file with webpack, including jquery)",picture1.jpg
+7,1613221685,0,0,ninja supreme,sasfasdfaasfsadfsa,picture1.jpg
+9,1613226536,0,0,zxczx,sdsfsd,picture1.jpg
+10,1613226545,0,0,sadfasdf,sadfsadfsa,picture1.jpg
+11,1613420030,0,0,sdfsdfsf,sdfsfddsf,picture1.jpg
+12,1613421858,0,0,ccc,ccc,picture1.jpg
+13,1613422053,0,0,sss,aaaa,picture1.jpg
+14,1613427918,0,0,aaa,aaa,picture4.jpg
+15,1613475518,0,0,some title,aasdad,photo1.jpg
