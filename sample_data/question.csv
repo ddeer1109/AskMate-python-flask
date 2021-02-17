@@ -1,10 +1,7 @@
 id,submission_time,view_number,vote_number,title,message,image
 4,1613505115,0,0,How to use lists in python?,"ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aspernatur beatae cupiditate deleniti enim esse facilis iusto maxime mollitia nesciunt, quibusdam, quis recusandae. Amet corporis deserunt maxime officiis ratione?",photo1.jpg
-5,1613505144,0,1,How to use dictionaries?,Amet corporis deserunt maxime officiis ratione?,picture1.jpg
-2,1613503025,0,0,How to becom programmer,adfasdfasdsafdfasdfads,nature.png
+5,1613505144,0,2,How to use dictionaries?,Amet corporis deserunt maxime officiis ratione?,picture1.jpg
 7,1613505379,0,0,sdafasd,dsfsadfsad,nature.png
-8,1613506633,0,1,dfgsdfgfds,"dfsdfdsafasdfads
-
-asdfadsfadsf",picture4.jpg
+8,1613506633,0,0,Nowy tytu�,Nowa tre��,picture4.jpg
 9,1613513834,0,0,Is it working properly?,"
 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus amet aspernatur beatae cupiditate deleniti enim esse facilis iusto maxime mollitia nesciunt, quibusdam, quis recusandae. Amet corporis deserunt maxime officiis ratione?",none.jpg

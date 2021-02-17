@@ -90,18 +90,22 @@ def edit_question(question_id):
     question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
 
     if request.method == "POST":
-        edited_question = dict(request.form)
-        edited_question['id'] = question['id']
-        edited_question['submission_time'] = question['submission_time'] # TODO further implementation needed
-        edited_question['vote_number'] = question['vote_number']
-        edited_question['view_number'] = question['view_number']
-        edited_question['image'] = question['image']
-        questions = data_manager.delete_rows(question_id, 'id', questions)
-        questions.append(edited_question)
-        data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
+        data_manager.edit_entry(dict(request.form), question, questions)
         return redirect(f'/question/{question_id}')
     else:
         return render_template('edit_question.html', question_id=question_id, question=question)
+
+
+@app.route("/question/answer/<answer_id>/edit", methods=["GET", "POST"])
+def edit_answer(answer_id):
+    answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+    answer = data_manager.get_question_by_id_without_timestamp_conversion(answer_id, answers)
+
+    if request.method == "POST":
+        data_manager.edit_entry(request.form, answer, answers)
+        return redirect(f'/question/{answer["question_id"]}')
+    else:
+        return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
 
 
 @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])

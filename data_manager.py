@@ -163,7 +163,10 @@ def add_new_answer(form_data, request_files, question_id):
 
 def process_image_input(image_storage_obj, sub_dir, entry_id):
     """Checks if storage object is not empty. If it is returns default image filename else returns object filename"""
-    if image_storage_obj.filename == '':
+    storage_obj_empty = image_storage_obj.filename == ""
+    invalid_extension = ".jpg" not in image_storage_obj.filename and ".png" not in image_storage_obj.filename
+
+    if storage_obj_empty or invalid_extension:
         image_name = 'none.jpg'
     else:
         data_handler.save_image(image_storage_obj, sub_dir, entry_id)
@@ -182,7 +185,7 @@ def vote_on_post(entry_id, vote_value, entry_type):
     if entry_type == "question":
         entries_list = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     else:
-        entries_list = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH_DATA_FILE_PATH)
+        entries_list = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
 
     entry = get_entry_by_id(entry_id, entries_list)
 
@@ -201,3 +204,24 @@ def vote_on_post(entry_id, vote_value, entry_type):
         id_of_questions_to_redirect = entry_id
 
     return id_of_questions_to_redirect
+
+
+def edit_entry(form_data, entry, entries_list):
+    entry['message'] = form_data['message']
+    entry['vote_number'] = '0'
+
+    if 'question_id' not in entry.keys():
+        entry['title'] = form_data['title']
+        database_path = data_handler.QUESTIONS_DATA_FILE_PATH
+        database_headers = data_handler.QUESTIONS_DATA_HEADER
+    else:
+        database_path = data_handler.ANSWER_DATA_FILE_PATH
+        database_headers = data_handler.ANSWERS_DATA_HEADER
+
+    update_entry(entry, entries_list)
+    data_handler.write_file(database_path, database_headers, entries_list)
+
+
+
+
+
