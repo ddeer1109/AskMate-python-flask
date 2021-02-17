@@ -55,4 +55,30 @@ div#content {
 
 th {
   background-color: lightgray;
+  padding: 2px;
+}
+
+td {
+    padding: 5px;
+}
+
+td.message {
+  width:40%;
+}
+
+td.view_number, td.vote_number, td.title, td.id {
+   text-align: center;
+}
+
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0px;
+}
+
+div.answers_section{
+  padding-left: 10%;
+  padding-right: 10%;
+  display:inline-block;
 }

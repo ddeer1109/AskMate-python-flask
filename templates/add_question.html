@@ -5,14 +5,11 @@
 
 {% endblock %}
 {% block content %}
-    <h1>Add question</h1><br>
-    <button class="btn-link">
-        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
-    </button>
+    <h3>Add question</h3>
     <hr>
 
     <form action="{{ url_for('add_question') }}" method="post" enctype="multipart/form-data">
-        <label for="title">Question:</label><br>
+        <label for="title">Your question:</label><br>
         <input type="text" name="title" id="title" required><br>
 
         <label for="message">Message:</label><br>

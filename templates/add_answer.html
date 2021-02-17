@@ -6,15 +6,12 @@
 
 {% endblock %}
 {% block content %}
- <h1>Add answer</h1><br>
-    <button class="btn-link">
-        <a href="{{ url_for('get_list_of_questions') }}" class="btn-link">Back to Main page</a>
-    </button>
+ <h3>Add answer</h3>
     <hr>
 
     {#action in this case send us to /question/<question_id>/add-answer as POST#}
     <form action ="" method="POST" enctype="multipart/form-data">
-        <label for="message">Add an answer</label><br>
+        <label for="message">Your answer:</label><br>
         <textarea required id="message" name="message" rows="4" cols="60"></textarea><br>
 
         <label for="image">Image</label><br>

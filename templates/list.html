@@ -48,24 +48,23 @@
         <tr>
 
             {% for data in question.keys() %}
+                <td class="{{ data }}">
                 {% if data == "title" %}
 
-                    <td>
-                        <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
-                    </td>
+                    <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
+
                 {% elif data == "image" %}
-                    <td>
                         {% if question['image'] == 'none.jpg' %}
                             <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
                         {% else %}
                             <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">
                         {% endif %}
-                    </td>
                 {% else %}
 
-                    <td>{{ question[data] }}</td>
+                    {{ question[data] }}
 
                 {% endif %}
+                </td>
             {% endfor %}
         </tr>
         {% endfor %}
