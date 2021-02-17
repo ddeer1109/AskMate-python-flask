@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+{% block head %}
+    <meta charset="UTF-8">
+    <title>AskMate</title>
+    <link rel="stylesheet" href="../static/style/style.css">
+{% endblock %}
 </head>
 <body>
-$END$
+    <div id="header">{% block header %}
+        <div id="index_button">
+        <button id="logo" class="btn-link">
+            <a href="/"><h2 id="logo">Main Page</h2></a>
+        </button>
+        </div>
+        <div id="title">
+        <h1 id="logo">ASK MATE</h1>
+        </div>
+
+    {% endblock %}</div>
+    <div id="content">{% block content %}{% endblock %}</div>
+
 </body>
 </html>

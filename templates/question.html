@@ -1,21 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AskMate</title>
-</head>
+{% extends 'base.html' %}
+{% block head %}
 
-<h1>ASK MATE</h1>
-    <button>
-        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
-    </button>
-    <hr>
+    {{ super() }}
 
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
     <table border="1">
         <tr>
             {% for header in question_headers %}
                 <th>{{ header }}</th>
             {% endfor %}
+            <th>Vote</th>
+            <th>Actions</th>
         </tr>
         <tr>
             <td>{{ question['id'] }}</td>
@@ -31,24 +30,32 @@
                     <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">
                 {% endif %}
             </td>
+
+            <td>
+                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
+                    <button type="submit" class="btn-link">Vote up</button>
+                </form>
+                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
+                    <button type="submit" class="btn-link">Vote down</button>
+                </form>
+            </td>
+
+            <td>
+
+                <button  class="btn-link" style="display:block;">
+                    <a href="{{ question['id'] }}/delete">DELETE</a>
+                </button>
+                <button  class="btn-link" style="display:block;" >
+                    <a href="{{ question['id'] }}/edit">EDIT</a>
+                </button>
+            </td>
+
+
         </tr>
     </table>
 
     <br>
-    <button>
-        <a href="{{ question['id'] }}/delete">Delete question</a>
-    </button>
-    <button>
-        <a href="{{ question['id'] }}/edit">Edit question</a>
-    </button>
-    <br>
 
-    <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
-        <button type="submit" class="btn-link">Vote up</button>
-    </form>
-    <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
-        <button type="submit" class="btn-link">Vote down</button>
-    </form>
 
     <br>
 <h2>Answers:</h2>
@@ -60,6 +67,8 @@
                 {% for header in answer_headers %}
                 <th>{{ header }}</th>
                 {% endfor %}
+                <th>Vote</th>
+                <th>Actions</th>
             </tr>
 
                 {% for answer in answers %}
@@ -75,6 +84,25 @@
                             {% else %}
                                 <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id'] + "/" + answer['image']) }}" alt="">
                             {% endif %}
+                        <td>
+                            <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">
+                                <button type="submit" class="btn-link">Vote up</button>
+                            </form>
+                            <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">
+                                <button type="submit" class="btn-link">Vote down</button>
+                            </form>
+                        </td>
+                        <td>
+
+                            <button  class="btn-link" style="display:block;">
+                                <a href="../answer/{{ answer['id'] }}/delete">DELETE</a>
+                            </button>
+
+                            <button  class="btn-link" style="display:block;">
+                                <a href="../answer/{{ answer['id'] }}/edit">EDIT</a>
+                            </button>
+
+                            </td>
                     </tr>
                 {% endfor %}
         </table>
@@ -83,9 +111,8 @@
     {% endif %}
 
     <br>
-    <button>
+    <button  class="btn-link">
         <a href="/question/{{ question['id'] }}/add-answer">Add an answer</a>
     </button>
 
-</body>
-</html>
+{% endblock %}

@@ -83,6 +83,12 @@ def delete_question(question_id):
 
     return redirect('/')
 
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    redirection_id = data_manager.delete_answer(answer_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
 
 @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 def edit_question(question_id):
@@ -96,7 +102,7 @@ def edit_question(question_id):
         return render_template('edit_question.html', question_id=question_id, question=question)
 
 
-@app.route("/question/answer/<answer_id>/edit", methods=["GET", "POST"])
+@app.route("/answer/<answer_id>/edit", methods=["GET", "POST"])
 def edit_answer(answer_id):
     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
     answer = data_manager.get_question_by_id_without_timestamp_conversion(answer_id, answers)

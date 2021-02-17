@@ -222,6 +222,16 @@ def edit_entry(form_data, entry, entries_list):
     data_handler.write_file(database_path, database_headers, entries_list)
 
 
+def delete_answer(answer_id):
+    answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+    answer = get_entry_by_id(answer_id, answers)
+    redirection_id = answer['question_id']
+
+    del answers[answers.index(answer)]
+    data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
+
+    return redirection_id
+
 
 
 

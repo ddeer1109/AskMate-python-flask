@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AskMate</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+
+{% endblock %}
+{% block content %}
     <h1>Add question</h1><br>
-    <button>
+    <button class="btn-link">
         <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>
     </button>
     <hr>
@@ -22,8 +22,6 @@
         <input type="file" name="image" id="image" accept="image/jpeg, image/png"><br>
 
         <br>
-        <input type="submit" value="Add question">
+        <input type="submit" value="Add question" class="btn-link">
     </form>
-
-</body>
-</html>
+{% endblock%}

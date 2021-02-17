@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AskMate</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block head %}
 
-    <a href="/"><h1>Main Page</h1></a>
+    {{ super() }}
 
-    <button>
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+
+    <button class="btn-link">
         <a href="{{ url_for('display_add_question') }}">Add question</a>
     </button>
 
@@ -31,7 +33,7 @@
         </select>
         <br>
         <br>
-        <input type="submit" value="Sort">
+        <input type="submit" value="Sort" class="btn-link">
     </form>
     <hr>
 
@@ -68,3 +70,5 @@
         </tr>
         {% endfor %}
     </table>
+
+{% endblock %}
