@@ -11,10 +11,24 @@ app = Flask(__name__)
 PATH = app.root_path
 app.config["UPLOAD_FOLDER"] = data_handler.UPLOADED_IMAGES_FILE_PATH
 
+##########################################################
+"""
+TO CHANGE:
+- refactor of generic functions
+- division of data_handler from server
+
+"""
+##########################################################
+
+
+
+
 
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
+    """Services redirection to main page with loaded list of all questions."""
+
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     requested_query_string = request.args
 
@@ -27,6 +41,8 @@ def get_list_of_questions():
 
 @app.route("/question/<question_id>")
 def display_question(question_id):
+    """Services redirection to specific question page."""
+
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
 
@@ -46,11 +62,14 @@ def display_question(question_id):
 
 @app.route("/add-question")
 def display_add_question():
+    """Services redirection to displaying interface of adding question"""
+
     return render_template("add_question.html")
 
 
 @app.route("/add-question", methods=['POST'])
 def add_question():
+    """Services posting question."""
 
     question_id = data_manager.add_new_question(request.form, request.files)
 
@@ -59,11 +78,14 @@ def add_question():
 
 @app.route("/question/<question_id>/add-answer")
 def add_an_answer(question_id):
+    """Services redirection to displaying interface of adding answer."""
+
     return render_template('add_answer.html')
 
 
 @app.route("/question/<question_id>/add-answer", methods=["POST"])
 def new_answer(question_id):
+    """Services posting answer."""
 
     data_manager.add_new_answer(request.form, request.files, question_id)
 
@@ -72,6 +94,8 @@ def new_answer(question_id):
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
+    """Services deletion of question and associated answers."""
+
     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
 
@@ -83,8 +107,11 @@ def delete_question(question_id):
 
     return redirect('/')
 
+
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
+    """Services deleting answer."""
+
     redirection_id = data_manager.delete_answer(answer_id)
 
     return redirect(url_for('display_question', question_id=redirection_id))
@@ -92,6 +119,8 @@ def delete_answer(answer_id):
 
 @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 def edit_question(question_id):
+    """Services displaying edition of question and posting edited version."""
+
     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
 
@@ -104,6 +133,8 @@ def edit_question(question_id):
 
 @app.route("/answer/<answer_id>/edit", methods=["GET", "POST"])
 def edit_answer(answer_id):
+    """Services displaying edition of answer and posting edited version."""
+
     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
     answer = data_manager.get_question_by_id_without_timestamp_conversion(answer_id, answers)
 
@@ -115,8 +146,8 @@ def edit_answer(answer_id):
 
 
 @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
-@app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
 def vote_on_post(entry_id, vote_value, entry_type):
+    """Services voting on questions and answers"""
 
     redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
 
