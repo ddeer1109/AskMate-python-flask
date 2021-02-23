@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+
+    <button class="btn-link">
+        <a href="{{ url_for('display_add_question') }}">Add question</a>
+    </button>
+
+
+    <hr>
+    <form action="" method="get">
+        <label for="order_by" >Sort by:</label>
+        <select id="order_by" name="order_by">
+            <option value="title">Title</option>
+            <option selected value="submission_time">Submission time</option>
+            <option value="message">Message</option>
+            <option value="view_number">View number</option>
+            <option value="vote_number">Vote number</option>
+        </select>
+        <br>
+        <label for="order_direction">Order by:</label>
+        <select id="order_direction" name="order_direction">
+            <option selected value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
+        <br>
+        <br>
+        <input type="submit" value="Sort" class="btn-link">
+    </form>
+    <hr>
+
+    <table border="1">
+        <tr>
+            {% for header in question_headers %}
+                <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+
+        {% for question in questions %}
+        <tr>
+
+            {% for data in question.keys() %}
+                <td class="{{ data }}">
+                {% if data == "title" %}
+
+                    <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
+
+                {% elif data == "image" %}
+                        {% if question['image'] == 'none.jpg' %}
+                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+                        {% else %}
+                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">
+                        {% endif %}
+                {% else %}
+
+                    {{ question[data] }}
+
+                {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
