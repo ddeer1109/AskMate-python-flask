@@ -1,150 +1,100 @@
-from typing import List, Dict
+# import csv
+# import os
+# import pathlib
 
-from psycopg2 import sql
-from psycopg2.extras import RealDictCursor
-
-import database_common
-
-#
-# @database_common.connection_handler
-# def get_mentors(cursor: RealDictCursor) -> list:
-#     query = """
-#         SELECT first_name, last_name, city
-#         FROM mentor
-#         ORDER BY first_name"""
-#     cursor.execute(query)
-#     return cursor.fetchall()
-#
-#
-# @database_common.connection_handler
-# def get_mentors_by_last_name(cursor: RealDictCursor, last_name: str) -> list:
-#     query = """
-#         SELECT first_name, last_name, city
-#         FROM mentor
-#         WHERE  last_name
-#         ORDER BY first_name"""
-#     cursor.execute(query)
-#     return cursor.fetchall()
-#
-# @database_common.connection_handler
-# def get_mentors_by_city(cursor: RealDictCursor, city: str) -> list:
-#     query = """
-#         SELECT first_name, last_name, city
-#         FROM mentor
-#         WHERE city ILIKE $(city)s
-#         ORDER BY first_name"""
-#     cursor.execute(query, {'city': city})
-#     return cursor.fetchall()
-#
-# @database_common.connection_handler
-# def get_applicant_data_by_name(cursor: RealDictCursor, name: str):
-#     query = """
-#             SELECT first_name, last_name, phone_number
-#             FROM applicant
-#             WHERE first_name ILIKE %(name)s OR last_name ILIKE %(name)s
-#             ORDER BY first_name"""
-#     cursor.execute(query, {'name': name})
-#     return cursor.fetchall()
-#
-#
-# @database_common.connection_handler
-# def get_applicant_data_by_email_ending(cursor: RealDictCursor, email_ending: str):
-#     email_ending = "%" + email_ending
-#
-#     query = """
-#                 SELECT first_name, last_name, phone_number
-#                 FROM applicant
-#                 WHERE city LIKE %(email_ending)s OR first_name ILIKE %(name)s
-#                 ORDER BY first_name"""
-#     cursor.execute(query, {'email_ending': email_ending})
-#     return cursor.fetchall()
-#
-# @database_common.connection_handler
-# def get_applicants(cursor: RealDictCursor) -> list:
-#     query = """
-#         SELECT *
-#         FROM applicant
-#         ORDER BY first_name"""
-#     cursor.execute(query)
-#     return cursor.fetchall()
-#
-# @database_common.connection_handler
-# def get_applicant_data_by_appcode(cursor: RealDictCursor, app_code: str):
-#     query = """
-#                 SELECT *
-#                 FROM applicant
-#                 WHERE application_code=%(app_code)s
-#                 ORDER BY first_name"""
-#
-#     cursor.execute(query, {'app_code': app_code})
-#     return cursor.fetchone()
-#
-# @database_common.connection_handler
-# def update_applicant_phone_number(cursor: RealDictCursor, code: int,  application_phone: str):
-#     query = """
-#                 UPDATE applicant
-#                 SET phone_number = %(new_number)s
-#                 WHERE application_code=%(app_code)s
-#                 """
-#
-#     cursor.execute(query, {'new_number': application_phone, 'app_code': code})
-#     return True
-#
-# @database_common.connection_handler
-# def delete_applicant(cursor: RealDictCursor, code: int):
-#     query = """
-#                 DELETE FROM applicant
-#                 WHERE application_code=%(app_code)s
-#                 """
-#
-#     cursor.execute(query, {'app_code': code})
-#     return True
-
-
-############################################################################
-import csv
+# Creates a decorator to handle the database connection/cursor opening/closing.
+# Creates the cursor with RealDictCursor, thus it returns real dictionaries, where the column names are the keys.
 import os
-import pathlib
+
+import psycopg2
+import psycopg2.extras
 
 
-QUESTIONS_DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/question.csv"
-ANSWER_DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/answer.csv"
-QUESTIONS_DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+def get_connection_string():
+    # setup connection string
+    # to do this, please define these environment variables first
+    user_name = os.environ.get('PSQL_USER_NAME')
+    password = os.environ.get('PSQL_PASSWORD')
+    host = os.environ.get('PSQL_HOST')
+    database_name = os.environ.get('PSQL_DB_NAME')
 
-UPLOADED_IMAGES_FILE_PATH = pathlib.Path(f"{pathlib.Path(__file__).parent.absolute()}/static/images")
+    env_variables_defined = user_name and password and host and database_name
 
-
-def write_file(path, header, dictionaries_list):
-    with open(path, 'w', newline='') as csv_file:
-        csv_writer = csv.DictWriter(csv_file, fieldnames=header, delimiter=',', quotechar='"')
-        csv_writer.writeheader()
-        csv_writer.writerows(dictionaries_list)
-
-
-def read_file(path):
-    dictionaries_list = []
-    with open(path) as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
-        for row in csv_reader:
-            dictionaries_list.append(row)
-
-        return dictionaries_list
+    if env_variables_defined:
+        # this string describes all info for psycopg2 to connect to the database
+        return 'postgresql://{user_name}:{password}@{host}/{database_name}'.format(
+            user_name=user_name,
+            password=password,
+            host=host,
+            database_name=database_name
+        )
+    else:
+        raise KeyError('Some necessary environment variable(s) are not defined')
 
 
-def save_image(form_image, sub_dir, entry_id):
+def open_database():
+    try:
+        connection_string = get_connection_string()
+        connection = psycopg2.connect(connection_string)
+        connection.autocommit = True
+    except psycopg2.DatabaseError as exception:
+        print('Database connection problem')
+        raise exception
+    return connection
 
-    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
-    if not os.path.exists(path):
-        os.makedirs(path)
 
-    form_image.save(path / form_image.filename)
+def connection_handler(function):
+    def wrapper(*args, **kwargs):
+        connection = open_database()
+        # we set the cursor_factory parameter to return with a RealDictCursor cursor (cursor which provide dictionaries)
+        dict_cur = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        ret_value = function(dict_cur, *args, **kwargs)
+        dict_cur.close()
+        connection.close()
+        return ret_value
+
+    return wrapper
 
 
-def delete_image(image_filename, sub_dir, entry_id):
-    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
-    os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
-
-    if len(os.listdir(path)) == 0:
-        os.rmdir(path)
+#
+# QUESTIONS_DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/question.csv"
+# ANSWER_DATA_FILE_PATH = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else f"{pathlib.Path(__file__).parent.absolute()}/sample_data/answer.csv"
+# QUESTIONS_DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+# ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+#
+# UPLOADED_IMAGES_FILE_PATH = pathlib.Path(f"{pathlib.Path(__file__).parent.absolute()}/static/images")
+#
+#
+# def write_file(path, header, dictionaries_list):
+#     with open(path, 'w', newline='') as csv_file:
+#         csv_writer = csv.DictWriter(csv_file, fieldnames=header, delimiter=',', quotechar='"')
+#         csv_writer.writeheader()
+#         csv_writer.writerows(dictionaries_list)
+#
+#
+# def read_file(path):
+#     dictionaries_list = []
+#     with open(path) as csv_file:
+#         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
+#         for row in csv_reader:
+#             dictionaries_list.append(row)
+#
+#         return dictionaries_list
+#
+#
+# def save_image(form_image, sub_dir, entry_id):
+#
+#     path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+#     if not os.path.exists(path):
+#         os.makedirs(path)
+#
+#     form_image.save(path / form_image.filename)
+#
+#
+# def delete_image(image_filename, sub_dir, entry_id):
+#     path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+#     os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
+#
+#     if len(os.listdir(path)) == 0:
+#         os.rmdir(path)
 
