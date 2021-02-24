@@ -1,3 +1,107 @@
+from typing import List, Dict
+
+from psycopg2 import sql
+from psycopg2.extras import RealDictCursor
+
+import database_common
+
+
+@database_common.connection_handler
+def get_mentors(cursor: RealDictCursor) -> list:
+    query = """
+        SELECT first_name, last_name, city
+        FROM mentor
+        ORDER BY first_name"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_mentors_by_last_name(cursor: RealDictCursor, last_name: str) -> list:
+    query = """
+        SELECT first_name, last_name, city
+        FROM mentor
+        WHERE  last_name
+        ORDER BY first_name"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def get_mentors_by_city(cursor: RealDictCursor, city: str) -> list:
+    query = """
+        SELECT first_name, last_name, city
+        FROM mentor
+        WHERE city ILIKE $(city)s
+        ORDER BY first_name"""
+    cursor.execute(query, {'city': city})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def get_applicant_data_by_name(cursor: RealDictCursor, name: str):
+    query = """
+            SELECT first_name, last_name, phone_number
+            FROM applicant
+            WHERE first_name ILIKE %(name)s OR last_name ILIKE %(name)s
+            ORDER BY first_name"""
+    cursor.execute(query, {'name': name})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_applicant_data_by_email_ending(cursor: RealDictCursor, email_ending: str):
+    email_ending = "%" + email_ending
+
+    query = """
+                SELECT first_name, last_name, phone_number
+                FROM applicant
+                WHERE city LIKE %(email_ending)s OR first_name ILIKE %(name)s
+                ORDER BY first_name"""
+    cursor.execute(query, {'email_ending': email_ending})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def get_applicants(cursor: RealDictCursor) -> list:
+    query = """
+        SELECT *
+        FROM applicant
+        ORDER BY first_name"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def get_applicant_data_by_appcode(cursor: RealDictCursor, app_code: str):
+    query = """
+                SELECT *
+                FROM applicant
+                WHERE application_code=%(app_code)s
+                ORDER BY first_name"""
+
+    cursor.execute(query, {'app_code': app_code})
+    return cursor.fetchone()
+
+@database_common.connection_handler
+def update_applicant_phone_number(cursor: RealDictCursor, code: int,  application_phone: str):
+    query = """
+                UPDATE applicant
+                SET phone_number = %(new_number)s
+                WHERE application_code=%(app_code)s
+                """
+
+    cursor.execute(query, {'new_number': application_phone, 'app_code': code})
+    return True
+
+@database_common.connection_handler
+def delete_applicant(cursor: RealDictCursor, code: int):
+    query = """
+                DELETE FROM applicant
+                WHERE application_code=%(app_code)s
+                """
+
+    cursor.execute(query, {'app_code': code})
+    return True
+
+
+############################################################################
 import csv
 import os
 import pathlib
