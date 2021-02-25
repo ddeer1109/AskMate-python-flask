@@ -33,42 +33,24 @@ def display_question(question_id):
                            answers=answers,
                            )
 
-#
-# @app.route("/question/<question_id>")
-# def display_question(question_id):
-#     """Services redirection to specific question page."""
-#
-#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#
-#     single_question = data_manager.get_question_by_id(question_id, questions)
-#     single_question_answers = data_manager.get_answers_for_question(question_id, answers)
-#
-#     question = data_manager.filter_data([single_question], data_handler.QUESTIONS_DATA_HEADER)[0]
-#     answers = data_manager.filter_data(single_question_answers, data_handler.ANSWERS_DATA_HEADER)
-#
-#     return render_template("question.html",
-#                            question=question,
-#                            answers=answers,
-#                            question_headers=data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER),
-#                            answer_headers=data_manager.get_formatted_headers(data_handler.ANSWERS_DATA_HEADER)
-#                            )
-#
-#
-# @app.route("/add-question")
-# def display_add_question():
-#     """Services redirection to displaying interface of adding question"""
-#
-#     return render_template("add_question.html")
-#
-#
-# @app.route("/add-question", methods=['POST'])
-# def add_question():
-#     """Services posting question."""
-#
-#     question_id = data_manager.add_new_question(request.form, request.files)
-#
-#     return redirect(url_for('display_question', question_id=question_id))
+
+@app.route("/add-question")
+def display_add_question():
+    """Services redirection to displaying interface of adding question"""
+
+    return render_template("add_question.html")
+
+
+@app.route("/add-question", methods=['POST'])
+def add_question():
+    """Services posting question."""
+    new_question = request.form
+    new_picture = request.files
+    print(new_question, new_picture)
+
+    question_id = data_manager.add_new_question(request.form, request.files)
+
+    return redirect(url_for('display_question', question_id=question_id))
 #
 #
 # @app.route("/question/<question_id>/add-answer")
