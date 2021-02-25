@@ -115,8 +115,8 @@ import os
 def get_all_data(cursor: RealDictCursor, sort_key: str, table_string: str) -> list:
     query = """
         SELECT *
-        FROM %(table_string)s 
-        ORDER BY %(sort_key)s"""
+        FROM question
+        ORDER BY submission_time"""
     cursor.execute(query, {'sort_key': sort_key, 'table_string': table_string})
     return cursor.fetchall()
 

@@ -38,8 +38,8 @@ def get_list_of_questions():
     # questions = data_manager.sort_data(questions, requested_query_string, data_handler.QUESTIONS_DATA_HEADER)
     #
     # formatted_headers = data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER)
-    #
-    # return render_template('list.html', questions=questions, question_headers=formatted_headers)
+
+    return render_template('list.html', questions=questions)
 
 #
 # @app.route("/question/<question_id>")
