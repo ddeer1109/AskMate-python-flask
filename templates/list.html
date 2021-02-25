@@ -39,13 +39,9 @@
 
     <table border="1">
         <tr>
-{#            {% if len(questions) == 0 %}#}
-{#                <h3>No questions</h3>#}
-{#            {% else %}#}
-                {% for header in questions[0].keys() %}
-                    <th>{{ header }}</th>
-                {% endfor %}
-{#            {% endif %}#}
+            {% for header in headers %}
+                <th>{{ header }}</th>
+            {% endfor %}
         </tr>
 
         {% for question in questions %}
@@ -57,12 +53,12 @@
 
                     <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
 
-                {% elif data == "image" %}
-                        {% if question['image'] == 'none.jpg' %}
-                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                        {% else %}
-                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + {{ str(question['id']) }} + "/" + question['image']) }}" alt="">
-                        {% endif %}
+{#                {% elif data == "image" %}#}
+{#                        {% if question['image'] == 'none.jpg' %}#}
+{#                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
+{#                        {% else %}#}
+{#                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + str(question['id']) + "/" + question['image']) }}" alt="">#}
+{#                        {% endif %}#}
                 {% else %}
 
                     {{ question[data] }}

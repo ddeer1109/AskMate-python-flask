@@ -118,28 +118,23 @@ def get_all_data(cursor: RealDictCursor) -> list:
         FROM question
         ORDER BY submission_time"""
     cursor.execute(query)
-    return cursor.fetchall()
-
-
-# def get_applicant_data_by_appcode(cursor: RealDictCursor, app_code: str):
-#     query = """
-#                 SELECT *
-#                 FROM applicant
-#                 WHERE application_code=%(app_code)s
-#                 ORDER BY first_name"""
-#
-#     cursor.execute(query, {'app_code': app_code})
-#     return cursor.fetchone()
+    data = cursor.fetchall()
+    if len(data) > 0:
+        headers = get_formatted_headers(data[0])
+        return headers, data
+    else:
+        return []
 
 
 
-
-
-
-def get_formatted_headers(headers):
+def get_formatted_headers(sample_entry):
     """Gets human-display formatted headers (for table headers)."""
+    formatted_headers = []
+    for header in sample_entry.keys():
+        formatted_headers.append(header.capitalize().replace('_', ' '))
 
-    return [header.replace("_", " ").capitalize() for header in headers]
+    return formatted_headers
+
 
 
 def sort_data(questions, requested_query_string, header):

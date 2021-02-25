@@ -29,8 +29,7 @@ TO CHANGE:
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
 
-    questions = data_manager.get_all_data()
-    print(questions)
+    formatted_headers, questions = data_manager.get_all_data()
 
     # questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
     # requested_query_string = request.args
@@ -39,7 +38,7 @@ def get_list_of_questions():
     #
     # formatted_headers = data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER)
 
-    return render_template('list.html', questions=questions)
+    return render_template('list.html', questions=questions, headers=formatted_headers)
 
 #
 # @app.route("/question/<question_id>")
