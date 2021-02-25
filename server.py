@@ -11,34 +11,27 @@ app = Flask(__name__)
 PATH = app.root_path
 # app.config["UPLOAD_FOLDER"] = data_handler.UPLOADED_IMAGES_FILE_PATH
 
-##########################################################
-"""
-TO CHANGE:
-- refactor of generic functions
-- division of data_handler from server
-
-"""
-##########################################################
-
-
-
-
 
 @app.route("/")
 @app.route("/list")
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
 
-    formatted_headers, questions = data_manager.get_all_data()
+    questions = data_manager.get_all_data()
+    return render_template('list.html', questions=questions)
 
-    # questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-    # requested_query_string = request.args
-    #
-    # questions = data_manager.sort_data(questions, requested_query_string, data_handler.QUESTIONS_DATA_HEADER)
-    #
-    # formatted_headers = data_manager.get_formatted_headers(data_handler.QUESTIONS_DATA_HEADER)
 
-    return render_template('list.html', questions=questions, headers=formatted_headers)
+@app.route("/question/<question_id>")
+def display_question(question_id):
+    """Services redirection to specific question page."""
+
+    question = data_manager.get_question_by_id(question_id)
+    answers = data_manager.get_answers_for_question(question_id)
+
+    return render_template("question.html",
+                           question=question,
+                           answers=answers,
+                           )
 
 #
 # @app.route("/question/<question_id>")

@@ -10,11 +10,11 @@
 {% block content %}
     <table border="1">
         <tr>
-            {% for header in question_headers %}
-                <th>{{ header }}</th>
+            {% for header in question.keys() %}
+                <th>{{ header.capitalize().replace('_', ' ') }}</th>
             {% endfor %}
-            <th>Vote</th>
-            <th>Actions</th>
+{#            <th>Vote</th>#}
+{#            <th>Actions</th>#}
         </tr>
 
         <tr>
@@ -25,12 +25,12 @@
 
                     <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
 
-                {% elif data == "image" %}
-                        {% if question['image'] == 'none.jpg' %}
-                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                        {% else %}
-                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">
-                        {% endif %}
+{#                {% elif data == "image" %}#}
+{#                        {% if question['image'] == 'none.jpg' %}#}
+{#                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
+{#                        {% else %}#}
+{#                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">#}
+{#                        {% endif %}#}
                 {% else %}
 
                     {{ question[data] }}
@@ -38,48 +38,29 @@
                 {% endif %}
                 {% endfor %}
                 </td>
-{#            <td>{{ question['id'] }}</td>#}
-{#            <td>{{ question['submission_time'] }}</td>#}
-{#            <td>{{ question['view_number'] }}</td>#}
-{#            <td>{{ question['vote_number'] }}</td>#}
-{#            <td class="title">{{ question['title'] }}</td>#}
-{#            <td>{{ question['message'] }}</td>#}
+
 {#            <td>#}
-{#                {% if question['image'] == 'none.jpg' %}#}
-{#                    <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt = "">#}
-{#                {% else %}#}
-{#                    <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">#}
-{#                {% endif %}#}
+{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">#}
+{#                    <button type="submit" class="btn-link">Vote up</button>#}
+{#                </form>#}
+{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">#}
+{#                    <button type="submit" class="btn-link">Vote down</button>#}
+{#                </form>#}
 {#            </td>#}
-
-
-
-            <td>
-                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
-                    <button type="submit" class="btn-link">Vote up</button>
-                </form>
-                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
-                    <button type="submit" class="btn-link">Vote down</button>
-                </form>
-            </td>
-
-            <td>
-
-                <button  class="btn-link" style="display:block;">
-                    <a href="{{ question['id'] }}/delete">DELETE</a>
-                </button>
-                <button  class="btn-link" style="display:block;" >
-                    <a href="{{ question['id'] }}/edit">EDIT</a>
-                </button>
-            </td>
-
-
+{##}
+{#            <td>#}
+{#                <button  class="btn-link" style="display:block;">#}
+{#                    <a href="{{ question['id'] }}/delete">DELETE</a>#}
+{#                </button>#}
+{#                <button  class="btn-link" style="display:block;" >#}
+{#                    <a href="{{ question['id'] }}/edit">EDIT</a>#}
+{#                </button>#}
+{#            </td>#}
+{##}
+{##}
         </tr>
     </table>
-
     <br>
-
-
     <br>
 
     <div class="answers_section">
@@ -88,61 +69,52 @@
         {% if  answers|length > 0  %}
             <table border="1">
                 <tr>
-                    {% for header in answer_headers %}
-                    <th>{{ header }}</th>
+                    {% for header in answers[0].keys() %}
+                        <th>{{ header.capitalize().replace('_', ' ') }}</th>
                     {% endfor %}
-                    <th>Vote</th>
-                    <th>Actions</th>
+
+{#                    <th>Vote</th>#}
+{#                    <th>Actions</th>#}
                 </tr>
 
                     {% for answer in answers %}
                         <tr>
                         {% for data in answer.keys() %}
                             <td class="{{ data }}">
-                                {% if data == "image" %}
-                                        {% if answer[data] == 'none.jpg' %}
-                                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                                        {% else %}
-                                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id'] + "/" + answer['image']) }}" alt="">
-                                        {% endif %}
-                                {% else %}
+{#                                {% if data == "image" %}#}
+{#                                        {% if answer[data] == 'none.jpg' %}#}
+{#                                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
+{#                                        {% else %}#}
+{#                                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id'] + "/" + answer['image']) }}" alt="">#}
+{#                                        {% endif %}#}
+{#                                {% else %}#}
 
                                     {{ answer[data] }}
 
-                                {% endif %}
+{#                                {% endif %}#}
                             </td>
                         {% endfor %}
 
-    {#                        <td>{{ answer['id'] }}</td>#}
-    {#                        <td>{{ answer['submission_time'] }}</td>#}
-    {#                        <td>{{ answer['vote_number'] }}</td>#}
-    {#                        <td>{{ answer['question_id'] }}</td>#}
-    {#                        <td>{{ answer['message'] }}</td>#}
-    {#                        <td>#}
-    {#                            {% if answer['image'] == 'none.jpg' %}#}
-    {#                                <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt = "">#}
-    {#                            {% else %}#}
-    {#                                <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id'] + "/" + answer['image']) }}" alt="">#}
-    {#                            {% endif %}#}
-                            <td>
-                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">
-                                    <button type="submit" class="btn-link">Vote up</button>
-                                </form>
-                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">
-                                    <button type="submit" class="btn-link">Vote down</button>
-                                </form>
-                            </td>
-                            <td>
 
-                                <button  class="btn-link" style="display:block;">
-                                    <a href="../answer/{{ answer['id'] }}/delete">DELETE</a>
-                                </button>
-
-                                <button  class="btn-link" style="display:block;">
-                                    <a href="../answer/{{ answer['id'] }}/edit">EDIT</a>
-                                </button>
-
-                                </td>
+{#                               <td>#}
+{#                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">#}
+{#                                    <button type="submit" class="btn-link">Vote up</button>#}
+{#                                </form>#}
+{#                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">#}
+{#                                    <button type="submit" class="btn-link">Vote down</button>#}
+{#                                </form>#}
+{#                            </td>#}
+{#                            <td>#}
+{##}
+{#                                <button  class="btn-link" style="display:block;">#}
+{#                                    <a href="../answer/{{ answer['id'] }}/delete">DELETE</a>#}
+{#                                </button>#}
+{##}
+{#                                <button  class="btn-link" style="display:block;">#}
+{#                                    <a href="../answer/{{ answer['id'] }}/edit">EDIT</a>#}
+{#                                </button>#}
+{##}
+{#                                </td>#}
                         </tr>
                     {% endfor %}
             </table>

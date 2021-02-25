@@ -9,7 +9,7 @@
 {% endblock %}
 {% block content %}
 
-
+{##}
 {#    <button class="btn-link">#}
 {#        <a href="{{ url_for('display_add_question') }}">Add question</a>#}
 {#    </button>#}
@@ -39,9 +39,13 @@
 
     <table border="1">
         <tr>
-            {% for header in headers %}
-                <th>{{ header }}</th>
-            {% endfor %}
+            {% if questions|length == 0 %}
+                <h3>No questions</h3>
+            {% else %}
+                {% for header in questions[0].keys() %}
+                    <th>{{ header.capitalize().replace('_', ' ') }}</th>
+                {% endfor %}
+            {% endif %}
         </tr>
 
         {% for question in questions %}
