@@ -10,9 +10,9 @@
 {% block content %}
 
 
-    <button class="btn-link">
-        <a href="{{ url_for('display_add_question') }}">Add question</a>
-    </button>
+{#    <button class="btn-link">#}
+{#        <a href="{{ url_for('display_add_question') }}">Add question</a>#}
+{#    </button>#}
 
 
     <hr>
@@ -39,9 +39,13 @@
 
     <table border="1">
         <tr>
-            {% for header in question_headers %}
-                <th>{{ header }}</th>
-            {% endfor %}
+{#            {% if len(questions) == 0 %}#}
+{#                <h3>No questions</h3>#}
+{#            {% else %}#}
+                {% for header in questions[0].keys() %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+{#            {% endif %}#}
         </tr>
 
         {% for question in questions %}
@@ -57,7 +61,7 @@
                         {% if question['image'] == 'none.jpg' %}
                             <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
                         {% else %}
-                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">
+                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + {{ str(question['id']) }} + "/" + question['image']) }}" alt="">
                         {% endif %}
                 {% else %}
 

@@ -29,7 +29,7 @@ TO CHANGE:
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
 
-    questions = data_manager.get_all_data('submission_time', 'question')
+    questions = data_manager.get_all_data()
     print(questions)
 
     # questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)

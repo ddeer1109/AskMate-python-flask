@@ -112,12 +112,12 @@ import os
 
 
 @data_handler.connection_handler
-def get_all_data(cursor: RealDictCursor, sort_key: str, table_string: str) -> list:
+def get_all_data(cursor: RealDictCursor) -> list:
     query = """
         SELECT *
         FROM question
         ORDER BY submission_time"""
-    cursor.execute(query, {'sort_key': sort_key, 'table_string': table_string})
+    cursor.execute(query)
     return cursor.fetchall()
 
 
