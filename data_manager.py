@@ -156,8 +156,8 @@ def add_new_question(cursor: RealDictCursor, form_data, request_files):
 
     requested_data['view_number'] = '0'
     requested_data['vote_number'] = '0'
-    # requested_data['submission_time'] = datetime.fromtimestamp(time.time())
-    requested_data['submission_time'] = time.time()
+    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+    # requested_data['submission_time'] = time.time()
 
     image_filename = get_image_name(request_files['image'])
     requested_data['image'] = image_filename
@@ -167,17 +167,31 @@ def add_new_question(cursor: RealDictCursor, form_data, request_files):
     keys_string = ", ".join(list(map(str, keys)))
     values_string = ", ".join(list(map(str, values)))
 
-    comment = f"""
-        INSERT INTO question({keys_string})
-        VALUES ({values_string})
+    # comment = f"""
+    #     INSERT INTO question({keys_string})
+    #     VALUES ({values_string})
+    #     RETURNING id
+    # """
+    comment = """
+        INSERT INTO question(submission_time, view_number, vote_number, title, message, image)
+        VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s,%(title)s,%(message)s,%(image)s)
         RETURNING id
     """
 
+    params = {'submission_time': requested_data['submission_time'],
+              'view_number': requested_data['view_number'],
+              'vote_number': requested_data['vote_number'],
+              'title': requested_data['title'],
+              'message': requested_data['message'],
+              'image': requested_data['image']
+              }
+    cursor.execute(comment, params)
+    some_value = cursor.fetchone()
 
-    cursor.execute(comment)
-    some_value =  cursor.fetchone()
+    if request_files['image'].filename != '':
+        data_handler.save_image(request_files['image'], 'questions', str(some_value['id']))
 
-    return some_value
+    return some_value['id']
 
 # def add_new_question(form_data, request_files):
 #     """Engine of adding new question."""
