@@ -40,11 +40,11 @@ CREATE TABLE answer (
     image_id int
 );
 
-DROP TABLE IF EXISTS public.images;
-CREATE TABLE images (
-    id serial NOT NULL,
-    image bytea
-);
+-- DROP TABLE IF EXISTS public.images;
+-- CREATE TABLE images (
+--     id serial NOT NULL,
+--     image bytea
+-- );
 
 DROP TABLE IF EXISTS public.comment;
 CREATE TABLE comment (
@@ -82,8 +82,8 @@ ALTER TABLE ONLY question
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT pk_question_tag_id PRIMARY KEY (question_id, tag_id);
 
-ALTER TABLE ONLY images
-    ADD CONSTRAINT pk_images_id PRIMARY KEY (id);
+-- ALTER TABLE ONLY images
+--     ADD CONSTRAINT pk_images_id PRIMARY KEY (id);
 
 ALTER TABLE ONLY tag
     ADD CONSTRAINT pk_tag_id PRIMARY KEY (id);
@@ -100,11 +100,11 @@ ALTER TABLE ONLY question_tag
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id);
 
-ALTER TABLE ONLY question
-    ADD CONSTRAINT fk_images_id FOREIGN KEY (image_id) REFERENCES images(id);
-
-ALTER TABLE ONLY answer
-    ADD CONSTRAINT fk_images_id FOREIGN KEY (image_id) REFERENCES images(id);
+-- ALTER TABLE ONLY question
+--     ADD CONSTRAINT fk_images_id FOREIGN KEY (image_id) REFERENCES images(id);
+--
+-- ALTER TABLE ONLY answer
+--     ADD CONSTRAINT fk_images_id FOREIGN KEY (image_id) REFERENCES images(id);
 
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id);
@@ -119,7 +119,7 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)', NULL);
-INSERT INTO question VALUES (2, '2017-05-01 10:41:00', 1364, 57, 'Drawing canvas with an image picked with Cordova Camera Plugin', 'I''m getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I''m on IOS, it throws errors such as cross origin issue, or that I''m trying to use an unknown format.
+INSERT INTO question VALUES (2, '2017-05-01 2:41:00', 1364, 57, 'Drawing canvas with an image picked with Cordova Camera Plugin', 'I''m getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I''m on IOS, it throws errors such as cross origin issue, or that I''m trying to use an unknown format.
 ', NULL);
 SELECT pg_catalog.setval('question_id_seq', 2, true);
 INSERT INTO answer VALUES (1, '2017-04-28 16:49:00', 4, 1, 'You need to use brackets: my_list = []', NULL);
@@ -139,4 +139,4 @@ INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
 
-INSERT INTO images VALUES (1, '/home/cecylia/Pictures/Screenshot from 2020-03-24 10-44-44.png')
+-- INSERT INTO images VALUES (1, '/home/cecylia/Pictures/Screenshot from 2020-03-24 2-44-44.png')

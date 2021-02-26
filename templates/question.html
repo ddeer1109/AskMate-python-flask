@@ -25,12 +25,12 @@
 
                     <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
 
-{#                {% elif data == "image" %}#}
-{#                        {% if question['image'] == 'none.jpg' %}#}
-{#                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
-{#                        {% else %}#}
-{#                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id'] + "/" + question['image']) }}" alt="">#}
-{#                        {% endif %}#}
+                {% elif data == "image" %}
+                        {% if question['image'] == 'none.jpg' %}
+                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+                        {% else %}
+                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
+                        {% endif %}
                 {% else %}
 
                     {{ question[data] }}
@@ -81,17 +81,17 @@
                         <tr>
                         {% for data in answer.keys() %}
                             <td class="{{ data }}">
-{#                                {% if data == "image" %}#}
-{#                                        {% if answer[data] == 'none.jpg' %}#}
-{#                                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
-{#                                        {% else %}#}
-{#                                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id'] + "/" + answer['image']) }}" alt="">#}
-{#                                        {% endif %}#}
-{#                                {% else %}#}
+                                {% if data == "image" %}
+                                        {% if answer[data] == 'none.jpg' %}
+                                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+                                        {% else %}
+                                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id']|string + "/" + answer['image']) }}" alt="">
+                                        {% endif %}
+                                {% else %}
 
                                     {{ answer[data] }}
 
-{#                                {% endif %}#}
+                                {% endif %}
                             </td>
                         {% endfor %}
 
