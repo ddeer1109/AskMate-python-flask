@@ -157,21 +157,10 @@ def add_new_question(cursor: RealDictCursor, form_data, request_files):
     requested_data['view_number'] = '0'
     requested_data['vote_number'] = '0'
     requested_data['submission_time'] = datetime.fromtimestamp(time.time())
-    # requested_data['submission_time'] = time.time()
 
     image_filename = get_image_name(request_files['image'])
     requested_data['image'] = image_filename
 
-    keys = tuple(requested_data.keys())
-    values = tuple(requested_data.values())
-    keys_string = ", ".join(list(map(str, keys)))
-    values_string = ", ".join(list(map(str, values)))
-
-    # comment = f"""
-    #     INSERT INTO question({keys_string})
-    #     VALUES ({values_string})
-    #     RETURNING id
-    # """
     comment = """
         INSERT INTO question(submission_time, view_number, vote_number, title, message, image)
         VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s,%(title)s,%(message)s,%(image)s)
@@ -192,6 +181,42 @@ def add_new_question(cursor: RealDictCursor, form_data, request_files):
         data_handler.save_image(request_files['image'], 'questions', str(some_value['id']))
 
     return some_value['id']
+
+@data_handler.connection_handler
+def add_new_answer(cursor: RealDictCursor, form_data, request_files, question_id):
+    """Engine of adding new answer."""
+    requested_data = dict(form_data)
+
+    requested_data['vote_number'] = '0'
+    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+    requested_data['question_id'] = question_id
+
+    image_filename = get_image_name(request_files['image'])
+    requested_data['image'] = image_filename
+
+    comment = """
+            INSERT INTO answer(submission_time, vote_number, question_id, message, image)
+            VALUES (%(submission_time)s, %(vote_number)s,%(question_id)s,%(message)s,%(image)s)
+            RETURNING id
+        """
+
+    params = {
+            'submission_time': requested_data['submission_time'],
+            'vote_number': requested_data['vote_number'],
+            'question_id': requested_data['question_id'],
+            'message': requested_data['message'],
+            'image': requested_data['image']
+        }
+    cursor.execute(comment, params)
+    some_value = cursor.fetchone()
+
+    if request_files['image'].filename != '':
+        data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
+
+
+
+
+
 
 # def add_new_question(form_data, request_files):
 #     """Engine of adding new question."""
@@ -379,24 +404,7 @@ def get_current_timestamp():
 #     return requested_data['id']
 #
 #
-# def add_new_answer(form_data, request_files, question_id):
-#     """Engine of adding new answer."""
-#
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     requested_data = dict(form_data)
-#
-#     set_initial_values(requested_data, answers)
-#     requested_data['question_id'] = str(question_id)
-#
-#     image_filename = process_image_input(
-#         request_files['image'],
-#         'answers',
-#         requested_data['id'])
-#
-#     requested_data['image'] = image_filename
-#
-#     answers.append(requested_data)
-#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
+
 #
 #
 def get_image_name(image_storage_obj):

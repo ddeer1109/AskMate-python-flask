@@ -47,22 +47,20 @@ def add_question():
     question_id = data_manager.add_new_question(request.form, request.files)
 
     return redirect(url_for('display_question', question_id=question_id))
-#
-#
-# @app.route("/question/<question_id>/add-answer")
-# def add_an_answer(question_id):
-#     """Services redirection to displaying interface of adding answer."""
-#
-#     return render_template('add_answer.html')
-#
-#
-# @app.route("/question/<question_id>/add-answer", methods=["POST"])
-# def new_answer(question_id):
-#     """Services posting answer."""
-#
-#     data_manager.add_new_answer(request.form, request.files, question_id)
-#
-#     return redirect(f'/question/{question_id}')
+
+@app.route("/question/<question_id>/add-answer")
+def display_add_answer(question_id):
+    """Services redirection to displaying interface of adding answer."""
+
+    return render_template('add_answer.html')
+
+@app.route("/question/<question_id>/add-answer", methods=["POST"])
+def new_answer(question_id):
+    """Services posting answer."""
+
+    data_manager.add_new_answer(request.form, request.files, question_id)
+
+    return redirect(f'/question/{question_id}')
 #
 #
 # @app.route("/question/<question_id>/delete")
