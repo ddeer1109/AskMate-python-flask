@@ -150,69 +150,134 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
     cursor.execute(query, {'question_id': question_id_int})
     return cursor.fetchall()
 
+
 @data_handler.connection_handler
-def add_new_question(cursor: RealDictCursor, form_data, request_files):
-    requested_data = dict(form_data)
+def add_new_entry(cursor: RealDictCursor, entry_type_string, form_data=None, request_files=None, question_id=None):
 
-    requested_data['view_number'] = '0'
-    requested_data['vote_number'] = '0'
-    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+    complete_dict_data = init_complete_dict_entry(entry_type_string, form_data, request_files, question_id)
 
-    image_filename = get_image_name(request_files['image'])
-    requested_data['image'] = image_filename
+    columns_sql_str = ", ".join([str(key) for key in complete_dict_data.keys()])
+    values_sql_str = ", ".join(f'%({key})s' for key in complete_dict_data.keys())
 
-    comment = """
-        INSERT INTO question(submission_time, view_number, vote_number, title, message, image)
-        VALUES (%(submission_time)s, %(view_number)s, %(vote_number)s,%(title)s,%(message)s,%(image)s)
+    comment = f"""
+        INSERT INTO {entry_type_string}({columns_sql_str})
+        VALUES ({values_sql_str})
         RETURNING id
     """
 
-    params = {'submission_time': requested_data['submission_time'],
-              'view_number': requested_data['view_number'],
-              'vote_number': requested_data['vote_number'],
-              'title': requested_data['title'],
-              'message': requested_data['message'],
-              'image': requested_data['image']
-              }
-    cursor.execute(comment, params)
-    some_value = cursor.fetchone()
+    cursor.execute(comment, complete_dict_data)
+    entry_id = str(cursor.fetchone()['id'])
 
-    if request_files['image'].filename != '':
-        data_handler.save_image(request_files['image'], 'questions', str(some_value['id']))
+    if request_files:
 
-    return some_value['id']
+        if entry_type_string == 'question':
+            data_handler.save_image(request_files['image'], 'questions', entry_id)
+        elif entry_type_string == 'answer':
+            pass
 
-@data_handler.connection_handler
-def add_new_answer(cursor: RealDictCursor, form_data, request_files, question_id):
-    """Engine of adding new answer."""
+    if entry_type_string == 'question':
+        return entry_id
+
+
+def set_init_entry_values(form_data, request_files):
     requested_data = dict(form_data)
-
-    requested_data['vote_number'] = '0'
-    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
-    requested_data['question_id'] = question_id
-
     image_filename = get_image_name(request_files['image'])
+
     requested_data['image'] = image_filename
+    requested_data['vote_number'] = 0
+    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
 
-    comment = """
-            INSERT INTO answer(submission_time, vote_number, question_id, message, image)
-            VALUES (%(submission_time)s, %(vote_number)s,%(question_id)s,%(message)s,%(image)s)
-            RETURNING id
-        """
+    return requested_data
 
-    params = {
-            'submission_time': requested_data['submission_time'],
-            'vote_number': requested_data['vote_number'],
-            'question_id': requested_data['question_id'],
-            'message': requested_data['message'],
-            'image': requested_data['image']
-        }
-    cursor.execute(comment, params)
-    some_value = cursor.fetchone()
 
-    if request_files['image'].filename != '':
-        data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
+def init_complete_dict_entry(entry_type, form_data=None, request_files=None, question_id=None):
 
+    if entry_type == 'question':
+        complete_entry = set_init_entry_values(form_data, request_files)
+        complete_entry['view_number'] = 0
+
+    elif entry_type == 'answer':
+        complete_entry = set_init_entry_values(form_data, request_files)
+        complete_entry['question_id'] = question_id
+
+    elif entry_type == 'comment':
+        pass
+
+    elif entry_type == 'question_tag':
+        pass
+
+    elif entry_type == 'tag':
+        pass
+
+    return complete_entry
+
+
+# @data_handler.connection_handler
+# def add_new_question(cursor: RealDictCursor, form_data, request_files):
+#     requested_data = dict(form_data)
+#
+#     requested_data['view_number'] = '0'
+#     requested_data['vote_number'] = '0'
+#     requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+#
+#     image_filename = get_image_name(request_files['image'])
+#     requested_data['image'] = image_filename
+#
+#     columns_sql_str = ", ".join([str(key) for key in requested_data.keys()])
+#     values_sql_str = ", ".join(f'%({key})s' for key in requested_data.keys())
+#
+#     comment = f"""
+#         INSERT INTO question({columns_sql_str})
+#         VALUES ({values_sql_str})
+#         RETURNING id
+#     """
+#
+#     # params = {'submission_time': requested_data['submission_time'],
+#     #           'view_number': requested_data['view_number'],
+#     #           'vote_number': requested_data['vote_number'],
+#     #           'title': requested_data['title'],
+#     #           'message': requested_data['message'],
+#     #           'image': requested_data['image']
+#     #           }
+#     cursor.execute(comment, requested_data)
+#     some_value = cursor.fetchone()
+#
+#     if request_files['image'].filename != '':
+#         data_handler.save_image(request_files['image'], 'questions', str(some_value['id']))
+#
+#     return some_value['id']
+#
+# @data_handler.connection_handler
+# def add_new_answer(cursor: RealDictCursor, form_data, request_files, question_id):
+#     """Engine of adding new answer."""
+#     requested_data = dict(form_data)
+#
+#     requested_data['vote_number'] = '0'
+#     requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+#     requested_data['question_id'] = question_id
+#
+#     image_filename = get_image_name(request_files['image'])
+#     requested_data['image'] = image_filename
+#
+#     comment = """
+#             INSERT INTO answer(submission_time, vote_number, question_id, message, image)
+#             VALUES (%(submission_time)s, %(vote_number)s,%(question_id)s,%(message)s,%(image)s)
+#             RETURNING id
+#         """
+#
+#     params = {
+#             'submission_time': requested_data['submission_time'],
+#             'vote_number': requested_data['vote_number'],
+#             'question_id': requested_data['question_id'],
+#             'message': requested_data['message'],
+#             'image': requested_data['image']
+#         }
+#     cursor.execute(comment, params)
+#     some_value = cursor.fetchone()
+#
+#     if request_files['image'].filename != '':
+#         data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
+#
 
 
 

@@ -44,9 +44,13 @@ def display_add_question():
 @app.route("/add-question", methods=['POST'])
 def add_question():
     """Services posting question."""
-    question_id = data_manager.add_new_question(request.form, request.files)
+    question_id = data_manager.add_new_entry(
+        'question',
+        form_data=request.form,
+        request_files=request.files)
 
     return redirect(url_for('display_question', question_id=question_id))
+
 
 @app.route("/question/<question_id>/add-answer")
 def display_add_answer(question_id):
@@ -54,11 +58,16 @@ def display_add_answer(question_id):
 
     return render_template('add_answer.html')
 
+
 @app.route("/question/<question_id>/add-answer", methods=["POST"])
 def new_answer(question_id):
     """Services posting answer."""
 
-    data_manager.add_new_answer(request.form, request.files, question_id)
+    data_manager.add_new_entry(
+        'answer',
+        form_data=request.form,
+        request_files=request.files,
+        question_id=question_id)
 
     return redirect(f'/question/{question_id}')
 #
