@@ -150,6 +150,59 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
     cursor.execute(query, {'question_id': question_id_int})
     return cursor.fetchall()
 
+@data_handler.connection_handler
+def add_new_question(cursor: RealDictCursor, form_data, request_files):
+    requested_data = dict(form_data)
+
+    requested_data['view_number'] = '0'
+    requested_data['vote_number'] = '0'
+    # requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+    requested_data['submission_time'] = time.time()
+
+    image_filename = get_image_name(request_files['image'])
+    requested_data['image'] = image_filename
+
+    keys = tuple(requested_data.keys())
+    values = tuple(requested_data.values())
+    keys_string = ", ".join(list(map(str, keys)))
+    values_string = ", ".join(list(map(str, values)))
+
+    comment = f"""
+        INSERT INTO question({keys_string})
+        VALUES ({values_string})
+        RETURNING id
+    """
+
+
+    cursor.execute(comment)
+    some_value =  cursor.fetchone()
+
+    return some_value
+
+# def add_new_question(form_data, request_files):
+#     """Engine of adding new question."""
+#
+#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+#     requested_data = dict(form_data)
+#
+#     set_initial_values(requested_data, questions)
+#     requested_data['view_number'] = '0'
+#
+#     image_filename = process_image_input(
+#         request_files['image'],
+#         'questions',
+#         requested_data['id'])
+#
+#     requested_data['image'] = image_filename
+#
+#     questions.append(requested_data)
+#     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
+#     return requested_data['id']
+
+
+
+
+
 #
 # def sort_data(questions, requested_query_string, header):
 #     """Returns data (for this feature implemented for questions) sorted by requested_query_string"""
@@ -277,10 +330,10 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 #     return temp_list
 #
 #
-# def get_current_timestamp():
-#     """Return current timestamp in seconds"""
-#
-#     return int(time.time())
+def get_current_timestamp():
+    """Return current timestamp in seconds"""
+
+    return int(time.time())
 #
 #
 # def set_initial_values(entry_dictionary, listed_base_data):
@@ -332,19 +385,19 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 #     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
 #
 #
-# def process_image_input(image_storage_obj, sub_dir, entry_id):
-#     """Checks if storage object is not empty. If it is returns default image filename else returns object filename"""
-#
-#     storage_obj_empty = image_storage_obj.filename == ""
-#     invalid_extension = ".jpg" not in image_storage_obj.filename and ".png" not in image_storage_obj.filename
-#
-#     if storage_obj_empty or invalid_extension:
-#         image_name = 'none.jpg'
-#     else:
-#         data_handler.save_image(image_storage_obj, sub_dir, entry_id)
-#         image_name = image_storage_obj.filename
-#
-#     return image_name
+def get_image_name(image_storage_obj):
+    """Checks if storage object is not empty. If it is returns default image filename else returns object filename"""
+
+    storage_obj_empty = image_storage_obj.filename == ""
+    invalid_extension = ".jpg" not in image_storage_obj.filename and ".png" not in image_storage_obj.filename
+
+    if storage_obj_empty or invalid_extension:
+        image_name = 'none.jpg'
+    else:
+        # data_handler.save_image(image_storage_obj, sub_dir, entry_id)
+        image_name = image_storage_obj.filename
+
+    return image_name
 #
 #
 # def update_entry(updated_entry, entries_list):

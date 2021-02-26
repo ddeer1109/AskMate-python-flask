@@ -1,6 +1,6 @@
 # import csv
 # import os
-# import pathlib
+import pathlib
 
 # Creates a decorator to handle the database connection/cursor opening/closing.
 # Creates the cursor with RealDictCursor, thus it returns real dictionaries, where the column names are the keys.
@@ -62,7 +62,7 @@ def connection_handler(function):
 # QUESTIONS_DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 # ANSWERS_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 #
-# UPLOADED_IMAGES_FILE_PATH = pathlib.Path(f"{pathlib.Path(__file__).parent.absolute()}/static/images")
+UPLOADED_IMAGES_FILE_PATH = pathlib.Path(f"{pathlib.Path(__file__).parent.absolute()}/static/images")
 #
 #
 # def write_file(path, header, dictionaries_list):
@@ -82,19 +82,19 @@ def connection_handler(function):
 #         return dictionaries_list
 #
 #
-# def save_image(form_image, sub_dir, entry_id):
-#
-#     path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
-#     if not os.path.exists(path):
-#         os.makedirs(path)
-#
-#     form_image.save(path / form_image.filename)
-#
-#
-# def delete_image(image_filename, sub_dir, entry_id):
-#     path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
-#     os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
-#
-#     if len(os.listdir(path)) == 0:
-#         os.rmdir(path)
+def save_image(form_image, sub_dir, entry_id):
+
+    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    form_image.save(path / form_image.filename)
+
+
+def delete_image(image_filename, sub_dir, entry_id):
+    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+    os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
+
+    if len(os.listdir(path)) == 0:
+        os.rmdir(path)
 

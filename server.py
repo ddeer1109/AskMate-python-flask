@@ -44,10 +44,6 @@ def display_add_question():
 @app.route("/add-question", methods=['POST'])
 def add_question():
     """Services posting question."""
-    new_question = request.form
-    new_picture = request.files
-    print(new_question, new_picture)
-
     question_id = data_manager.add_new_question(request.form, request.files)
 
     return redirect(url_for('display_question', question_id=question_id))
