@@ -26,7 +26,7 @@ CREATE TABLE question (
     vote_number integer,
     title text,
     message text,
-    image_id int
+    image text
 );
 
 
@@ -37,14 +37,9 @@ CREATE TABLE answer (
     vote_number integer,
     question_id integer,
     message text,
-    image_id int
+    image text
 );
 
--- DROP TABLE IF EXISTS public.images;
--- CREATE TABLE images (
---     id serial NOT NULL,
---     image bytea
--- );
 
 DROP TABLE IF EXISTS public.comment;
 CREATE TABLE comment (
@@ -82,9 +77,6 @@ ALTER TABLE ONLY question
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT pk_question_tag_id PRIMARY KEY (question_id, tag_id);
 
--- ALTER TABLE ONLY images
---     ADD CONSTRAINT pk_images_id PRIMARY KEY (id);
-
 ALTER TABLE ONLY tag
     ADD CONSTRAINT pk_tag_id PRIMARY KEY (id);
 
@@ -99,12 +91,6 @@ ALTER TABLE ONLY question_tag
 
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id);
-
--- ALTER TABLE ONLY question
---     ADD CONSTRAINT fk_images_id FOREIGN KEY (image_id) REFERENCES images(id);
---
--- ALTER TABLE ONLY answer
---     ADD CONSTRAINT fk_images_id FOREIGN KEY (image_id) REFERENCES images(id);
 
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id);
