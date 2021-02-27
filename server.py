@@ -132,13 +132,13 @@ def delete_answer(answer_id):
 #         return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
 #
 #
-# @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
-# def vote_on_post(entry_id, vote_value, entry_type):
-#     """Services voting on questions and answers"""
-#
-#     redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
-#
-#     return redirect(url_for('display_question', question_id=redirection_id))
+@app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
+def vote_on_post(entry_id, vote_value, entry_type):
+    """Services voting on questions and answers"""
+
+    redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
 
 
 if __name__ == "__main__":

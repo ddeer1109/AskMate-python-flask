@@ -39,14 +39,14 @@
                 {% endfor %}
                 </td>
 
-{#            <td>#}
-{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">#}
-{#                    <button type="submit" class="btn-link">Vote up</button>#}
-{#                </form>#}
-{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">#}
-{#                    <button type="submit" class="btn-link">Vote down</button>#}
-{#                </form>#}
-{#            </td>#}
+            <td>
+                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
+                    <button type="submit" class="btn-link">Vote up</button>
+                </form>
+                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
+                    <button type="submit" class="btn-link">Vote down</button>
+                </form>
+            </td>
 
             <td>
                 <button  class="btn-link" style="display:block;">
@@ -97,12 +97,12 @@
 
 
                             <td>
-{#                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">#}
-{#                                    <button type="submit" class="btn-link">Vote up</button>#}
-{#                                </form>#}
-{#                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">#}
-{#                                    <button type="submit" class="btn-link">Vote down</button>#}
-{#                                </form>#}
+                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">
+                                    <button type="submit" class="btn-link">Vote up</button>
+                                </form>
+                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">
+                                    <button type="submit" class="btn-link">Vote down</button>
+                                </form>
                             </td>
 
                             <td>

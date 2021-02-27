@@ -266,6 +266,69 @@ def delete_question(cursor: RealDictCursor, question_id: str):
     deleted_data = cursor.fetchone()
     data_handler.delete_image(deleted_data['image'], 'questions', deleted_data['id'])
 
+@data_handler.connection_handler
+def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
+    params = {'entry_id': entry_id}
+    if entry_type == 'answer':
+        selection_query = 'id, vote_number, question_id'
+    elif entry_type == 'question':
+        selection_query = 'id, vote_number'
+
+    query = f"""
+    SELECT {selection_query}
+    FROM {entry_type}
+    WHERE id=%(entry_id)s"""
+
+    cursor.execute(query, params)
+    fetched_data = cursor.fetchone()
+
+    if vote_value == 'vote_up':
+        new_vote_value = fetched_data['vote_number'] + 1
+    else:
+        new_vote_value = fetched_data['vote_number'] - 1
+    params['new_vote_value'] = new_vote_value
+
+    comment = f"""
+    UPDATE {entry_type}
+    SET vote_number = %(new_vote_value)s
+    WHERE id=%(entry_id)s"""
+    cursor.execute(comment, params)
+
+    if entry_type == 'answer':
+        return fetched_data['question_id']
+    elif entry_type == 'question':
+        return fetched_data['id']
+
+
+
+# def vote_on_post(entry_id, vote_value, entry_type):
+#     """Engine for voting on any type of post on website."""
+#
+#     if entry_type == "question":
+#         entries_list = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+#     else:
+#         entries_list = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+#
+#     entry = get_entry_by_id(entry_id, entries_list)
+#
+#     if vote_value == "vote_up":
+#         entry["vote_number"] = str(int(entry["vote_number"]) + 1)
+#     elif vote_value == "vote_down":
+#         entry["vote_number"] = str(int(entry["vote_number"]) - 1)
+#
+#     update_entry(entry, entries_list)
+#
+#     if entry_type == "answer":
+#         data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, entries_list)
+#         id_of_questions_to_redirect = entry['question_id']
+#     else:
+#         data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, entries_list)
+#         id_of_questions_to_redirect = entry_id
+#
+#     return id_of_questions_to_redirect
+
+
+
 
 # @data_handler.connection_handler
 # def add_new_question(cursor: RealDictCursor, form_data, request_files):
@@ -333,9 +396,6 @@ def delete_question(cursor: RealDictCursor, question_id: str):
 #     if request_files['image'].filename != '':
 #         data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
 #
-
-
-
 
 
 # def add_new_question(form_data, request_files):
