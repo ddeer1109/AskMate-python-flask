@@ -82,6 +82,8 @@ UPLOADED_IMAGES_FILE_PATH = pathlib.Path(f"{pathlib.Path(__file__).parent.absolu
 #         return dictionaries_list
 #
 #
+
+
 def save_image(form_image, sub_dir, entry_id):
 
     path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
@@ -92,6 +94,7 @@ def save_image(form_image, sub_dir, entry_id):
 
 
 def delete_image(image_filename, sub_dir, entry_id):
+    entry_id = str(entry_id)
     path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
     os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
 

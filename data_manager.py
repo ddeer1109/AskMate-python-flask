@@ -152,15 +152,20 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 
 
 @data_handler.connection_handler
-def add_new_entry(cursor: RealDictCursor, entry_type_string, form_data=None, request_files=None, question_id=None):
+def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):
 
-    complete_dict_data = init_complete_dict_entry(entry_type_string, form_data, request_files, question_id)
+    complete_dict_data = init_complete_dict_entry(
+                                                    table_name,
+                                                    form_data,
+                                                    request_files,
+                                                    question_id)
 
     columns_sql_str = ", ".join([str(key) for key in complete_dict_data.keys()])
     values_sql_str = ", ".join(f'%({key})s' for key in complete_dict_data.keys())
 
     comment = f"""
-        INSERT INTO {entry_type_string}({columns_sql_str})
+        INSERT INTO 
+        {table_name} ({columns_sql_str})
         VALUES ({values_sql_str})
         RETURNING id
     """
@@ -168,14 +173,14 @@ def add_new_entry(cursor: RealDictCursor, entry_type_string, form_data=None, req
     cursor.execute(comment, complete_dict_data)
     entry_id = str(cursor.fetchone()['id'])
 
-    if request_files:
+    if request_files['image'].filename:
 
-        if entry_type_string == 'question':
+        if table_name == 'question':
             data_handler.save_image(request_files['image'], 'questions', entry_id)
-        elif entry_type_string == 'answer':
-            pass
+        elif table_name == 'answer':
+            data_handler.save_image(request_files['image'], 'answers', entry_id)
 
-    if entry_type_string == 'question':
+    if table_name == 'question':
         return entry_id
 
 
@@ -210,6 +215,50 @@ def init_complete_dict_entry(entry_type, form_data=None, request_files=None, que
         pass
 
     return complete_entry
+
+
+@data_handler.connection_handler
+def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
+    comment = """
+    DELETE 
+    FROM answer
+    WHERE id=%(id)s
+    RETURNING question_id
+    """
+
+    cursor.execute(comment, {'id': answer_id})
+
+    question_id = cursor.fetchone()['question_id']
+    return question_id
+
+
+@data_handler.connection_handler
+def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
+    comment = """
+        DELETE 
+        FROM answer
+        WHERE question_id=%(question_id)s
+        """
+
+    cursor.execute(comment, {'question_id': question_id})
+
+
+@data_handler.connection_handler
+def delete_question(cursor: RealDictCursor, question_id: str):
+
+    delete_answers_by_question_id(question_id)
+
+    comment = """
+    DELETE 
+    FROM question
+    WHERE id=%(question_id)s
+    RETURNING id, image
+    """
+
+    cursor.execute(comment, {'question_id': question_id})
+
+    deleted_data = cursor.fetchone()
+    data_handler.delete_image(deleted_data['image'], 'questions', deleted_data['id'])
 
 
 # @data_handler.connection_handler

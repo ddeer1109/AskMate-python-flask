@@ -13,8 +13,8 @@
             {% for header in question.keys() %}
                 <th>{{ header.capitalize().replace('_', ' ') }}</th>
             {% endfor %}
-{#            <th>Vote</th>#}
-{#            <th>Actions</th>#}
+            <th>Vote</th>
+            <th>Actions</th>
         </tr>
 
         <tr>
@@ -47,17 +47,17 @@
 {#                    <button type="submit" class="btn-link">Vote down</button>#}
 {#                </form>#}
 {#            </td>#}
-{##}
-{#            <td>#}
-{#                <button  class="btn-link" style="display:block;">#}
-{#                    <a href="{{ question['id'] }}/delete">DELETE</a>#}
-{#                </button>#}
+
+            <td>
+                <button  class="btn-link" style="display:block;">
+                    <a href="{{ question['id'] }}/delete">DELETE</a>
+                </button>
 {#                <button  class="btn-link" style="display:block;" >#}
 {#                    <a href="{{ question['id'] }}/edit">EDIT</a>#}
 {#                </button>#}
-{#            </td>#}
-{##}
-{##}
+            </td>
+
+
         </tr>
     </table>
     <br>
@@ -73,8 +73,8 @@
                         <th>{{ header.capitalize().replace('_', ' ') }}</th>
                     {% endfor %}
 
-{#                    <th>Vote</th>#}
-{#                    <th>Actions</th>#}
+                    <th>Vote</th>
+                    <th>Actions</th>
                 </tr>
 
                     {% for answer in answers %}
@@ -96,25 +96,26 @@
                         {% endfor %}
 
 
-{#                               <td>#}
+                            <td>
 {#                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">#}
 {#                                    <button type="submit" class="btn-link">Vote up</button>#}
 {#                                </form>#}
 {#                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">#}
 {#                                    <button type="submit" class="btn-link">Vote down</button>#}
 {#                                </form>#}
-{#                            </td>#}
-{#                            <td>#}
-{##}
-{#                                <button  class="btn-link" style="display:block;">#}
-{#                                    <a href="../answer/{{ answer['id'] }}/delete">DELETE</a>#}
-{#                                </button>#}
-{##}
+                            </td>
+
+                            <td>
+
+                                <button  class="btn-link" style="display:block;">
+                                    <a href="../answer/{{ answer['id'] }}/delete">DELETE</a>
+                                </button>
+
 {#                                <button  class="btn-link" style="display:block;">#}
 {#                                    <a href="../answer/{{ answer['id'] }}/edit">EDIT</a>#}
 {#                                </button>#}
-{##}
-{#                                </td>#}
+
+                            </td>
                         </tr>
                     {% endfor %}
             </table>

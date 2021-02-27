@@ -88,15 +88,22 @@ def new_answer(question_id):
 #     return redirect('/')
 #
 #
-# @app.route("/answer/<answer_id>/delete")
-# def delete_answer(answer_id):
-#     """Services deleting answer."""
-#
-#     redirection_id = data_manager.delete_answer(answer_id)
-#
-#     return redirect(url_for('display_question', question_id=redirection_id))
-#
-#
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    data_manager.delete_question(question_id)
+
+    return redirect('/')
+
+
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    """Services deleting answer."""
+
+    redirection_id = data_manager.delete_answer_by_id(answer_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
 # @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 # def edit_question(question_id):
 #     """Services displaying edition of question and posting edited version."""
