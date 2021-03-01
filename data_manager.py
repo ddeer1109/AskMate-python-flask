@@ -182,6 +182,27 @@ def save_edited_answer(cursor: RealDictCursor, answer_id, message):
     question_id = cursor.fetchone()['question_id']
     return question_id
 
+@data_handler.connection_handler
+def save_edited_question(cursor: RealDictCursor, question_id, title, message):
+    comment = """
+        UPDATE question
+        SET title = %(title)s, message = %(message)s
+        WHERE id = %(question_id)s
+    """
+
+    cursor.execute(comment, {'question_id': question_id, 'title': title, 'message': message})
+
+@data_handler.connection_handler
+def get_single_question(cursor: RealDictCursor, question_id):
+    query = """
+        SELECT *
+        FROM question
+        WHERE id = %(question_id)s
+    """
+
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchone()
+
 
 @data_handler.connection_handler
 def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):

@@ -94,6 +94,31 @@ def delete_question(question_id):
 
     return redirect('/')
 
+@app.route("/question/<question_id>/edit")
+def edit_question(question_id):
+    """Services displaying edition of question and posting edited version."""
+    question = data_manager.get_single_question(question_id)
+    return render_template('edit_question.html', question_id=question_id, question=question)
+
+    # questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+    # question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
+    #
+    # if request.method == "POST":
+    #     data_manager.edit_entry(dict(request.form), question, questions)
+    #     return redirect(f'/question/{question_id}')
+    # else:
+    #     return render_template('edit_question.html', question_id=question_id, question=question)
+
+@app.route("/question/<question_id>/edit", methods=['POST'])
+def save_edited_question(question_id):
+    title = request.form['title']
+    message = request.form['message']
+
+
+    data_manager.save_edited_question(question_id, title, message)
+
+    return redirect(url_for('display_question', question_id=question_id))
+
 
 @app.route("/answer/<answer_id>/delete")
 def delete_answer(answer_id):
