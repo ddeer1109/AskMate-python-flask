@@ -160,6 +160,28 @@ def delete_question(cursor: RealDictCursor, question_id: str):
     deleted_data = cursor.fetchone()
     data_handler.delete_image(deleted_data['image'], 'questions', deleted_data['id'])
 
+@data_handler.connection_handler
+def get_answer(cursor: RealDictCursor, answer_id):
+    query = """
+        SELECT * FROM answer
+        WHERE id = %(answer_id)s
+    """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
+@data_handler.connection_handler
+def save_edited_answer(cursor: RealDictCursor, answer_id, message):
+    comment = """
+        UPDATE answer
+        SET message = %(message)s
+        WHERE id=%(answer_id)s
+        RETURNING question_id
+    """
+
+    cursor.execute(comment, {'answer_id': answer_id, 'message': message})
+    question_id = cursor.fetchone()['question_id']
+    return question_id
+
 
 @data_handler.connection_handler
 def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
@@ -371,7 +393,7 @@ def get_image_name(image_storage_obj):
     if storage_obj_empty or invalid_extension:
         image_name = 'none.jpg'
     else:
-        # data_handler.save_image(image_storage_obj, sub_dir, entry_id)
+        data_handler.save_image(image_storage_obj, sub_dir, entry_id)
         image_name = image_storage_obj.filename
 
     return image_name

@@ -103,6 +103,21 @@ def delete_answer(answer_id):
 
     return redirect(url_for('display_question', question_id=redirection_id))
 
+@app.route("/answer/<answer_id>/edit")
+def display_answer_to_edit(answer_id):
+    """Services displaying edition of answer and posting edited version."""
+
+    answer = data_manager.get_answer(answer_id)
+    return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
+
+@app.route("/answer/<answer_id>/edit", methods=['POST'])
+def save_edited_answer(answer_id):
+    redirection_id = data_manager.save_edited_answer(answer_id, request.form['message'])
+
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
 
 # @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 # def edit_question(question_id):
