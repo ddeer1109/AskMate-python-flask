@@ -82,6 +82,15 @@ def delete_question(question_id):
 
     return redirect('/')
 
+@app.route("/question/<question_id>/new-tag")
+def display_new_tag(question_id):
+    all_tags = data_manager.get_all_tags()
+    # all_tags = ['one', 'two']
+    return render_template('new_tag.html',
+                           question_id=question_id,
+                           all_tags=all_tags
+                           )
+
 @app.route("/question/<question_id>/edit")
 def edit_question(question_id):
     """Services displaying edition of question and posting edited version."""

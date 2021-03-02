@@ -70,6 +70,16 @@ def get_tags_for_question(cursor: RealDictCursor, question_id):
     return cursor.fetchall()
 
 @data_handler.connection_handler
+def get_all_tags(cursor: RealDictCursor):
+    query = """
+        SELECT name 
+        FROM tag
+    """
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@data_handler.connection_handler
 def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):
 
     complete_dict_data = init_complete_dict_entry(

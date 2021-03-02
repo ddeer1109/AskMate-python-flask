@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+    <link rel="stylesheet" href="../../../static/style/style.css">
+
+{% endblock %}
+{% block content %}
+    <h1>New Tag</h1><br>
+    <p>question_id: {{ question_id }}</p>
+    <p>all_tags: {{ all_tags }}</p>
+{#    <button class="btn-link">#}
+{#        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>#}
+{#    </button>#}
+{#    <hr>#}
+{##}
+{#    <form action="{{ url_for('edit_question', question_id=question_id) }}" method="post">#}
+{#        <label for="title">Question:</label><br>#}
+{#        <input type="text" name="title" id="title" value="{{ question['title'] }}" required><br>#}
+{##}
+{#        <label for="message">Message:</label><br>#}
+{#        <textarea rows="10" cols="30" name="message" id="message" required>{{ question['message'] }}</textarea><br>#}
+{##}
+{#        <br>#}
+{#        <input type="submit" value="Save" class="btn-link">#}
+{#    </form>#}
+
+{% endblock %}
