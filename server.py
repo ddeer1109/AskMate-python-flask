@@ -85,11 +85,26 @@ def delete_question(question_id):
 @app.route("/question/<question_id>/new-tag")
 def display_new_tag(question_id):
     all_tags = data_manager.get_all_tags()
-    # all_tags = ['one', 'two']
     return render_template('new_tag.html',
                            question_id=question_id,
                            all_tags=all_tags
                            )
+
+@app.route("/question/<question_id>/new-tag", methods=['POST'])
+def add_new_tag(question_id):
+
+    if request.form['tag']:
+        data_manager.add_new_tag_to_db(request.form['tag'])
+        return redirect(url_for('display_new_tag', question_id=question_id))
+    else:
+        print('empty==========')
+        print(request.form)
+        return redirect(url_for('display_question', question_id=question_id))
+
+
+
+
+
 
 @app.route("/question/<question_id>/edit")
 def edit_question(question_id):

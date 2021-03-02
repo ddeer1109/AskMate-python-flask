@@ -9,6 +9,15 @@
     <h1>New Tag</h1><br>
     <p>question_id: {{ question_id }}</p>
     <p>all_tags: {{ all_tags }}</p>
+
+    <hr>
+    <h4>Add new tag</h4>
+    <form action="" method="POST">
+        <label for="tag">Type new tag: </label>
+        <input type="text" name="tag" id="tag"><br>
+        <input type="submit" value="Add" class="btn-link">
+    </form>
+
 {#    <button class="btn-link">#}
 {#        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>#}
 {#    </button>#}

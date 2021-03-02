@@ -70,9 +70,17 @@ def get_tags_for_question(cursor: RealDictCursor, question_id):
     return cursor.fetchall()
 
 @data_handler.connection_handler
+def add_new_tag_to_db(cursor: RealDictCursor, tag):
+    comment = """
+        INSERT INTO tag(name) values(%(tag)s)
+    """
+
+    cursor.execute(comment, {'tag': tag})
+
+@data_handler.connection_handler
 def get_all_tags(cursor: RealDictCursor):
     query = """
-        SELECT name 
+        SELECT * 
         FROM tag
     """
 
