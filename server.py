@@ -38,7 +38,6 @@ def display_question(question_id):
                            tags=tags
                            )
 
-
 @app.route("/add-question")
 def display_add_question():
     """Services redirection to displaying interface of adding question"""
@@ -92,16 +91,14 @@ def display_new_tag(question_id):
 
 @app.route("/question/<question_id>/new-tag", methods=['POST'])
 def add_new_tag(question_id):
+    data_manager.add_new_tag_to_db(request.form['tag'])
+    return redirect(url_for('display_new_tag', question_id=question_id))
 
-    if request.form['tag']:
-        data_manager.add_new_tag_to_db(request.form['tag'])
-        return redirect(url_for('display_new_tag', question_id=question_id))
-    else:
-        print('empty==========')
-        print(request.form)
-        return redirect(url_for('display_question', question_id=question_id))
-
-
+@app.route("/question/<question_id>/new-tag-question", methods=['POST'])
+def add_new_tag_to_question(question_id):
+    print(request.form['tag_id'])
+    message = data_manager.add_new_tag_to_question(question_id, request.form['tag_id'])
+    return redirect(url_for('display_question', question_id=question_id))
 
 
 

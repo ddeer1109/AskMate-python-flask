@@ -7,31 +7,25 @@
 {% endblock %}
 {% block content %}
     <h1>New Tag</h1><br>
-    <p>question_id: {{ question_id }}</p>
-    <p>all_tags: {{ all_tags }}</p>
-
+{#    <p>question_id: {{ question_id }}</p>#}
+{#    <p>all_tags: {{ all_tags }}</p>#}
+    <hr>
+    <h4>Add new tag to current question</h4>
+    <form action="/question/{{ question_id }}/new-tag-question" method="POST">
+        <select name="tag_id" id="tag_id">
+            {% for tag in all_tags %}
+                <option value="{{ tag['id'] }}">{{ tag['name'] }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Add tag to question">
+    </form>
+    
     <hr>
     <h4>Add new tag</h4>
     <form action="" method="POST">
         <label for="tag">Type new tag: </label>
-        <input type="text" name="tag" id="tag"><br>
+        <input type="text" name="tag" id="tag" required><br><br>
         <input type="submit" value="Add" class="btn-link">
     </form>
-
-{#    <button class="btn-link">#}
-{#        <a href="{{ url_for('get_list_of_questions') }}">Back to Main page</a>#}
-{#    </button>#}
-{#    <hr>#}
-{##}
-{#    <form action="{{ url_for('edit_question', question_id=question_id) }}" method="post">#}
-{#        <label for="title">Question:</label><br>#}
-{#        <input type="text" name="title" id="title" value="{{ question['title'] }}" required><br>#}
-{##}
-{#        <label for="message">Message:</label><br>#}
-{#        <textarea rows="10" cols="30" name="message" id="message" required>{{ question['message'] }}</textarea><br>#}
-{##}
-{#        <br>#}
-{#        <input type="submit" value="Save" class="btn-link">#}
-{#    </form>#}
 
 {% endblock %}

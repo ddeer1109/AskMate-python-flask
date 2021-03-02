@@ -88,6 +88,18 @@ def get_all_tags(cursor: RealDictCursor):
     return cursor.fetchall()
 
 @data_handler.connection_handler
+def add_new_tag_to_question(cursor: RealDictCursor, question_id, tag_id):
+    try:
+        command = """
+            INSERT INTO question_tag(question_id, tag_id) 
+            VALUES(%(question_id)s, %(tag_id)s)
+        """
+        cursor.execute(command, {'question_id': question_id, 'tag_id': tag_id})
+        return "tag has been added"
+    except:
+        return "current tag is already in question"
+
+@data_handler.connection_handler
 def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):
 
     complete_dict_data = init_complete_dict_entry(
