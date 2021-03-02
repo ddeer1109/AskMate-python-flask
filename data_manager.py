@@ -118,13 +118,15 @@ def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
     DELETE 
     FROM answer
     WHERE id=%(id)s
-    RETURNING question_id
+    RETURNING id, question_id, image
     """
 
     cursor.execute(comment, {'id': answer_id})
 
-    question_id = cursor.fetchone()['question_id']
-    return question_id
+    data_to_delete = cursor.fetchone()
+    data_handler.delete_image(data_to_delete['image'], 'answers', data_to_delete['id'])
+
+    return data_to_delete['question_id']
 
 
 @data_handler.connection_handler
