@@ -17,6 +17,17 @@ def get_all_data(cursor: RealDictCursor) -> list:
     data = cursor.fetchall()
     return data
 
+@data_handler.connection_handler
+def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
+    query = f"""
+        SELECT *
+        FROM question
+        ORDER By {order_by} {order_direction}
+    """
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
 
 @data_handler.connection_handler
 def get_question_by_id(cursor: RealDictCursor, id_string: str):

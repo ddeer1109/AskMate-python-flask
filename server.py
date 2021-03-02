@@ -16,8 +16,15 @@ PATH = app.root_path
 @app.route("/list")
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
+    # print(request.args)
+    # print(request.args.get('order_by'))
+    # print(request.args.get('order_direction'))
 
-    questions = data_manager.get_all_data()
+    if len(request.args) == 0:
+        questions = data_manager.get_all_data()
+    else:
+        questions = data_manager.get_all_data_by_query(request.args.get('order_by'), request.args.get('order_direction'))
+
     return render_template('list.html', questions=questions)
 
 
@@ -70,24 +77,7 @@ def new_answer(question_id):
         question_id=question_id)
 
     return redirect(f'/question/{question_id}')
-#
-#
-# @app.route("/question/<question_id>/delete")
-# def delete_question(question_id):
-#     """Services deletion of question and associated answers."""
-#
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-#
-#     answers = data_manager.delete_rows(question_id, 'question_id', answers)
-#     questions = data_manager.delete_rows(question_id, 'id', questions)
-#
-#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
-#     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
-#
-#     return redirect('/')
-#
-#
+
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
     data_manager.delete_question(question_id)
@@ -138,6 +128,42 @@ def save_edited_answer(answer_id):
 
 
 
+
+@app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
+def vote_on_post(entry_id, vote_value, entry_type):
+    """Services voting on questions and answers"""
+
+    redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
+if __name__ == "__main__":
+    app.run(
+        host='127.0.0.1',
+        port=5050,
+        debug=True)
+
+
+
+#
+#
+# @app.route("/question/<question_id>/delete")
+# def delete_question(question_id):
+#     """Services deletion of question and associated answers."""
+#
+#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
+#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
+#
+#     answers = data_manager.delete_rows(question_id, 'question_id', answers)
+#     questions = data_manager.delete_rows(question_id, 'id', questions)
+#
+#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
+#     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
+#
+#     return redirect('/')
+#
+#
 # @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
 # def edit_question(question_id):
 #     """Services displaying edition of question and posting edited version."""
@@ -166,17 +192,3 @@ def save_edited_answer(answer_id):
 #         return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
 #
 #
-@app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
-def vote_on_post(entry_id, vote_value, entry_type):
-    """Services voting on questions and answers"""
-
-    redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
-
-
-if __name__ == "__main__":
-    app.run(
-        host='127.0.0.1',
-        port=5050,
-        debug=True)
