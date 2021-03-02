@@ -56,6 +56,18 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
     cursor.execute(query, {'question_id': question_id_int})
     return cursor.fetchall()
 
+@data_handler.connection_handler
+def get_tags_for_question(cursor: RealDictCursor, question_id):
+    query = """
+    SELECT name 
+    FROM question_tag
+    INNER JOIN tag
+        ON question_tag.tag_id = tag.id
+    WHERE question_id = %(question_id)s
+    """
+
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchall()
 
 @data_handler.connection_handler
 def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):

@@ -13,6 +13,7 @@
             {% for header in question.keys() %}
                 <th>{{ header.capitalize().replace('_', ' ') }}</th>
             {% endfor %}
+            <th>Tags</th>
             <th>Vote</th>
             <th>Actions</th>
         </tr>
@@ -38,6 +39,12 @@
                 {% endif %}
                 {% endfor %}
                 </td>
+            <td>
+                {% for tag in tags %}
+                    <span>{{ tag['name'] }}</span><br>
+                {% endfor %}
+
+            </td>
 
             <td>
                 <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
@@ -54,6 +61,9 @@
                 </button>
                 <button  class="btn-link" style="display:block;" >
                     <a href="{{ question['id'] }}/edit">EDIT</a>
+                </button>
+                <button  class="btn-link" style="display:block;" >
+                    <a href="">ADD TAG</a>
                 </button>
             </td>
 

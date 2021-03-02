@@ -16,10 +16,6 @@ PATH = app.root_path
 @app.route("/list")
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
-    # print(request.args)
-    # print(request.args.get('order_by'))
-    # print(request.args.get('order_direction'))
-
     if len(request.args) == 0:
         questions = data_manager.get_all_data()
     else:
@@ -34,10 +30,12 @@ def display_question(question_id):
 
     question = data_manager.get_question_by_id(question_id)
     answers = data_manager.get_answers_for_question(question_id)
+    tags = data_manager.get_tags_for_question(question_id)
 
     return render_template("question.html",
                            question=question,
                            answers=answers,
+                           tags=tags
                            )
 
 
