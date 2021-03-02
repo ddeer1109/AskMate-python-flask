@@ -100,14 +100,6 @@ def edit_question(question_id):
     question = data_manager.get_single_question(question_id)
     return render_template('edit_question.html', question_id=question_id, question=question)
 
-    # questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-    # question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
-    #
-    # if request.method == "POST":
-    #     data_manager.edit_entry(dict(request.form), question, questions)
-    #     return redirect(f'/question/{question_id}')
-    # else:
-    #     return render_template('edit_question.html', question_id=question_id, question=question)
 
 @app.route("/question/<question_id>/edit", methods=['POST'])
 def save_edited_question(question_id):
@@ -128,12 +120,14 @@ def delete_answer(answer_id):
 
     return redirect(url_for('display_question', question_id=redirection_id))
 
+
 @app.route("/answer/<answer_id>/edit")
 def display_answer_to_edit(answer_id):
     """Services displaying edition of answer and posting edited version."""
 
     answer = data_manager.get_answer(answer_id)
     return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
+
 
 @app.route("/answer/<answer_id>/edit", methods=['POST'])
 def save_edited_answer(answer_id):

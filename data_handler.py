@@ -94,10 +94,11 @@ def save_image(form_image, sub_dir, entry_id):
 
 
 def delete_image(image_filename, sub_dir, entry_id):
-    entry_id = str(entry_id)
-    path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
-    os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
+    if image_filename != "none.jpg":
+        entry_id = str(entry_id)
+        path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+        os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
 
-    if len(os.listdir(path)) == 0:
-        os.rmdir(path)
+        if len(os.listdir(path)) == 0:
+            os.rmdir(path)
 
