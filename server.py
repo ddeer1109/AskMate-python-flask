@@ -100,8 +100,10 @@ def add_new_tag_to_question(question_id):
     message = data_manager.add_new_tag_to_question(question_id, request.form['tag_id'])
     return redirect(url_for('display_question', question_id=question_id))
 
-
-
+@app.route("/question/<question_id>/tag/<tag_id>/delete")
+def delete_single_tag_from_question(question_id, tag_id):
+    data_manager.remove_single_tag_from_question(question_id, tag_id)
+    return redirect(url_for('display_question', question_id=question_id))
 
 @app.route("/question/<question_id>/edit")
 def edit_question(question_id):

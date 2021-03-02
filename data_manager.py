@@ -59,7 +59,7 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 @data_handler.connection_handler
 def get_tags_for_question(cursor: RealDictCursor, question_id):
     query = """
-    SELECT name 
+    SELECT id, name 
     FROM question_tag
     INNER JOIN tag
         ON question_tag.tag_id = tag.id
@@ -68,6 +68,15 @@ def get_tags_for_question(cursor: RealDictCursor, question_id):
 
     cursor.execute(query, {'question_id': question_id})
     return cursor.fetchall()
+
+@data_handler.connection_handler
+def remove_single_tag_from_question(cursor: RealDictCursor, question_id, tag_id):
+    commend = """
+        DELETE FROM question_tag
+        WHERE question_id = %(question_id)s AND tag_id = %(tag_id)s
+    """
+
+    cursor.execute(commend, {'question_id': question_id, 'tag_id': tag_id})
 
 @data_handler.connection_handler
 def add_new_tag_to_db(cursor: RealDictCursor, tag):
