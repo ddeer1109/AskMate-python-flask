@@ -2,30 +2,28 @@
 {% block head %}
 
     {{ super() }}
-    <link rel="stylesheet" href="../../../static/style/style.css">
+{#    <link rel="stylesheet" href="../../../static/style/style.css">#}
 
 {% endblock %}
 {% block content %}
-    <h1>New Tag</h1><br>
-{#    <p>question_id: {{ question_id }}</p>#}
-{#    <p>all_tags: {{ all_tags }}</p>#}
+    <h3 class="display-3"><i class="fas fa-tag text-warning"></i> New Tag</h3>
     <hr>
-    <h4>Add new tag to current question</h4>
+
+    <h4 class="display-6">Add new tag to current question</h4>
     <form action="/question/{{ question_id }}/new-tag-question" method="POST">
-        <select name="tag_id" id="tag_id">
+        <select class="form-select" name="tag_id" id="tag_id">
             {% for tag in all_tags %}
                 <option value="{{ tag['id'] }}">{{ tag['name'] }}</option>
             {% endfor %}
-        </select><br><br>
-        <input type="submit" value="Add tag to question">
+        </select><br>
+        <button class="btn btn-primary mt-1" type="submit">Add tag to question</button>
     </form>
     
     <hr>
-    <h4>Add new tag</h4>
+    <h4 class="display-6">Add new tag</h4>
     <form action="" method="POST">
-        <label for="tag">Type new tag: </label>
-        <input type="text" name="tag" id="tag" required><br><br>
-        <input type="submit" value="Add" class="btn-link">
+        <input class="form-control" type="text" name="tag" id="tag" required><br>
+        <button class="btn btn-primary mt-1" type="submit">Add</button>
     </form>
 
 {% endblock %}
