@@ -234,6 +234,14 @@ def init_complete_dict_entry(entry_type, form_data=None, request_files=None, que
 
 @data_handler.connection_handler
 def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
+
+    command = """
+        DELETE
+        FROM comment
+        WHERE answer_id=%(answer_id)s
+        """
+    cursor.execute(command, {'answer_id': answer_id})
+
     comment = """
     DELETE 
     FROM answer
@@ -250,7 +258,22 @@ def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
 
 
 @data_handler.connection_handler
+def delete_comments_for_answer(cursor: RealDictCursor, answer_id):
+    command = """
+                   DELETE
+                   FROM comment
+                   WHERE answer_id=%(answer_id)s
+                   """
+    cursor.execute(command, {'answer_id': answer_id})
+
+
+@data_handler.connection_handler
 def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
+
+    question_answers = get_answers_for_question(question_id)
+    for answer in question_answers:
+        delete_comments_for_answer(answer['id'])
+
     comment = """
         DELETE 
         FROM answer
@@ -269,6 +292,13 @@ def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
 @data_handler.connection_handler
 def delete_question(cursor: RealDictCursor, question_id: str):
 
+    command = """
+    DELETE
+    FROM comment
+    WHERE question_id=%(question_id)s
+    """
+    cursor.execute(command, {'question_id': question_id})
+
     delete_answers_by_question_id(question_id)
 
     comment = """
@@ -279,6 +309,8 @@ def delete_question(cursor: RealDictCursor, question_id: str):
     """
 
     cursor.execute(comment, {'question_id': question_id})
+
+    ########## solve tags conflicts
 
     deleted_data = cursor.fetchone()
     data_handler.delete_image(deleted_data['image'], 'questions', deleted_data['id'])

@@ -156,6 +156,8 @@ def delete_answer(answer_id):
 
     redirection_id = data_manager.delete_answer_by_id(answer_id)
 
+    return redirect(url_for('display_question', question_id=redirection_id))
+
 
 @app.route("/question/<question_id>/add-comment")
 def display_add_comment(question_id):
