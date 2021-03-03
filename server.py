@@ -80,6 +80,11 @@ def new_comment(question_id):
     data_manager.add_new_comment(request.form, question_id)
     return redirect(f'/question/{question_id}')
 
+@app.route("/comment/<comment_id>/delete")
+def delete_comment(comment_id):
+    redirection_id = data_manager.delete_comment_by_id(comment_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
 
 
 

@@ -257,6 +257,19 @@ def get_five_questions(cursor: RealDictCursor) -> list:
     data = cursor.fetchall()
     return data
 
+@data_handler.connection_handler
+def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
+    comment = """
+    DELETE 
+    FROM comment
+    WHERE id=%(id)s
+    RETURNING id, question_id
+    """
+
+    cursor.execute(comment, {'id': comment_id})
+
+    data_to_delete = cursor.fetchone()
+    return data_to_delete['question_id']
 
 
 # def add_new_question(form_data, request_files):
