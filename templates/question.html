@@ -70,7 +70,9 @@
             <table border="1">
                 <tr>
                     {% for header in answers[0].keys() %}
+                        {% if header != 'comments' %}
                         <th>{{ header.capitalize().replace('_', ' ') }}</th>
+                        {% endif %}
                     {% endfor %}
 
                     <th>Vote</th>
@@ -80,6 +82,7 @@
                     {% for answer in answers %}
                         <tr>
                         {% for data in answer.keys() %}
+                            {% if data != 'comments' %}
                             <td class="{{ data }}">
                                 {% if data == "image" %}
                                         {% if answer[data] == 'none.jpg' %}
@@ -93,6 +96,7 @@
 
                                 {% endif %}
                             </td>
+                            {% endif %}
                         {% endfor %}
 
 
@@ -115,8 +119,35 @@
                                     <a href="../answer/{{ answer['id'] }}/edit">EDIT</a>
                                 </button>
 
+                                <button  class="btn-link" style="display:block;">
+                                    <a href="../answer/{{ answer['id'] }}/add-comment" method="GET">NEW COMMENT</a>
+                                </button>
                             </td>
                         </tr>
+                    {% if answer['comments']|length != 0 %}
+
+                        <tr>
+                            <th colspan="2"></th>
+                            <th colspan="6" style="text-align:left;" class="comments header">Comments</th>
+                        </tr>
+                        <tr>
+                            <th>submission time</th>
+                            <th>times edited</th>
+                            <th colspan="6">message </th>
+                        </tr>
+
+                        {% for comment in answer['comments'] %}
+                            <tr style="border-bottom: 2px solid red;">
+                                <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>
+                                <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
+                                <td colspan="6" style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <th colspan="8" style="text-align:left; font-size: 0.75em" class="comments header">No comments</th>
+                        </tr>
+                    {% endif %}
                     {% endfor %}
             </table>
         {% else %}

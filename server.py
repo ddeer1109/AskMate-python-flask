@@ -70,29 +70,27 @@ def new_answer(question_id):
         question_id=question_id)
 
     return redirect(f'/question/{question_id}')
-#
-#
-# @app.route("/question/<question_id>/delete")
-# def delete_question(question_id):
-#     """Services deletion of question and associated answers."""
-#
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-#
-#     answers = data_manager.delete_rows(question_id, 'question_id', answers)
-#     questions = data_manager.delete_rows(question_id, 'id', questions)
-#
-#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
-#     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
-#
-#     return redirect('/')
-#
-#
+
+
+@app.route("/answer/<answer_id>/add-comment", methods=["GET", "POST"])
+def add_answer_comment(answer_id):
+
+    if request.method == 'GET':
+        return render_template(url_for('add_answer_comment', answer_id=answer_id))
+
+    elif request.method == 'POST':
+        message = request.form['message']
+        redirection_id = data_manager.add_comment(message, 'answer', answer_id)
+        return redirect(url_for('display_question', question_id=redirection_id))
+
+
+
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
     data_manager.delete_question(question_id)
 
     return redirect('/')
+
 
 @app.route("/question/<question_id>/edit")
 def edit_question(question_id):
@@ -105,7 +103,6 @@ def edit_question(question_id):
 def save_edited_question(question_id):
     title = request.form['title']
     message = request.form['message']
-
 
     data_manager.save_edited_question(question_id, title, message)
 
@@ -137,35 +134,6 @@ def save_edited_answer(answer_id):
     return redirect(url_for('display_question', question_id=redirection_id))
 
 
-
-# @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
-# def edit_question(question_id):
-#     """Services displaying edition of question and posting edited version."""
-#
-#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-#     question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
-#
-#     if request.method == "POST":
-#         data_manager.edit_entry(dict(request.form), question, questions)
-#         return redirect(f'/question/{question_id}')
-#     else:
-#         return render_template('edit_question.html', question_id=question_id, question=question)
-#
-#
-# @app.route("/answer/<answer_id>/edit", methods=["GET", "POST"])
-# def edit_answer(answer_id):
-#     """Services displaying edition of answer and posting edited version."""
-#
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     answer = data_manager.get_question_by_id_without_timestamp_conversion(answer_id, answers)
-#
-#     if request.method == "POST":
-#         data_manager.edit_entry(request.form, answer, answers)
-#         return redirect(f'/question/{answer["question_id"]}')
-#     else:
-#         return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
-#
-#
 @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
 def vote_on_post(entry_id, vote_value, entry_type):
     """Services voting on questions and answers"""
