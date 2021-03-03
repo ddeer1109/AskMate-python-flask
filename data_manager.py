@@ -11,7 +11,7 @@ def get_all_data(cursor: RealDictCursor) -> list:
     query = """
         SELECT *
         FROM question
-        ORDER BY submission_time"""
+        ORDER BY submission_time DESC"""
 
     cursor.execute(query)
     data = cursor.fetchall()
@@ -66,6 +66,19 @@ def get_tags_for_question(cursor: RealDictCursor, question_id):
     WHERE question_id = %(question_id)s
     """
 
+def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
+    query = """
+                    SELECT *
+                    FROM comment
+                    WHERE question_id=%(question_id)s
+            """
+
+    cursor.execute(query, {'question_id': question_id_int})
+    return cursor.fetchall()
+
+@data_handler.connection_handler
+def add_new_question(cursor: RealDictCursor, form_data, request_files):
+    requested_data = dict(form_data)
     cursor.execute(query, {'question_id': question_id})
     return cursor.fetchall()
 
@@ -306,6 +319,57 @@ def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
     elif entry_type == 'question':
         return fetched_data['id']
 
+    some_value = cursor.fetchone()
+
+    if request_files['image'].filename != '':
+        data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
+
+@data_handler.connection_handler
+def add_new_comment(cursor: RealDictCursor, form_data, question_id):
+    requested_data = dict(form_data)
+
+    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+    requested_data['question_id'] = question_id
+
+    query = """
+                INSERT INTO comment(submission_time, question_id, message)
+                VALUES (%(submission_time)s,%(question_id)s,%(message)s)
+                RETURNING id
+            """
+
+    params = {
+        'submission_time': requested_data['submission_time'],
+        'question_id': requested_data['question_id'],
+        'message': requested_data['message']
+    }
+    cursor.execute(query, params)
+
+
+@data_handler.connection_handler
+def get_five_questions(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT *
+            FROM question
+            ORDER BY submission_time DESC
+            LIMIT 5"""
+
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return data
+
+@data_handler.connection_handler
+def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
+    comment = """
+    DELETE 
+    FROM comment
+    WHERE id=%(id)s
+    RETURNING id, question_id
+    """
+
+    cursor.execute(comment, {'id': comment_id})
+
+    data_to_delete = cursor.fetchone()
+    return data_to_delete['question_id']
 
 def get_current_timestamp():
     """Return current timestamp in seconds"""

@@ -73,6 +73,22 @@
     <br>
     <br>
 
+    <div class="comments_section">
+    <h2>Comments:</h2>
+    {% for comment in comments %}
+        <p>{{ comment.id }} | {{ comment.submission_time }} | {{ comment.message }} <a href</p>
+        <button  class="btn-link" style="display:block;">
+                                    <a href="../comment/{{ comment['id'] }}/delete">DELETE</a>
+                                </button>
+    {% endfor %}
+
+    <button  class="btn-link">
+            <a href="/question/{{ question['id'] }}/add-comment">New comment</a>
+        </button>
+
+    </div>
+
+
     <div class="answers_section">
     <h2>Answers:</h2>
 

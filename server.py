@@ -13,6 +13,11 @@ PATH = app.root_path
 
 
 @app.route("/")
+def get_five_question():
+    """Services redirection to main page with loaded list of the 5 latest questions."""
+    questions = data_manager.get_five_questions()
+    return render_template('list.html', questions=questions)
+
 @app.route("/list")
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
@@ -20,6 +25,7 @@ def get_list_of_questions():
         questions = data_manager.get_all_data()
     else:
         questions = data_manager.get_all_data_by_query(request.args.get('order_by'), request.args.get('order_direction'))
+
 
     return render_template('list.html', questions=questions)
 
@@ -31,11 +37,13 @@ def display_question(question_id):
     question = data_manager.get_question_by_id(question_id)
     answers = data_manager.get_answers_for_question(question_id)
     tags = data_manager.get_tags_for_question(question_id)
+    comments = data_manager.get_comments_for_question(question_id)
 
     return render_template("question.html",
                            question=question,
                            answers=answers,
-                           tags=tags
+                           tags=tags,
+                           comments = comments
                            )
 
 @app.route("/add-question")
@@ -129,8 +137,22 @@ def delete_answer(answer_id):
 
     redirection_id = data_manager.delete_answer_by_id(answer_id)
 
-    return redirect(url_for('display_question', question_id=redirection_id))
+@app.route("/question/<question_id>/add-comment")
+def display_add_comment(question_id):
 
+    return render_template('add_comment.html')
+
+@app.route("/question/<question_id>/add-comment", methods=["POST"])
+def new_comment(question_id):
+
+    data_manager.add_new_comment(request.form, question_id)
+    return redirect(f'/question/{question_id}')
+
+@app.route("/comment/<comment_id>/delete")
+def delete_comment(comment_id):
+    redirection_id = data_manager.delete_comment_by_id(comment_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
 
 @app.route("/answer/<answer_id>/edit")
 def display_answer_to_edit(answer_id):
@@ -164,52 +186,3 @@ if __name__ == "__main__":
         host='127.0.0.1',
         port=5050,
         debug=True)
-
-
-
-#
-#
-# @app.route("/question/<question_id>/delete")
-# def delete_question(question_id):
-#     """Services deletion of question and associated answers."""
-#
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-#
-#     answers = data_manager.delete_rows(question_id, 'question_id', answers)
-#     questions = data_manager.delete_rows(question_id, 'id', questions)
-#
-#     data_handler.write_file(data_handler.ANSWER_DATA_FILE_PATH, data_handler.ANSWERS_DATA_HEADER, answers)
-#     data_handler.write_file(data_handler.QUESTIONS_DATA_FILE_PATH, data_handler.QUESTIONS_DATA_HEADER, questions)
-#
-#     return redirect('/')
-#
-#
-# @app.route("/question/<question_id>/edit", methods=["GET", "POST"])
-# def edit_question(question_id):
-#     """Services displaying edition of question and posting edited version."""
-#
-#     questions = data_handler.read_file(data_handler.QUESTIONS_DATA_FILE_PATH)
-#     question = data_manager.get_question_by_id_without_timestamp_conversion(question_id, questions)
-#
-#     if request.method == "POST":
-#         data_manager.edit_entry(dict(request.form), question, questions)
-#         return redirect(f'/question/{question_id}')
-#     else:
-#         return render_template('edit_question.html', question_id=question_id, question=question)
-#
-#
-# @app.route("/answer/<answer_id>/edit", methods=["GET", "POST"])
-# def edit_answer(answer_id):
-#     """Services displaying edition of answer and posting edited version."""
-#
-#     answers = data_handler.read_file(data_handler.ANSWER_DATA_FILE_PATH)
-#     answer = data_manager.get_question_by_id_without_timestamp_conversion(answer_id, answers)
-#
-#     if request.method == "POST":
-#         data_manager.edit_entry(request.form, answer, answers)
-#         return redirect(f'/question/{answer["question_id"]}')
-#     else:
-#         return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
-#
-#
