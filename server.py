@@ -43,7 +43,7 @@ def display_question(question_id):
                            question=question,
                            answers=answers,
                            tags=tags,
-                           comments = comments
+                           comments=comments
                            )
 
 @app.route("/add-question")

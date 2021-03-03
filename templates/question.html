@@ -40,9 +40,11 @@
                 {% endfor %}
                 </td>
             <td>
-                {% for tag in tags %}
-                    <span>{{ tag['name'] }} - <button><a href="/question/{{ question["id"] }}/tag/{{ tag["id"] }}/delete">X</a></button></span><br>
-                {% endfor %}
+{#                {% if tags %}#}
+                    {% for tag in tags %}
+                        <span>{{ tag['name'] }} - <button><a href="/question/{{ question["id"] }}/tag/{{ tag["id"] }}/delete">X</a></button></span><br>
+                    {% endfor %}
+{#                {% endif %}#}
 
             </td>
 
