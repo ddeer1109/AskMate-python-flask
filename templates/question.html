@@ -82,6 +82,9 @@
         <button  class="btn-link" style="display:block;">
                                     <a href="../comment/{{ comment['id'] }}/delete">DELETE</a>
                                 </button>
+        <button  class="btn-link" style="display:block;">
+                                        <a href="../comment/{{ comment['id'] }}/edit">EDIT</a>
+                                    </button>
     {% endfor %}
 
     <button  class="btn-link">
@@ -169,6 +172,11 @@
                                 <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>
                                 <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
                                 <td colspan="6" style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
+                                <td>
+                                    <button  class="btn-link" style="display:block;">
+                                        <a href="../comment/{{ comment['id'] }}/edit">EDIT</a>
+                                    </button>
+                                </td>
                             </tr>
                         {% endfor %}
                     {% else %}

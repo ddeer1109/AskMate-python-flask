@@ -189,7 +189,6 @@ def display_answer_to_edit(answer_id):
 def save_edited_answer(answer_id):
     redirection_id = data_manager.save_edited_answer(answer_id, request.form['message'])
 
-
     return redirect(url_for('display_question', question_id=redirection_id))
 
 
@@ -198,6 +197,24 @@ def vote_on_post(entry_id, vote_value, entry_type):
     """Services voting on questions and answers"""
 
     redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
+@app.route("/comment/<comment_id>/edit")
+def display_comment_edit(comment_id):
+    comment = data_manager.get_comment_by_id(comment_id)
+
+    return render_template('edit_comment.html',
+                           message=comment['message'],
+                           comment_id=comment_id)
+
+
+@app.route("/comment/<comment_id>/edit", methods=["POST"])
+def edit_comment(comment_id):
+
+    new_message = request.form['message']
+    redirection_id = data_manager.update_comment(comment_id, new_message)
 
     return redirect(url_for('display_question', question_id=redirection_id))
 

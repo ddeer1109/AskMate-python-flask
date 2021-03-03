@@ -67,7 +67,7 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 def get_comments_for_answer(cursor: RealDictCursor, answer_id):
 
     query = """
-        SELECT submission_time, message, edited_count 
+        SELECT id, submission_time, message, edited_count 
         FROM comment
         WHERE answer_id=%(answer_id)s
     """
@@ -437,4 +437,35 @@ def get_image_name(image_storage_obj):
         image_name = image_storage_obj.filename
 
     return image_name
-#
+
+
+@data_handler.connection_handler
+def update_comment(cursor: RealDictCursor, comment_id, message):
+
+    command = """
+    UPDATE comment 
+    SET message=%(message)s
+    WHERE id=%(comment_id)s
+    RETURNING question_id, answer_id
+    """
+
+    cursor.execute(command, {'message': message, 'comment_id': comment_id})
+    ids = cursor.fetchone()
+
+    if ids['question_id'] is not None:
+        return ids['question_id']
+    else:
+        answer = get_answer(ids['answer_id'])
+        return answer['question_id']
+
+
+@data_handler.connection_handler
+def get_comment_by_id(cursor: RealDictCursor, comment_id):
+
+    query = """SELECT * 
+    FROM comment
+    WHERE id=%(comment_id)s"""
+
+    cursor.execute(query, {'comment_id': comment_id})
+
+    return cursor.fetchone()
