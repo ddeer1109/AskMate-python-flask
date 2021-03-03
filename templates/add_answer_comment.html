@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+    <link rel="stylesheet" href="../../../static/style/style.css">
+
+{% endblock %}
+{% block content %}
+    <h3>Add comment</h3>
+    <hr>
+
+    <form action="{{ url_for('post_answer_comment', answer_id=answer_id) }}" method="POST" enctype="multipart/form-data">
+
+        <label for="message">Message:</label><br>
+        <textarea rows="10" cols="30" name="message" id="message" required></textarea><br>
+
+        <br>
+        <input type="submit" value="Add comment" class="btn-link">
+    </form>
+{% endblock%}

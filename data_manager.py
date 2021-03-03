@@ -17,6 +17,7 @@ def get_all_data(cursor: RealDictCursor) -> list:
     data = cursor.fetchall()
     return data
 
+
 @data_handler.connection_handler
 def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
     query = f"""
@@ -26,7 +27,7 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
     """
 
     cursor.execute(query)
-    return cursor.fetchall()
+    cursor.fetchall()
 
 
 @data_handler.connection_handler
@@ -54,7 +55,27 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
         """
 
     cursor.execute(query, {'question_id': question_id_int})
-    return cursor.fetchall()
+
+    answers = cursor.fetchall()
+    for answer in answers:
+        answer['comments'] = get_comments_for_answer(answer['id'])
+
+    return answers
+
+
+@data_handler.connection_handler
+def get_comments_for_answer(cursor: RealDictCursor, answer_id):
+
+    query = """
+        SELECT submission_time, message, edited_count 
+        FROM comment
+        WHERE answer_id=%(answer_id)s
+    """
+
+    cursor.execute(query, {'answer_id': answer_id})
+    comments = cursor.fetchall()
+    return comments
+
 
 @data_handler.connection_handler
 def get_tags_for_question(cursor: RealDictCursor, question_id):
@@ -68,6 +89,7 @@ def get_tags_for_question(cursor: RealDictCursor, question_id):
     cursor.execute(query, {'question_id': question_id})
     return cursor.fetchall()
 
+
 @data_handler.connection_handler
 def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
     query = """
@@ -79,11 +101,13 @@ def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
     cursor.execute(query, {'question_id': question_id_int})
     return cursor.fetchall()
 
-@data_handler.connection_handler
-def add_new_question(cursor: RealDictCursor, form_data, request_files):
-    requested_data = dict(form_data)
-    cursor.execute(query, {'question_id': question_id})
-    return cursor.fetchall()
+
+# @data_handler.connection_handler
+# def add_new_question(cursor: RealDictCursor, form_data, request_files):
+#     requested_data = dict(form_data)
+#     cursor.execute(query, {'question_id': question_id})
+#     return cursor.fetchall()
+
 
 @data_handler.connection_handler
 def remove_single_tag_from_question(cursor: RealDictCursor, question_id, tag_id):
@@ -94,6 +118,7 @@ def remove_single_tag_from_question(cursor: RealDictCursor, question_id, tag_id)
 
     cursor.execute(commend, {'question_id': question_id, 'tag_id': tag_id})
 
+
 @data_handler.connection_handler
 def add_new_tag_to_db(cursor: RealDictCursor, tag):
     comment = """
@@ -101,6 +126,7 @@ def add_new_tag_to_db(cursor: RealDictCursor, tag):
     """
 
     cursor.execute(comment, {'tag': tag})
+
 
 @data_handler.connection_handler
 def get_all_tags(cursor: RealDictCursor):
@@ -111,6 +137,7 @@ def get_all_tags(cursor: RealDictCursor):
 
     cursor.execute(query)
     return cursor.fetchall()
+
 
 @data_handler.connection_handler
 def add_new_tag_to_question(cursor: RealDictCursor, question_id, tag_id):
@@ -124,14 +151,11 @@ def add_new_tag_to_question(cursor: RealDictCursor, question_id, tag_id):
     except:
         return "current tag is already in question"
 
+
 @data_handler.connection_handler
 def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):
 
-    complete_dict_data = init_complete_dict_entry(
-                                                    table_name,
-                                                    form_data,
-                                                    request_files,
-                                                    question_id)
+    complete_dict_data = init_complete_dict_entry(table_name, form_data, request_files, question_id)
 
     columns_sql_str = ", ".join([str(key) for key in complete_dict_data.keys()])
     values_sql_str = ", ".join(f'%({key})s' for key in complete_dict_data.keys())
@@ -155,6 +179,24 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
 
     if table_name == 'question':
         return entry_id
+
+
+@data_handler.connection_handler
+def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
+    entry_column_name = 'question_id' if entry_type == 'question' else 'answer_id'
+    submission_time = datetime.fromtimestamp(time.time())
+    query = f"""
+        INSERT INTO comment
+        ({entry_column_name}, submission_time, message)
+        VALUES (%(entry_id)s, %(submission_time)s, %(message)s)
+    """
+
+    cursor.execute(query, {'entry_id': entry_id, 'submission_time': submission_time, 'message': message})
+
+    if entry_type == 'question':
+        return entry_id
+    else:
+        return get_answer(entry_id)['question_id']
 
 
 def set_init_entry_values(form_data, request_files):
@@ -322,10 +364,11 @@ def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
     elif entry_type == 'question':
         return fetched_data['id']
 
-    some_value = cursor.fetchone()
+    # some_value = cursor.fetchone()
+    # #
+    # # if request_files['image'].filename != '':
+    # #     data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
 
-    if request_files['image'].filename != '':
-        data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
 
 @data_handler.connection_handler
 def add_new_comment(cursor: RealDictCursor, form_data, question_id):
@@ -360,6 +403,7 @@ def get_five_questions(cursor: RealDictCursor) -> list:
     data = cursor.fetchall()
     return data
 
+
 @data_handler.connection_handler
 def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
     comment = """
@@ -373,6 +417,7 @@ def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
 
     data_to_delete = cursor.fetchone()
     return data_to_delete['question_id']
+
 
 def get_current_timestamp():
     """Return current timestamp in seconds"""

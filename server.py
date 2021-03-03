@@ -18,6 +18,7 @@ def get_five_question():
     questions = data_manager.get_five_questions()
     return render_template('list.html', questions=questions)
 
+
 @app.route("/list")
 def get_list_of_questions():
     """Services redirection to main page with loaded list of all questions."""
@@ -25,7 +26,6 @@ def get_list_of_questions():
         questions = data_manager.get_all_data()
     else:
         questions = data_manager.get_all_data_by_query(request.args.get('order_by'), request.args.get('order_direction'))
-
 
     return render_template('list.html', questions=questions)
 
@@ -45,6 +45,7 @@ def display_question(question_id):
                            tags=tags,
                            comments=comments
                            )
+
 
 @app.route("/add-question")
 def display_add_question():
@@ -83,11 +84,27 @@ def new_answer(question_id):
 
     return redirect(f'/question/{question_id}')
 
+
+@app.route("/answer/<answer_id>/add-comment")
+def add_answer_comment(answer_id):
+
+    return render_template('add_answer_comment.html', answer_id=answer_id)
+
+
+@app.route("/answer/<answer_id>/add-comment", methods=['POST'])
+def post_answer_comment(answer_id):
+
+    message = request.form['message']
+    redirection_id = data_manager.add_comment(message, 'answer', answer_id)
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
     data_manager.delete_question(question_id)
 
     return redirect('/')
+
 
 @app.route("/question/<question_id>/new-tag")
 def display_new_tag(question_id):
@@ -102,16 +119,19 @@ def add_new_tag(question_id):
     data_manager.add_new_tag_to_db(request.form['tag'])
     return redirect(url_for('display_new_tag', question_id=question_id))
 
+
 @app.route("/question/<question_id>/new-tag-question", methods=['POST'])
 def add_new_tag_to_question(question_id):
     print(request.form['tag_id'])
     message = data_manager.add_new_tag_to_question(question_id, request.form['tag_id'])
     return redirect(url_for('display_question', question_id=question_id))
 
+
 @app.route("/question/<question_id>/tag/<tag_id>/delete")
 def delete_single_tag_from_question(question_id, tag_id):
     data_manager.remove_single_tag_from_question(question_id, tag_id)
     return redirect(url_for('display_question', question_id=question_id))
+
 
 @app.route("/question/<question_id>/edit")
 def edit_question(question_id):
@@ -125,7 +145,6 @@ def save_edited_question(question_id):
     title = request.form['title']
     message = request.form['message']
 
-
     data_manager.save_edited_question(question_id, title, message)
 
     return redirect(url_for('display_question', question_id=question_id))
@@ -137,10 +156,12 @@ def delete_answer(answer_id):
 
     redirection_id = data_manager.delete_answer_by_id(answer_id)
 
+
 @app.route("/question/<question_id>/add-comment")
 def display_add_comment(question_id):
 
     return render_template('add_comment.html')
+
 
 @app.route("/question/<question_id>/add-comment", methods=["POST"])
 def new_comment(question_id):
@@ -148,11 +169,13 @@ def new_comment(question_id):
     data_manager.add_new_comment(request.form, question_id)
     return redirect(f'/question/{question_id}')
 
+
 @app.route("/comment/<comment_id>/delete")
 def delete_comment(comment_id):
     redirection_id = data_manager.delete_comment_by_id(comment_id)
 
     return redirect(url_for('display_question', question_id=redirection_id))
+
 
 @app.route("/answer/<answer_id>/edit")
 def display_answer_to_edit(answer_id):
@@ -168,8 +191,6 @@ def save_edited_answer(answer_id):
 
 
     return redirect(url_for('display_question', question_id=redirection_id))
-
-
 
 
 @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
