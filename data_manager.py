@@ -102,13 +102,6 @@ def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
     return cursor.fetchall()
 
 
-# @data_handler.connection_handler
-# def add_new_question(cursor: RealDictCursor, form_data, request_files):
-#     requested_data = dict(form_data)
-#     cursor.execute(query, {'question_id': question_id})
-#     return cursor.fetchall()
-
-
 @data_handler.connection_handler
 def remove_single_tag_from_question(cursor: RealDictCursor, question_id, tag_id):
     commend = """
@@ -395,11 +388,6 @@ def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
         return fetched_data['question_id']
     elif entry_type == 'question':
         return fetched_data['id']
-
-    # some_value = cursor.fetchone()
-    # #
-    # # if request_files['image'].filename != '':
-    # #     data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
 
 
 @data_handler.connection_handler

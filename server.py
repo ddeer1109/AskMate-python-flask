@@ -114,6 +114,7 @@ def display_new_tag(question_id):
                            all_tags=all_tags
                            )
 
+
 @app.route("/question/<question_id>/new-tag", methods=['POST'])
 def add_new_tag(question_id):
     data_manager.add_new_tag_to_db(request.form['tag'])
