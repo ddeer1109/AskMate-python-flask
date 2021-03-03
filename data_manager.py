@@ -117,7 +117,7 @@ def get_all_data(cursor: RealDictCursor) -> list:
     query = """
         SELECT *
         FROM question
-        ORDER BY submission_time"""
+        ORDER BY submission_time DESC"""
 
     cursor.execute(query)
     data = cursor.fetchall()
@@ -213,8 +213,17 @@ def add_new_answer(cursor: RealDictCursor, form_data, request_files, question_id
     if request_files['image'].filename != '':
         data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
 
+@data_handler.connection_handler
+def get_five_questions(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT *
+            FROM question
+            ORDER BY submission_time DESC
+            LIMIT 5"""
 
-
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return data
 
 
 

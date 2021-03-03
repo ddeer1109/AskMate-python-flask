@@ -13,9 +13,14 @@ PATH = app.root_path
 
 
 @app.route("/")
+def get_five_question():
+    """Services redirection to main page with loaded list of the 5 latest questions."""
+    questions = data_manager.get_five_questions()
+    return render_template('list.html', questions=questions)
+
 @app.route("/list")
 def get_list_of_questions():
-    """Services redirection to main page with loaded list of all questions."""
+    """Services redirection to page with loaded list of all questions."""
 
     questions = data_manager.get_all_data()
     return render_template('list.html', questions=questions)
