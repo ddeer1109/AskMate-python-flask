@@ -32,10 +32,12 @@ def display_question(question_id):
 
     question = data_manager.get_question_by_id(question_id)
     answers = data_manager.get_answers_for_question(question_id)
+    comments = data_manager.get_comments_for_question(question_id)
 
     return render_template("question.html",
                            question=question,
                            answers=answers,
+                           comments = comments
                            )
 
 
@@ -66,6 +68,21 @@ def new_answer(question_id):
     data_manager.add_new_answer(request.form, request.files, question_id)
 
     return redirect(f'/question/{question_id}')
+
+@app.route("/question/<question_id>/add-comment")
+def display_add_comment(question_id):
+
+    return render_template('add_comment.html')
+
+@app.route("/question/<question_id>/add-comment", methods=["POST"])
+def new_comment(question_id):
+
+    data_manager.add_new_comment(request.form, question_id)
+    return redirect(f'/question/{question_id}')
+
+
+
+
 #
 #
 # @app.route("/question/<question_id>/delete")

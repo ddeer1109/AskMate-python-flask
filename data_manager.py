@@ -151,6 +151,17 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
     return cursor.fetchall()
 
 @data_handler.connection_handler
+def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
+    query = """
+                    SELECT *
+                    FROM comment
+                    WHERE question_id=%(question_id)s
+            """
+
+    cursor.execute(query, {'question_id': question_id_int})
+    return cursor.fetchall()
+
+@data_handler.connection_handler
 def add_new_question(cursor: RealDictCursor, form_data, request_files):
     requested_data = dict(form_data)
 
@@ -212,6 +223,27 @@ def add_new_answer(cursor: RealDictCursor, form_data, request_files, question_id
 
     if request_files['image'].filename != '':
         data_handler.save_image(request_files['image'], 'answers', str(some_value['id']))
+
+@data_handler.connection_handler
+def add_new_comment(cursor: RealDictCursor, form_data, question_id):
+    requested_data = dict(form_data)
+
+    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
+    requested_data['question_id'] = question_id
+
+    query = """
+                INSERT INTO comment(submission_time, question_id, message)
+                VALUES (%(submission_time)s,%(question_id)s,%(message)s)
+                RETURNING id
+            """
+
+    params = {
+        'submission_time': requested_data['submission_time'],
+        'question_id': requested_data['question_id'],
+        'message': requested_data['message']
+    }
+    cursor.execute(query, params)
+
 
 @data_handler.connection_handler
 def get_five_questions(cursor: RealDictCursor) -> list:

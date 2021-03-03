@@ -63,6 +63,19 @@
     <br>
     <br>
 
+    <div class="comments_section">
+    <h2>Comments:</h2>
+    {% for comment in comments %}
+        <h3>{{ comment.message }}</h3>
+    {% endfor %}
+
+    <button  class="btn-link">
+            <a href="/question/{{ question['id'] }}/add-comment">New comment</a>
+        </button>
+
+    </div>
+
+
     <div class="answers_section">
     <h2>Answers:</h2>
 
