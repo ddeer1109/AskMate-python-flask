@@ -72,17 +72,18 @@ def new_answer(question_id):
     return redirect(f'/question/{question_id}')
 
 
-@app.route("/answer/<answer_id>/add-comment", methods=["GET", "POST"])
+@app.route("/answer/<answer_id>/add-comment")
 def add_answer_comment(answer_id):
 
-    if request.method == 'GET':
-        return render_template(url_for('add_answer_comment', answer_id=answer_id))
+    return render_template('add_comment.html', answer_id=answer_id)
 
-    elif request.method == 'POST':
-        message = request.form['message']
-        redirection_id = data_manager.add_comment(message, 'answer', answer_id)
-        return redirect(url_for('display_question', question_id=redirection_id))
 
+@app.route("/answer/<answer_id>/add-comment", methods=['POST'])
+def post_answer_comment(answer_id):
+
+    message = request.form['message']
+    redirection_id = data_manager.add_comment(message, 'answer', answer_id)
+    return redirect(url_for('display_question', question_id=redirection_id))
 
 
 @app.route("/question/<question_id>/delete")

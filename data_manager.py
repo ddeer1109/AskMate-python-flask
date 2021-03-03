@@ -101,7 +101,7 @@ def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
     query = f"""
         INSERT INTO comment
         ({entry_column_name}, submission_time, message)
-        VALUES (%(entry_id)s, %(submission_time)s, %(massage)s)
+        VALUES (%(entry_id)s, %(submission_time)s, %(message)s)
     """
 
     cursor.execute(query, {'entry_id': entry_id, 'submission_time': submission_time, 'message': message})
