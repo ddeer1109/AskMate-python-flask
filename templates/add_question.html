@@ -5,20 +5,25 @@
 
 {% endblock %}
 {% block content %}
-    <h3>Add question</h3>
+    <h3 class="display-3"><i class="fas fa-folder-plus text-warning"></i> Add Question</h3>
     <hr>
 
     <form action="{{ url_for('add_question') }}" method="post" enctype="multipart/form-data">
-        <label for="title">Your question:</label><br>
-        <input type="text" name="title" id="title" required><br>
+        <div class="mb-3">
+            <label for="title" class="form-label">Your question:</label><br>
+            <input type="text" name="title" id="title" required class="form-control">
+        </div>
 
-        <label for="message">Message:</label><br>
-        <textarea rows="10" cols="30" name="message" id="message" required></textarea><br>
+        <div class="mb-3">
+            <label for="message" class="form-label">Message:</label><br>
+            <textarea rows="10" cols="30" name="message" id="message" required class="form-control"></textarea><br>
+        </div>
 
-        <label for="image">Image</label><br>
-        <input type="file" name="image" id="image" accept="image/jpeg, image/png"><br>
+        <div class="input-group mb-3">
+            <label for="image" class="input-group-text">Image</label><br>
+            <input type="file" class="form-control" name="image" id="image" accept="image/jpeg, image/png">
+        </div>
 
-        <br>
-        <input type="submit" value="Add question" class="btn-link">
+        <button type="submit" class="btn btn-primary">Add question</button>
     </form>
 {% endblock%}
