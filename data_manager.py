@@ -410,13 +410,18 @@ def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
     DELETE 
     FROM comment
     WHERE id=%(id)s
-    RETURNING id, question_id
+    RETURNING id, question_id, answer_id
     """
 
     cursor.execute(comment, {'id': comment_id})
 
-    data_to_delete = cursor.fetchone()
-    return data_to_delete['question_id']
+    ids = cursor.fetchone()
+
+    if ids['question_id'] is not None:
+        return ids['question_id']
+    else:
+        answer = get_answer(ids['answer_id'])
+        return answer['question_id']
 
 
 def get_current_timestamp():
