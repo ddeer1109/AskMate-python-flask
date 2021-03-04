@@ -45,9 +45,11 @@
             <td>
 {#                {% if tags %}#}
                     {% for tag in tags %}
-                        <div style="display: flex; justify-content: space-between">
-                            <span>{{ tag['name'] }}</span> <a class="btn btn-danger btn-sm mt-1" href="/question/{{ question["id"] }}/tag/{{ tag["id"] }}/delete">X</a>
-
+                        <div style="display: flex; justify-content: space-between; align-items: center">
+                            <span>{{ tag['name'] }}</span>
+                            <a class="btn btn-danger btn-sm m-1" href="/question/{{ question["id"] }}/tag/{{ tag["id"] }}/delete">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
                         </div>
                     {% endfor %}
 {#                {% endif %}#}
@@ -56,10 +58,14 @@
 
             <td>
                 <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
-                    <button type="submit" class="btn btn-primary btn-sm mt-1">Vote up</button>
+                    <button type="submit" class="btn btn-primary btn-sm mt-1">
+                       <i class="far fa-thumbs-up"></i>
+                    </button>
                 </form>
                 <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
-                    <button type="submit" class="btn btn-primary btn-sm mt-1">Vote down</button>
+                    <button type="submit" class="btn btn-primary btn-sm mt-1">
+                        <i class="far fa-thumbs-down"></i>
+                    </button>
                 </form>
             </td>
 
@@ -155,17 +161,21 @@
 
                             <td>
                                 <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">
-                                    <button type="submit" class="btn btn-primary btn-sm mt-1">Vote up</button>
+                                    <button type="submit" class="btn btn-primary btn-sm mt-1">
+                                        <i class="far fa-thumbs-up"></i>
+                                    </button>
                                 </form>
                                 <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">
-                                    <button type="submit" class="btn btn-primary btn-sm mt-1">Vote down</button>
+                                    <button type="submit" class="btn btn-primary btn-sm mt-1">
+                                        <i class="far fa-thumbs-down"></i>
+                                    </button>
                                 </form>
                             </td>
 
                             <td>
                                 <a class="btn btn-danger btn-sm mt-1" href="../answer/{{ answer['id'] }}/delete">DELETE</a>
-                                <a class="btn btn-success btn-sm mt-1 href="../answer/{{ answer['id'] }}/edit">EDIT</a>
-                                <a class="btn btn-primary btn-sm mt-1 href="../answer/{{ answer['id'] }}/add-comment" method="GET">NEW COMMENT</a>
+                                <a class="btn btn-success btn-sm mt-1" href="../answer/{{ answer['id'] }}/edit">EDIT</a>
+                                <a class="btn btn-primary btn-sm mt-1" href="../answer/{{ answer['id'] }}/add-comment" method="GET">NEW COMMENT</a>
                             </td>
 
                             <td>
@@ -192,8 +202,8 @@
                                         <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
                                         <td colspan="6" style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
                                         <td>
-                                            <a class="btn btn-danger btn-sm" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
-                                            <a class="btn btn-success btn-sm" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
+                                            <a class="btn btn-danger btn-sm mt-1" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
+                                            <a class="btn btn-success btn-sm mt-1" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

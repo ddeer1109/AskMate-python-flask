@@ -2,18 +2,18 @@
 {% block head %}
 
     {{ super() }}
-    <link rel="stylesheet" href="../../../static/style/style.css">
+{#    <link rel="stylesheet" href="../../../static/style/style.css">#}
 
 {% endblock %}
 {% block content %}
- <h3>Add comment</h3>
+    <h3 class="display-3"><i class="fas fa-folder-plus text-warning"></i> Add Comment</h3>
     <hr>
 
     <form action ="" method="POST" enctype="multipart/form-data">
-        <label for="message">Comment:</label><br>
-        <textarea required id="message" name="message" rows="4" cols="60"></textarea><br>
+        <label class="form-label" for="message">Comment:</label><br>
+        <textarea class="form-control" required id="message" name="message" rows="4" cols="60"></textarea><br>
         <br>
-        <input type="submit" value="Add comment" class="btn-link">
+        <button class="btn btn-primary" type="submit">Add Comment</button>
     </form>
 {% endblock %}
 

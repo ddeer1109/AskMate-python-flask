@@ -2,22 +2,24 @@
 {% block head %}
 
     {{ super() }}
-    <link rel="stylesheet" href="../../../static/style/style.css">
+{#    <link rel="stylesheet" href="../../../static/style/style.css">#}
 
 {% endblock %}
 {% block content %}
- <h3>Add answer</h3>
+    <h3 class="display-3"><i class="fas fa-folder-plus text-warning"></i> Add Answer</h3>
     <hr>
 
     {#action in this case send us to /question/<question_id>/add-answer as POST#}
     <form action ="" method="POST" enctype="multipart/form-data">
         <label for="message">Your answer:</label><br>
-        <textarea required id="message" name="message" rows="4" cols="60"></textarea><br>
+        <textarea class="form-control" required id="message" name="message" rows="4" cols="60"></textarea><br>
 
-        <label for="image">Image</label><br>
-        <input type="file" name="image" id="image" accept="image/jpeg, image/png" value="None"><br>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="image">Image</label><br>
+            <input class="form-control" type="file" name="image" id="image" accept="image/jpeg, image/png" value="None"><br>
+        </div>
 
         <br>
-        <input type="submit" value="Add answer" class="btn-link">
+        <button class="btn btn-primary" type="submit">Add Answer</button>
     </form>
 {% endblock %}
