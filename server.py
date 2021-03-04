@@ -1,15 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
-from pathlib import Path
-
 import data_manager
-import time
-import data_handler
-import os
-
 
 app = Flask(__name__)
 PATH = app.root_path
-# app.config["UPLOAD_FOLDER"] = data_handler.UPLOADED_IMAGES_FILE_PATH
+
+#
+#          ------>> DISPLAY AND INSERTING <<------
+#
 
 
 @app.route("/")
@@ -33,6 +30,8 @@ def get_list_of_questions():
 @app.route("/question/<question_id>")
 def display_question(question_id):
     """Services redirection to specific question page."""
+
+    data_manager.update_views_count(question_id)
 
     question = data_manager.get_question_by_id(question_id)
     answers = data_manager.get_answers_for_question(question_id)
@@ -58,7 +57,7 @@ def display_add_question():
 def add_question():
     """Services posting question."""
     question_id = data_manager.add_new_entry(
-        'question',
+        table_name='question',
         form_data=request.form,
         request_files=request.files)
 
@@ -77,7 +76,7 @@ def new_answer(question_id):
     """Services posting answer."""
 
     data_manager.add_new_entry(
-        'answer',
+        table_name='answer',
         form_data=request.form,
         request_files=request.files,
         question_id=question_id)
@@ -99,11 +98,17 @@ def post_answer_comment(answer_id):
     return redirect(url_for('display_question', question_id=redirection_id))
 
 
-@app.route("/question/<question_id>/delete")
-def delete_question(question_id):
-    data_manager.delete_question(question_id)
+@app.route("/question/<question_id>/add-comment")
+def display_add_comment(question_id):
 
-    return redirect('/')
+    return render_template('add_comment.html')
+
+
+@app.route("/question/<question_id>/add-comment", methods=["POST"])
+def new_comment(question_id):
+
+    data_manager.add_comment(request.form['message'], 'question', question_id)
+    return redirect(f'/question/{question_id}')
 
 
 @app.route("/question/<question_id>/new-tag")
@@ -128,10 +133,43 @@ def add_new_tag_to_question(question_id):
     return redirect(url_for('display_question', question_id=question_id))
 
 
+#
+#          ------>> DELETIONS <<------
+#
+
+
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    data_manager.delete_question(question_id)
+
+    return redirect('/')
+
+
 @app.route("/question/<question_id>/tag/<tag_id>/delete")
 def delete_single_tag_from_question(question_id, tag_id):
     data_manager.remove_single_tag_from_question(question_id, tag_id)
     return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    """Services deleting answer."""
+
+    redirection_id = data_manager.delete_answer_by_id(answer_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
+@app.route("/comment/<comment_id>/delete")
+def delete_comment(comment_id):
+    redirection_id = data_manager.delete_comment_by_id(comment_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
+#
+#          ------>> EDITIONS <<------
+#
 
 
 @app.route("/question/<question_id>/edit")
@@ -149,35 +187,6 @@ def save_edited_question(question_id):
     data_manager.save_edited_question(question_id, title, message)
 
     return redirect(url_for('display_question', question_id=question_id))
-
-
-@app.route("/answer/<answer_id>/delete")
-def delete_answer(answer_id):
-    """Services deleting answer."""
-
-    redirection_id = data_manager.delete_answer_by_id(answer_id)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
-
-
-@app.route("/question/<question_id>/add-comment")
-def display_add_comment(question_id):
-
-    return render_template('add_comment.html')
-
-
-@app.route("/question/<question_id>/add-comment", methods=["POST"])
-def new_comment(question_id):
-
-    data_manager.add_new_comment(request.form, question_id)
-    return redirect(f'/question/{question_id}')
-
-
-@app.route("/comment/<comment_id>/delete")
-def delete_comment(comment_id):
-    redirection_id = data_manager.delete_comment_by_id(comment_id)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
 
 
 @app.route("/answer/<answer_id>/edit")

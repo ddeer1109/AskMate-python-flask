@@ -16,6 +16,8 @@
 
 
     <hr>
+
+    <div id="sorting_section">
     <form action="" method="get">
         <label for="order_by" >Sort by:</label>
         <select id="order_by" name="order_by">
@@ -35,9 +37,10 @@
         <br>
         <input type="submit" value="Sort" class="btn-link">
     </form>
+    </div>
     <hr>
 
-    <table border="1">
+    <table>
         <tr>
             {% if questions|length == 0 %}
                 <h3>No questions</h3>

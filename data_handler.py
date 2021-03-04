@@ -11,6 +11,7 @@ import psycopg2.extras
 
 UPLOADED_IMAGES_FILE_PATH = pathlib.Path(f"{pathlib.Path(__file__).parent.absolute()}/static/images")
 
+
 def get_connection_string():
     # setup connection string
     # to do this, please define these environment variables first
@@ -67,11 +68,14 @@ def save_image(form_image, sub_dir, entry_id):
 
 
 def delete_image(image_filename, sub_dir, entry_id):
-    if image_filename != "none.jpg":
-        entry_id = str(entry_id)
-        path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
-        os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
+    try:
+        if image_filename != "none.jpg":
+            entry_id = str(entry_id)
+            path = UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id
+            os.remove(UPLOADED_IMAGES_FILE_PATH / sub_dir / entry_id / image_filename)
 
-        if len(os.listdir(path)) == 0:
-            os.rmdir(path)
+            if len(os.listdir(path)) == 0:
+                os.rmdir(path)
+    except FileNotFoundError:
+        return
 

@@ -10,14 +10,24 @@
 <body>
     <div id="header">{% block header %}
         <div id="index_button">
-        <button id="logo" class="btn-link">
-            <a href="/"><h2 id="logo">Main Page</h2></a>
-        </button>
+            <a href="/">
+                <button id="logo" class="btn-link">
+                    <h2 id="logo">Main Page</h2>
+                </button>
+            </a>
         </div>
-        <div id="title">
+        <div id="page_title">
         <h1 id="logo">ASK MATE</h1>
         </div>
-
+        <div id="search_section">
+            <form action="">
+                <label for="search_input">Search in the website: </label>
+                <input type="text" name="query" id="search_input">
+                <button id="logo" class="btn-link" type="submit">
+                        Search
+                </button>
+            </form>
+        </div>
     {% endblock %}</div>
     <div id="content">{% block content %}{% endblock %}</div>
 

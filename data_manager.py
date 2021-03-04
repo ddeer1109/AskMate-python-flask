@@ -1,8 +1,11 @@
 from psycopg2.extras import RealDictCursor
-from datetime import datetime
 
 import data_handler
-import time
+import util
+
+#
+#          ------>> GETTERS <<------
+#
 
 
 @data_handler.connection_handler
@@ -28,6 +31,28 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
 
     cursor.execute(query)
     cursor.fetchall()
+
+
+@data_handler.connection_handler
+def get_answer(cursor: RealDictCursor, answer_id):
+    query = """
+        SELECT * FROM answer
+        WHERE id = %(answer_id)s
+    """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
+
+@data_handler.connection_handler
+def get_single_question(cursor: RealDictCursor, question_id):
+    query = """
+        SELECT *
+        FROM question
+        WHERE id = %(question_id)s
+    """
+
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchone()
 
 
 @data_handler.connection_handler
@@ -103,22 +128,15 @@ def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
 
 
 @data_handler.connection_handler
-def remove_single_tag_from_question(cursor: RealDictCursor, question_id, tag_id):
-    commend = """
-        DELETE FROM question_tag
-        WHERE question_id = %(question_id)s AND tag_id = %(tag_id)s
-    """
+def get_comment_by_id(cursor: RealDictCursor, comment_id):
 
-    cursor.execute(commend, {'question_id': question_id, 'tag_id': tag_id})
+    query = """SELECT * 
+    FROM comment
+    WHERE id=%(comment_id)s"""
 
+    cursor.execute(query, {'comment_id': comment_id})
 
-@data_handler.connection_handler
-def add_new_tag_to_db(cursor: RealDictCursor, tag):
-    comment = """
-        INSERT INTO tag(name) values(%(tag)s)
-    """
-
-    cursor.execute(comment, {'tag': tag})
+    return cursor.fetchone()
 
 
 @data_handler.connection_handler
@@ -130,6 +148,33 @@ def get_all_tags(cursor: RealDictCursor):
 
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@data_handler.connection_handler
+def get_five_questions(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT *
+            FROM question
+            ORDER BY submission_time DESC
+            LIMIT 5"""
+
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return data
+
+
+#
+#          ------>> INSERTS <<------
+#
+
+
+@data_handler.connection_handler
+def add_new_tag_to_db(cursor: RealDictCursor, tag):
+    comment = """
+        INSERT INTO tag(name) values(%(tag)s)
+    """
+
+    cursor.execute(comment, {'tag': tag})
 
 
 @data_handler.connection_handler
@@ -148,7 +193,7 @@ def add_new_tag_to_question(cursor: RealDictCursor, question_id, tag_id):
 @data_handler.connection_handler
 def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):
 
-    complete_dict_data = init_complete_dict_entry(table_name, form_data, request_files, question_id)
+    complete_dict_data = util.init_complete_dict_entry(table_name, form_data, request_files, question_id)
 
     columns_sql_str = ", ".join([str(key) for key in complete_dict_data.keys()])
     values_sql_str = ", ".join(f'%({key})s' for key in complete_dict_data.keys())
@@ -177,7 +222,8 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
 @data_handler.connection_handler
 def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
     entry_column_name = 'question_id' if entry_type == 'question' else 'answer_id'
-    submission_time = datetime.fromtimestamp(time.time())
+    submission_time = util.get_datetime_now()
+
     query = f"""
         INSERT INTO comment
         ({entry_column_name}, submission_time, message)
@@ -192,48 +238,15 @@ def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
         return get_answer(entry_id)['question_id']
 
 
-def set_init_entry_values(form_data, request_files):
-    requested_data = dict(form_data)
-    image_filename = get_image_name(request_files['image'])
-
-    requested_data['image'] = image_filename
-    requested_data['vote_number'] = 0
-    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
-
-    return requested_data
-
-
-def init_complete_dict_entry(entry_type, form_data=None, request_files=None, question_id=None):
-
-    if entry_type == 'question':
-        complete_entry = set_init_entry_values(form_data, request_files)
-        complete_entry['view_number'] = 0
-
-    elif entry_type == 'answer':
-        complete_entry = set_init_entry_values(form_data, request_files)
-        complete_entry['question_id'] = question_id
-
-    elif entry_type == 'comment':
-        pass
-
-    elif entry_type == 'question_tag':
-        pass
-
-    elif entry_type == 'tag':
-        pass
-
-    return complete_entry
+#
+#          ------>> DELETIONS <<------
+#
 
 
 @data_handler.connection_handler
 def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
 
-    command = """
-        DELETE
-        FROM comment
-        WHERE answer_id=%(answer_id)s
-        """
-    cursor.execute(command, {'answer_id': answer_id})
+    delete_comments_of_entry(entry_type="answer", entry_id=answer_id)
 
     comment = """
     DELETE 
@@ -251,21 +264,11 @@ def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
 
 
 @data_handler.connection_handler
-def delete_comments_for_answer(cursor: RealDictCursor, answer_id):
-    command = """
-                   DELETE
-                   FROM comment
-                   WHERE answer_id=%(answer_id)s
-                   """
-    cursor.execute(command, {'answer_id': answer_id})
-
-
-@data_handler.connection_handler
 def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
 
     question_answers = get_answers_for_question(question_id)
     for answer in question_answers:
-        delete_comments_for_answer(answer['id'])
+        delete_comments_of_entry(entry_type="answer", entry_id=answer['id'])
 
     comment = """
         DELETE 
@@ -285,14 +288,9 @@ def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
 @data_handler.connection_handler
 def delete_question(cursor: RealDictCursor, question_id: str):
 
-    command = """
-    DELETE
-    FROM comment
-    WHERE question_id=%(question_id)s
-    """
-    cursor.execute(command, {'question_id': question_id})
-
+    delete_comments_of_entry(entry_type="question", entry_id=question_id)
     delete_answers_by_question_id(question_id)
+    delete_question_tags(question_id)
 
     comment = """
     DELETE 
@@ -303,20 +301,65 @@ def delete_question(cursor: RealDictCursor, question_id: str):
 
     cursor.execute(comment, {'question_id': question_id})
 
-    ########## solve tags conflicts
-
     deleted_data = cursor.fetchone()
     data_handler.delete_image(deleted_data['image'], 'questions', deleted_data['id'])
 
 
 @data_handler.connection_handler
-def get_answer(cursor: RealDictCursor, answer_id):
-    query = """
-        SELECT * FROM answer
-        WHERE id = %(answer_id)s
+def remove_single_tag_from_question(cursor: RealDictCursor, question_id, tag_id):
+    commend = """
+        DELETE FROM question_tag
+        WHERE question_id = %(question_id)s AND tag_id = %(tag_id)s
     """
-    cursor.execute(query, {'answer_id': answer_id})
-    return cursor.fetchone()
+
+    cursor.execute(commend, {'question_id': question_id, 'tag_id': tag_id})
+
+
+@data_handler.connection_handler
+def delete_question_tags(cursor: RealDictCursor, question_id):
+    command = """
+    DELETE FROM question_tag
+    WHERE question_id = %(question_id)s
+    """
+
+    cursor.execute(command, {'question_id': question_id})
+
+
+@data_handler.connection_handler
+def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
+    comment = """
+    DELETE 
+    FROM comment
+    WHERE id=%(id)s
+    RETURNING id, question_id, answer_id
+    """
+
+    cursor.execute(comment, {'id': comment_id})
+
+    ids = cursor.fetchone()
+
+    if ids['question_id'] is not None:
+        return ids['question_id']
+    else:
+        answer = get_answer(ids['answer_id'])
+        return answer['question_id']
+
+
+@data_handler.connection_handler
+def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
+    entry_type_id = 'question_id' if entry_type == "question" else "answer_id"
+
+    command = f"""
+                   DELETE
+                   FROM comment
+                   WHERE {entry_type_id}=%(entry_id)s
+                   """
+    cursor.execute(command, {'entry_id': entry_id})
+
+
+#
+#          ------>> UPDATES <<------
+#
 
 
 @data_handler.connection_handler
@@ -342,18 +385,6 @@ def save_edited_question(cursor: RealDictCursor, question_id, title, message):
     """
 
     cursor.execute(comment, {'question_id': question_id, 'title': title, 'message': message})
-
-
-@data_handler.connection_handler
-def get_single_question(cursor: RealDictCursor, question_id):
-    query = """
-        SELECT *
-        FROM question
-        WHERE id = %(question_id)s
-    """
-
-    cursor.execute(query, {'question_id': question_id})
-    return cursor.fetchone()
 
 
 @data_handler.connection_handler
@@ -391,80 +422,6 @@ def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
 
 
 @data_handler.connection_handler
-def add_new_comment(cursor: RealDictCursor, form_data, question_id):
-    requested_data = dict(form_data)
-
-    requested_data['submission_time'] = datetime.fromtimestamp(time.time())
-    requested_data['question_id'] = question_id
-
-    query = """
-                INSERT INTO comment(submission_time, question_id, message)
-                VALUES (%(submission_time)s,%(question_id)s,%(message)s)
-                RETURNING id
-            """
-
-    params = {
-        'submission_time': requested_data['submission_time'],
-        'question_id': requested_data['question_id'],
-        'message': requested_data['message']
-    }
-    cursor.execute(query, params)
-
-
-@data_handler.connection_handler
-def get_five_questions(cursor: RealDictCursor) -> list:
-    query = """
-            SELECT *
-            FROM question
-            ORDER BY submission_time DESC
-            LIMIT 5"""
-
-    cursor.execute(query)
-    data = cursor.fetchall()
-    return data
-
-
-@data_handler.connection_handler
-def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
-    comment = """
-    DELETE 
-    FROM comment
-    WHERE id=%(id)s
-    RETURNING id, question_id, answer_id
-    """
-
-    cursor.execute(comment, {'id': comment_id})
-
-    ids = cursor.fetchone()
-
-    if ids['question_id'] is not None:
-        return ids['question_id']
-    else:
-        answer = get_answer(ids['answer_id'])
-        return answer['question_id']
-
-
-def get_current_timestamp():
-    """Return current timestamp in seconds"""
-
-    return int(time.time())
-
-
-def get_image_name(image_storage_obj):
-    """Checks if storage object is not empty. If it is returns default image filename else returns object filename"""
-
-    storage_obj_empty = image_storage_obj.filename == ""
-    invalid_extension = ".jpg" not in image_storage_obj.filename and ".png" not in image_storage_obj.filename
-
-    if storage_obj_empty or invalid_extension:
-        image_name = 'none.jpg'
-    else:
-        image_name = image_storage_obj.filename
-
-    return image_name
-
-
-@data_handler.connection_handler
 def update_comment(cursor: RealDictCursor, comment_id, message):
 
     command = """
@@ -485,12 +442,13 @@ def update_comment(cursor: RealDictCursor, comment_id, message):
 
 
 @data_handler.connection_handler
-def get_comment_by_id(cursor: RealDictCursor, comment_id):
+def update_views_count(cursor: RealDictCursor, question_id):
+    command = """
+    UPDATE question
+    SET view_number = view_number + 1
+    WHERE id = %(question_id)s
+    """
 
-    query = """SELECT * 
-    FROM comment
-    WHERE id=%(comment_id)s"""
+    cursor.execute(command, {'question_id': question_id})
 
-    cursor.execute(query, {'comment_id': comment_id})
 
-    return cursor.fetchone()

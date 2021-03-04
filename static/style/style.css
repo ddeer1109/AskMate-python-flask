@@ -1,8 +1,9 @@
 .btn-link{
-    background-color: lightgray;
+    background-color: #1f516e;
     width: 100px;
     margin: 2px;
     cursor: pointer;
+    color: white;
 }
 
 .btn-link:hover, .btn-link:active{
@@ -11,13 +12,20 @@
 
 a{
     text-decoration: none;
+    color: white;
+}
+
+td.title > a{
     color: black;
+    font-weight: bold;
 }
 
 body{
     padding: 0px;
     margin: 0px;
     font-family: Helvetica, sans-serif;
+    background-color: #29365a;
+    color: white;
 
 }
 
@@ -25,49 +33,71 @@ a:hover, a:active {
   text-decoration: underline;
 }
 
-div#header {
-    height: 10%;
-    padding: 2%;
-    background-color: darkgray;
-    border-bottom: lightgray solid 5px;
-    border-top: lightgray solid 4px;
-
+#header {
+    height: 5%;
+    padding: 1%;
+    background-color: #0b2066;
+    /*border-bottom: darkcyan solid 5px;*/
+    /*border-top: darkcyan solid 4px;*/
     display:flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+    position:fixed;
+    width: 100%;
+    top: 0;
 }
 
-div#index_button {
-  padding-left: 10%;
-  padding-right:10%;
+div#page_title {
+
+  /*padding-left:10%;*/
+  margin-left:5%;
+  letter-spacing: 10px;
+    align-self: center;
+    flex-grow: initial;
 }
 
-div#title {
-  padding-left:10%;
-  margin-left:10%;
-  letter-spacing: 3px;
+input#search_input {
+    width: 100px;
 }
+
 
 div#content {
+    width:80vw;
+    height: 100vh;
+    background-color: #356180;
   padding:2%;
+    margin-top: 6%;
   margin-left: auto;
   margin-right: auto;
+}
 
+button #logo {
+    font-size: 0.9em;
 }
 
 th {
-  background-color: lightgray;
-  padding: 2px;
+  background-color: darkcyan;
+  padding: 5px;
 }
 
 td {
     padding: 5px;
+    background-color: white;
+    color: black;
 }
 
 td.message {
-  width:40%;
+  min-width: 35vw;
 }
+
 
 td.view_number, td.vote_number, td.title, td.id {
    text-align: center;
+}
+
+td.title {
+    min-width: 10vw;
 }
 
 
@@ -77,9 +107,23 @@ table {
   padding: 0px;
 }
 
-div.answers_section{
+div .answers_section {
   padding-left: 10%;
   padding-right: 10%;
   display:inline-block;
 
 }
+
+div .comments_section > h2 {
+    line-height: 0.7;
+}
+
+
+select#order_by {
+    margin-left: 12px;
+}
+
+select#order_direction, select#order_by{
+    min-width: 122px;
+}
+

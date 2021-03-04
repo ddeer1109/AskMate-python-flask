@@ -8,7 +8,7 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-    <table border="1">
+    <table>
         <tr>
             {% for header in question.keys() %}
                 <th>{{ header.capitalize().replace('_', ' ') }}</th>
@@ -72,8 +72,6 @@
 
         </tr>
     </table>
-    <br>
-    <br>
 
     <div class="comments_section">
     <h2>Comments:</h2>
@@ -98,7 +96,7 @@
     <h2>Answers:</h2>
 
         {% if  answers|length > 0  %}
-            <table border="1">
+            <table>
                 <tr>
                     {% for header in answers[0].keys() %}
                         {% if header != 'comments' %}
@@ -161,27 +159,47 @@
                             <th colspan="2"></th>
                             <th colspan="6" style="text-align:left;" class="comments header">Comments</th>
                         </tr>
-                        <tr>
-                            <th>submission time</th>
-                            <th>times edited</th>
-                            <th colspan="6">message </th>
-                        </tr>
+{#                        <tr>#}
+{#                            <th>submission time</th>#}
+{#                            <th>times edited</th>#}
+{#                            <th colspan="6">message </th>#}
+{#                        </tr>#}
 
-                        {% for comment in answer['comments'] %}
-                            <tr style="border-bottom: 2px solid red;">
-                                <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>
-                                <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
-                                <td colspan="6" style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
-                                <td>
-                                    <button  class="btn-link" style="display:block;">
-                                        <a href="../comment/{{ comment['id'] }}/edit">EDIT</a>
-                                    </button>
-                                    <button  class="btn-link" style="display:block;">
-                                        <a href="../comment/{{ comment['id'] }}/delete">DELETE</a>
-                                    </button>
+
+                            {% for comment in answer['comments'] %}
+                            <tr>
+                                <th colspan="2">
+                                <button  class="btn-link" style="display:block;">
+                                    <a href="../comment/{{ comment['id'] }}/edit">EDIT</a>
+                                </button>
+                                <button  class="btn-link" style="display:block;">
+                                    <a href="../comment/{{ comment['id'] }}/delete">DELETE</a>
+                                </button>
+                                </th>
+
+                                <td colspan="6">
+                                <p class="answer comment"><p>{{ comment.id }} | {{ comment.submission_time }} | {{ comment.message }} </p>
                                 </td>
                             </tr>
-                        {% endfor %}
+                            {% endfor %}
+                            <tr><th colspan="8"></th></tr>
+
+
+{#                        {% for comment in answer['comments'] %}#}
+{#                            <tr style="border-bottom: 2px solid red;">#}
+{#                                <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>#}
+{#                                <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>#}
+{#                                <td colspan="6" style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>#}
+{#                                <td>#}
+{#                                    <button  class="btn-link" style="display:block;">#}
+{#                                        <a href="../comment/{{ comment['id'] }}/edit">EDIT</a>#}
+{#                                    </button>#}
+{#                                    <button  class="btn-link" style="display:block;">#}
+{#                                        <a href="../comment/{{ comment['id'] }}/delete">DELETE</a>#}
+{#                                    </button>#}
+{#                                </td>#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
                     {% else %}
                         <tr>
                             <th colspan="8" style="text-align:left; font-size: 0.75em" class="comments header">No comments</th>
