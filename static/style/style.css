@@ -1,0 +1,92 @@
+div#content {
+  padding:2%;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.btn-link{
+    background-color: lightgray;
+    width: 100px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+.btn-link:hover, .btn-link:active{
+    text-decoration: underline;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+body{
+    padding: 0px;
+    margin: 0px;
+    font-family: Helvetica, sans-serif;
+
+}
+
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+div#header {
+    height: 10%;
+    padding: 2%;
+    background-color: darkgray;
+    border-bottom: lightgray solid 5px;
+    border-top: lightgray solid 4px;
+
+    display:flex;
+}
+
+div#index_button {
+  padding-left: 10%;
+  padding-right:10%;
+}
+
+div#title {
+  padding-left:10%;
+  margin-left:10%;
+  letter-spacing: 3px;
+}
+
+div#content {
+  padding:2%;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+th {
+  background-color: lightgray;
+  padding: 2px;
+}
+
+td {
+    padding: 5px;
+}
+
+td.message {
+  width:40%;
+}
+
+td.view_number, td.vote_number, td.title, td.id {
+   text-align: center;
+}
+
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0px;
+}
+
+div.answers_section{
+  padding-left: 10%;
+  padding-right: 10%;
+  display:inline-block;
+
+}
