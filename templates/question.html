@@ -88,6 +88,7 @@
             <th>Id</th>
             <th>Submission time</th>
             <th>Message</th>
+
             <th>Actions</th>
         </tr>
         {% for comment in comments %}
@@ -187,33 +188,33 @@
 
 
 
-                       {% if answer['comments']|length != 0 %}
-                            <table class="table">
-                                <tr>
-                                    <th>submission time</th>
-                                    <th>times edited</th>
-                                    <th >message </th>
-                                    <th>Actions</th>
-                                </tr>
+                                       {% if answer['comments']|length != 0 %}
+                                            <table class="table">
+                                                <tr>
+                                                    <th>submission time</th>
+                                                    <th>times edited</th>
+                                                    <th>message </th>
+                                                    <th>Actions</th>
+                                                </tr>
 
-                                {% for comment in answer['comments'] %}
-                                    <tr style="border-bottom: 2px solid red;">
-                                        <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>
-                                        <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
-                                        <td colspan="6" style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
-                                        <td>
-                                            <a class="btn btn-danger btn-sm mt-1" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
-                                            <a class="btn btn-success btn-sm mt-1" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                           </table>
-                        {% else %}
-                           <h3>No comment</h3>
-{#                            <tr>#}
-{#                                <th colspan="8" style="text-align:left; font-size: 0.75em" class="comments header">No comments</th>#}
-{#                            </tr>#}
-                        {% endif %}
+                                                {% for comment in answer['comments'] %}
+                                                    <tr style="border-bottom: 2px solid red;">
+                                                        <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>
+                                                        <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
+                                                        <td style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
+                                                        <td>
+                                                            <a class="btn btn-danger btn-sm mt-1" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
+                                                            <a class="btn btn-success btn-sm mt-1" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                           </table>
+                                        {% else %}
+                                           <h3>No comment</h3>
+                {#                            <tr>#}
+                {#                                <th colspan="8" style="text-align:left; font-size: 0.75em" class="comments header">No comments</th>#}
+                {#                            </tr>#}
+                                        {% endif %}
 {#                    {% endfor %}#}
 
 
