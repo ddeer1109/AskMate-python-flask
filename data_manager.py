@@ -30,7 +30,7 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
     """
 
     cursor.execute(query)
-    cursor.fetchall()
+    return cursor.fetchall()
 
 
 @data_handler.connection_handler
@@ -162,6 +162,38 @@ def get_five_questions(cursor: RealDictCursor) -> list:
     data = cursor.fetchall()
     return data
 
+@data_handler.connection_handler
+def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
+    search_phrase = "%" + search_phrase + "%"
+
+    query = """
+    SELECT * 
+    FROM question 
+    WHERE (LOWER(title) LIKE LOWER(%(search_phrase)s)) 
+    or (LOWER(message) LIKE LOWER(%(search_phrase)s))
+    """
+
+    cursor.execute(query, {'search_phrase': search_phrase})
+
+    questions = cursor.fetchall()
+
+    query = """
+    SELECT 
+    answer.question_id AS id, 
+    question.submission_time, question.view_number, 
+    question.vote_number, question.title, 
+    question.message, question.image
+    FROM question
+    INNER JOIN answer
+    ON answer.question_id = question.id
+    WHERE LOWER(answer.message) LIKE LOWER(%(search_phrase)s)
+    """
+
+    cursor.execute(query, {'search_phrase': search_phrase})
+
+    questions_with_answers = cursor.fetchall()
+
+    return questions + questions_with_answers
 
 #
 #          ------>> INSERTS <<------
@@ -450,5 +482,4 @@ def update_views_count(cursor: RealDictCursor, question_id):
     """
 
     cursor.execute(command, {'question_id': question_id})
-
 

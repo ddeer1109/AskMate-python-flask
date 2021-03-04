@@ -13,7 +13,7 @@ PATH = app.root_path
 def get_five_question():
     """Services redirection to main page with loaded list of the 5 latest questions."""
     questions = data_manager.get_five_questions()
-    return render_template('list.html', questions=questions)
+    return render_template('list.html', questions=questions, sorted=False)
 
 
 @app.route("/list")
@@ -24,7 +24,16 @@ def get_list_of_questions():
     else:
         questions = data_manager.get_all_data_by_query(request.args.get('order_by'), request.args.get('order_direction'))
 
-    return render_template('list.html', questions=questions)
+    return render_template('list.html', questions=questions, sorted=True)
+
+
+@app.route("/search")
+def get_entries_by_search_phrase():
+    search_phrase = request.args.get('q')
+
+    entries = data_manager.get_entries_by_search_phrase(search_phrase)
+
+    return render_template("list.html", questions=entries)
 
 
 @app.route("/question/<question_id>")

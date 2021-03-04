@@ -19,16 +19,30 @@
 
 <nav class="navbar navbar-dark bg-primary fixed-top">
     <div class="container">
+
         <span class="navbar-brand mb-0 h1">
             <a class="navbar-brand fs-1" href="/"><i class="fas fa-users"></i> AskMate</a>
         </span>
+
+        <div class="navbar-brand mb-0 h1 " style="width:50%;">
+
+                <form action="{{ url_for('get_entries_by_search_phrase') }}">
+                    <div class="input-group" >
+                        <input type="text" class="form-control" placeholder="Type in search phrase" aria-label="Recipient's username" aria-describedby="button-addon2" name="q" required>
+                      <button class="btn btn-outline-secondary btn-warning" id="button-addon2" type="submit">Button</button>
+                    </div>
+                </form>
+
+        </div>
+
         <span class="navbar-brand mb-0 h1">
             <a class="navbar-brand fs-5" href="/"><i class="far fa-hand-point-left"></i> Home Page</a>
         </span>
+
     </div>
 </nav>
 
-<div class="container mb-5" id="content">{% block content %}{% endblock %}</div>
+<div class="container mb-5" style="margin-top:5rem;" id="content">{% block content %}{% endblock %}</div>
 
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
