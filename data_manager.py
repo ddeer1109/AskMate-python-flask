@@ -1,5 +1,4 @@
 from psycopg2.extras import RealDictCursor
-
 import data_handler
 import util
 
@@ -17,8 +16,9 @@ def get_all_data(cursor: RealDictCursor) -> list:
         ORDER BY submission_time DESC"""
 
     cursor.execute(query)
-    data = cursor.fetchall()
-    return data
+    questions = cursor.fetchall()
+    util.add_answer_snippets(questions)
+    return questions
 
 
 @data_handler.connection_handler
@@ -165,10 +165,11 @@ def get_five_questions(cursor: RealDictCursor) -> list:
 
 @data_handler.connection_handler
 def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
+    original_phrase = search_phrase
     search_phrase = "%" + search_phrase + "%"
 
     query = """
-    SELECT * 
+    SELECT DISTINCT * 
     FROM question 
     WHERE (LOWER(title) LIKE LOWER(%(search_phrase)s)) 
     or (LOWER(message) LIKE LOWER(%(search_phrase)s))
@@ -178,12 +179,13 @@ def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
 
     questions = cursor.fetchall()
 
+    util.highlight_search_phrases_in_lists(questions, original_phrase)
+    util.add_answer_snippets(questions)
+
     query = """
     SELECT 
-    answer.question_id AS id, 
-    question.submission_time, question.view_number, 
-    question.vote_number, question.title, 
-    question.message, question.image
+    answer.question_id AS id, question.submission_time, question.view_number, 
+    question.vote_number, question.title, question.message, question.image
     FROM question
     INNER JOIN answer
     ON answer.question_id = question.id
@@ -194,7 +196,11 @@ def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
 
     questions_with_answers = cursor.fetchall()
 
-    return questions + questions_with_answers
+    util.add_answer_snippets(questions_with_answers)
+    util.highlight_search_phrases_in_lists(questions_with_answers, original_phrase, answers=True)
+    util.process_phrase_searched_in_both_question_and_answer(questions, questions_with_answers)
+
+    return questions, questions_with_answers
 
 #
 #          ------>> INSERTS <<------
@@ -269,6 +275,7 @@ def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
         return entry_id
     else:
         return get_answer(entry_id)['question_id']
+
 
 
 #

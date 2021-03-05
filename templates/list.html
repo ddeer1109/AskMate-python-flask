@@ -31,78 +31,130 @@
         </form>
     <hr>
     {% endif %}
-
-
     <table class="table table-striped table-hover">
-        <tr>
-            {% if questions|length == 0 %}
-                <h3>No questions</h3>
-            {% else %}
-                {% if sorted %}
-                    {% for header in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
-                        <th style="text-align: center;">{{ header.capitalize().replace('_', ' ') }}</th>
-                    {% endfor %}
-                {% else %}
-                    {% for header in ['submission_time', 'title', 'message', 'image'] %}
-                        <th style="text-align: center;">{{ header.capitalize().replace('_', ' ') }}</th>
-                    {% endfor %}
-                {% endif %}
-            {% endif %}
-        </tr>
-        {% if sorted %}
-        {% for question in questions %}
-        <tr>
+    {% if questions|length == 0 %}
+            <h3>No questions</h3>
 
-            {% for data in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
-                <td class="{{ data }}">
-                {% if data == "title" %}
+    {% elif sorted or searched %}
 
-                    <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
+            <tr>{% for header in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
+                        <th class="main {{ header }}">{{ header.capitalize().replace('_', ' ') }}</th>
+            {% endfor %}</tr>
 
-                {% elif data == "image" %}
-                        {% if question['image'] == 'none.jpg' %}
-                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                        {% else %}
-                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
-                        {% endif %}
-                {% else %}
 
-                    {{ question[data] }}
+            {% for question in questions %}
+                <tr>
 
-                {% endif %}
-                </td>
+                    {% for data in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
+                        <td class="{{ data }}">
+                        {% if data == "title" %}
+
+                            <a href="question/{{ question["id"] }}">{{ question[data]|safe }}</a>
+
+                        {% elif data == "image" %}
+                                {% if question['image'] == 'none.jpg' %}
+                                    <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+                                {% else %}
+                                    <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
+                                {% endif %}
+                        {% elif data == "message" %}
+                            {{ question[data]|safe }}
+                            {% set showing_trigger = "" %}
+                            {% set collapse = "collapsed" %}
+                            {% set answer_header = "Answers" %}
+                            {% if question.answers %}
+
+                                {% if questions_id_with_highlighted_answers %}
+                                    {% if question.id in questions_id_with_highlighted_answers %}
+                                        {% set showing_trigger = "show" %}
+                                        {% set collapse = "" %}
+
+                                    {% else %}
+                                        {% set showing_trigger = "" %}
+                                    {% endif %}
+                                {% endif %}
+
+                            {% else %}
+                                {% set answer_header = "No answers for this question" %}
+
+                            {% endif %}
+                                <br>
+                                <div class="accordion" id="accordionExample">
+
+                                    <div class="accordion-item">
+                                    <h4 class="accordion-header mt-3" id="heading{{ question.id }}" style="line-height: 1;">
+                                      <button class="accordion-button {{ collapse }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ question.id }}" aria-expanded="true" aria-controls="collapseOne" style="font-size:0.6em;">
+                                          {{ answer_header }}
+                                      </button>
+                                    </h4>
+                                {% if answer_header == "Answers" %}
+                                    <div id="collapse{{ question.id }}" class="accordion-collapse collapse {{ showing_trigger }}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+
+                                        <div class="accordion-body">
+
+                                        {% for answer in question.answers %}
+                                            {% if showing_trigger == "" %}
+                                                <p>{{ answer.submission_time }} || {{ answer.message[:10] }}...</p>
+                                            {% else %}
+                                                <p>{{ answer.submission_time }} || {{ answer.message|safe }}</p>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                  </div>
+
+                                </div>
+                    {% else %}
+
+                        {{ question[data] }}
+
+                    {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
+
         {% else %}
-        {% for question in questions %}
-        <tr>
 
-            {% for data in ['submission_time', 'title', 'message', 'image'] %}
-                <td class="{{ data }}">
-                {% if data == "title" %}
+        <h2>Five newest questions</h2>
+        <br>
 
-                    <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
+            <tr>{% for header in ['submission_time', 'title', 'message', 'image'] %}
+                    <th class="main {{ header }}">{{ header.capitalize().replace('_', ' ') }}</th>
+                {% endfor %}</tr>
 
-                {% elif data == "image" %}
-                        {% if question['image'] == 'none.jpg' %}
-                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                        {% else %}
-                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
-                        {% endif %}
-                {% else %}
+            {% for question in questions %}
+            <tr>
 
-                    {{ question[data] }}
+                {% for data in ['submission_time', 'title', 'message', 'image'] %}
+                    <td class="{{ data }}">
+                    {% if data == "title" %}
 
-                {% endif %}
-                </td>
+                        <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
+
+                    {% elif data == "image" %}
+                            {% if question['image'] == 'none.jpg' %}
+                                <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+                            {% else %}
+                                <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
+                            {% endif %}
+
+                    {% else %}
+
+                        {{ question[data] }}
+
+
+                    {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
+
         {% endif %}
     </table>
     <br>
-
     <a href="/list" class="btn btn-primary">All questions</a>
     <a href="{{ url_for('display_add_question') }}" class="btn btn-primary">Add question</a>
 {% endblock %}

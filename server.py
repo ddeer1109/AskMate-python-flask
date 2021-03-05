@@ -31,9 +31,12 @@ def get_list_of_questions():
 def get_entries_by_search_phrase():
     search_phrase = request.args.get('q')
 
-    entries = data_manager.get_entries_by_search_phrase(search_phrase)
-
-    return render_template("list.html", questions=entries)
+    questions, questions_with_answers = data_manager.get_entries_by_search_phrase(search_phrase)
+    highlighted_questions_id = [question['id'] for question in questions_with_answers]
+    return render_template("list.html",
+                           searched=True,
+                           questions=questions + questions_with_answers,
+                           questions_id_with_highlighted_answers=highlighted_questions_id)
 
 
 @app.route("/question/<question_id>")

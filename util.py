@@ -1,7 +1,6 @@
 import time
 import datetime
 
-
 def get_current_timestamp():
     """Return current timestamp in seconds"""
 
@@ -38,7 +37,6 @@ def set_init_entry_values(form_data, request_files):
 
 
 def init_complete_dict_entry(entry_type, form_data=None, request_files=None, question_id=None):
-
     if entry_type == 'question':
         complete_entry = set_init_entry_values(form_data, request_files)
         complete_entry['view_number'] = 0
@@ -48,3 +46,54 @@ def init_complete_dict_entry(entry_type, form_data=None, request_files=None, que
         complete_entry['question_id'] = question_id
 
     return complete_entry
+
+
+def highlight_search_phrases_in_lists(list_of_entries, search_phrase, answers=False):
+
+    for entry in list_of_entries:
+        if answers:
+            for answer in entry['answers']:
+                answer['message'] = highlight_search_phrase(answer['message'], search_phrase)
+        else:
+            for key in ['title', 'message']:
+                entry[key] = highlight_search_phrase(entry[key], search_phrase)
+
+
+def highlight_search_phrase(string_message, search_phrase):
+    try:
+        low_message, low_phrase = str.lower(string_message), str.lower(search_phrase)
+
+        starting_index = low_message.index(low_phrase)
+        ending_index = starting_index + len(search_phrase)
+
+        new_string = string_message[:starting_index] + \
+                     '<mark>' + string_message[starting_index:ending_index] + '</mark>' \
+                     + string_message[ending_index:]
+
+        return new_string
+
+    except ValueError:
+        return string_message
+
+
+def add_answer_snippets(questions_list):
+    import data_manager
+    for question in questions_list:
+        question['answers'] = data_manager.get_answers_for_question(question['id'])
+
+
+
+def process_phrase_searched_in_both_question_and_answer(highlighted_questions, highlighted_answers):
+    ids_with_highlighted_answers = [question['id'] for question in highlighted_answers]
+    indexes_to_delete = []
+    for index, entry in enumerate(highlighted_questions):
+        if entry['id'] in ids_with_highlighted_answers:
+            replaced_item_index = ids_with_highlighted_answers.index(entry['id'])
+            highlighted_answers[replaced_item_index]['title'] = entry['title']
+            highlighted_answers[replaced_item_index]['message'] = entry['message']
+
+            indexes_to_delete.append(index)
+
+    for index in indexes_to_delete:
+        del highlighted_questions[index]
+
