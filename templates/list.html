@@ -38,16 +38,22 @@
             {% if questions|length == 0 %}
                 <h3>No questions</h3>
             {% else %}
-                {% for header in questions[0].keys() %}
-                    <th>{{ header.capitalize().replace('_', ' ') }}</th>
-                {% endfor %}
+                {% if sorted %}
+                    {% for header in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
+                        <th style="text-align: center;">{{ header.capitalize().replace('_', ' ') }}</th>
+                    {% endfor %}
+                {% else %}
+                    {% for header in ['submission_time', 'title', 'message', 'image'] %}
+                        <th style="text-align: center;">{{ header.capitalize().replace('_', ' ') }}</th>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
         </tr>
-
+        {% if sorted %}
         {% for question in questions %}
         <tr>
 
-            {% for data in question.keys() %}
+            {% for data in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
                 <td class="{{ data }}">
                 {% if data == "title" %}
 
@@ -68,6 +74,32 @@
             {% endfor %}
         </tr>
         {% endfor %}
+        {% else %}
+        {% for question in questions %}
+        <tr>
+
+            {% for data in ['submission_time', 'title', 'message', 'image'] %}
+                <td class="{{ data }}">
+                {% if data == "title" %}
+
+                    <a href="question/{{ question["id"] }}">{{ question[data] }}</a>
+
+                {% elif data == "image" %}
+                        {% if question['image'] == 'none.jpg' %}
+                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+                        {% else %}
+                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
+                        {% endif %}
+                {% else %}
+
+                    {{ question[data] }}
+
+                {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        {% endif %}
     </table>
     <br>
 

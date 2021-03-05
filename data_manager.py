@@ -162,6 +162,7 @@ def get_five_questions(cursor: RealDictCursor) -> list:
     data = cursor.fetchall()
     return data
 
+
 @data_handler.connection_handler
 def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
     search_phrase = "%" + search_phrase + "%"

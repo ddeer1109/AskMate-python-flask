@@ -4,7 +4,7 @@
     {% block head %}
         <meta charset="UTF-8">
         <title>AskMate</title>
-{#        <link rel="stylesheet" href="../static/style/style.css">#}
+        <link rel="stylesheet" href="../static/style/style.css">
         <!-- CSS only -->
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
               integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
@@ -29,7 +29,7 @@
                 <form action="{{ url_for('get_entries_by_search_phrase') }}">
                     <div class="input-group" >
                         <input type="text" class="form-control" placeholder="Type in search phrase" aria-label="Recipient's username" aria-describedby="button-addon2" name="q" required>
-                      <button class="btn btn-outline-secondary btn-warning" id="button-addon2" type="submit">Button</button>
+                      <button class="btn btn-outline-secondary btn-warning" id="button-addon2" type="submit">Search</button>
                     </div>
                 </form>
 
