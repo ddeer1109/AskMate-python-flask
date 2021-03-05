@@ -107,3 +107,34 @@ td.message, th.message {
 th.main {
     text-align: center;
 }
+
+div.accordion-item {
+    width:80%;
+    margin-left: 5%;
+    border-bottom-width: 0;
+
+}
+
+button.accordion-button {
+    justify-content: flex-end;
+
+}
+
+button.accordion-button::after {
+    margin-left: 3%;
+}
+
+
+.accordion-button:focus {
+    z-index: 3;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.accordion-button:hover {
+    z-index: 3;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%) !important;
+}

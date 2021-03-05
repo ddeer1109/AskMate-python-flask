@@ -79,12 +79,12 @@
 
                             {% endif %}
                                 <br>
-                                <div class="accordion" id="accordionExample">
+                                <div class="accordion-flush" id="accordionExample">
 
-                                    <div class="accordion-item">
+                                    <div class="accordion-item {{ collapse }}">
                                     <h4 class="accordion-header mt-3" id="heading{{ question.id }}" style="line-height: 1;">
                                       <button class="accordion-button {{ collapse }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ question.id }}" aria-expanded="true" aria-controls="collapseOne" style="font-size:0.6em;">
-                                          {{ answer_header }}
+                                          <span>{{ answer_header }}</span>
                                       </button>
                                     </h4>
                                 {% if answer_header == "Answers" %}
