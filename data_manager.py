@@ -30,7 +30,10 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
     """
 
     cursor.execute(query)
-    return cursor.fetchall()
+    questions = cursor.fetchall()
+    util.add_answer_snippets(questions)
+
+    return questions
 
 
 @data_handler.connection_handler

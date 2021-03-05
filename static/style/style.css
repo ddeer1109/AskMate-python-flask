@@ -165,3 +165,7 @@ div#question_respond_container {
     font-weight: lighter;
 }
 
+hr.before.snippets {
+    margin-bottom: 0;
+}
+
