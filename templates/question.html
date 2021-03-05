@@ -181,10 +181,10 @@
                                                 </tr>
 
                                                 {% for comment in answer['comments'] %}
-                                                    <tr style="border-bottom: 2px solid red;">
-                                                        <td style="border-bottom: 2px solid red;">{{ comment['submission_time'] }}</td>
-                                                        <td style="border-bottom: 2px solid red;">{{ comment['edited_count'] }}</td>
-                                                        <td style="border-bottom: 2px solid red;">{{ comment['message'] }}</td>
+                                                    <tr>
+                                                        <td>{{ comment['submission_time'] }}</td>
+                                                        <td>{{ comment['edited_count'] }}</td>
+                                                        <td>{{ comment['message'] }}</td>
                                                         <td>
                                                             <a class="btn btn-danger btn-sm mt-1" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
                                                             <a class="btn btn-success btn-sm mt-1" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
@@ -197,8 +197,9 @@
                                         {% endif %}
                             </td>
 
-                        </tr>
+
                     {% endfor %}
+            </tr>
             </table>
         {% else %}
             <h3 class="display-6">no answers</h3>
