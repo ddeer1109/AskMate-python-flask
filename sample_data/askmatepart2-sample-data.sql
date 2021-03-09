@@ -5,7 +5,7 @@
 -- Dumped from database version 9.5.6
 -- Dumped by pg_dump version 9.5.6
 
-
+-- Dropping relations between all tables
 ALTER TABLE IF EXISTS ONLY public.question DROP CONSTRAINT IF EXISTS pk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS pk_answer_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
@@ -17,7 +17,39 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_ques
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
+-- ==============================================================================
+ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_users_id CASCADE;
+-- ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_question2_id CASCADE;
 
+DROP TABLE IF EXISTS public.users;
+CREATE TABLE users (
+    id serial NOT NULL,
+    login text NOT NULL,
+    password text NOT NULL,
+    registration_date timestamp without time zone
+);
+
+-- DROP TABLE IF EXISTS public.users_statistics;
+-- CREATE TABLE users_statistics(
+--     id serial NOT NULL,
+--     user_id integer NOT NULL,
+--     question_count integer,
+--     answer_count integer,
+--     comment_count integer,
+--     reputation_value integer
+-- );
+--
+DROP TABLE IF EXISTS public.users_activity;
+CREATE TABLE users_activity (
+    id serial NOT NULL,
+    user_id integer NOT NULL,
+    question_id integer,
+    answer_id integer,
+    comment_id integer,
+    tag_id integer
+);
+
+-- ==============================================================================
 DROP TABLE IF EXISTS public.question;
 CREATE TABLE question (
     id serial NOT NULL,
@@ -64,7 +96,24 @@ CREATE TABLE tag (
     name text
 );
 
+-- ==============================================
+-- ALTER TABLE ONLY users_statistics
+--     ADD CONSTRAINT pk_users_statistics_id PRIMARY KEY(id);
 
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT pk_users_activity_id PRIMARY KEY(id);
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT pk_users_id PRIMARY KEY (id);
+
+
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT fk_users_id FOREIGN KEY (user_id) REFERENCES users(id);
+
+-- ALTER TABLE ONLY users_activity
+--     ADD CONSTRAINT fk_question2_id FOREIGN KEY (question_id) REFERENCES question(id);
+
+-- ==============================================
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
 
