@@ -19,7 +19,7 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_
 
 -- ==============================================================================
 ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_users_id CASCADE;
--- ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_question2_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
 
 DROP TABLE IF EXISTS public.users;
 CREATE TABLE users (
@@ -96,24 +96,6 @@ CREATE TABLE tag (
     name text
 );
 
--- ==============================================
--- ALTER TABLE ONLY users_statistics
---     ADD CONSTRAINT pk_users_statistics_id PRIMARY KEY(id);
-
-ALTER TABLE ONLY users_activity
-    ADD CONSTRAINT pk_users_activity_id PRIMARY KEY(id);
-
-ALTER TABLE ONLY users
-    ADD CONSTRAINT pk_users_id PRIMARY KEY (id);
-
-
-ALTER TABLE ONLY users_activity
-    ADD CONSTRAINT fk_users_id FOREIGN KEY (user_id) REFERENCES users(id);
-
--- ALTER TABLE ONLY users_activity
---     ADD CONSTRAINT fk_question2_id FOREIGN KEY (question_id) REFERENCES question(id);
-
--- ==============================================
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
 
@@ -143,6 +125,31 @@ ALTER TABLE ONLY comment
 
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id);
+
+
+
+-- ==============================================
+-- ALTER TABLE ONLY users_statistics
+--     ADD CONSTRAINT pk_users_statistics_id PRIMARY KEY(id);
+
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT pk_users_activity_id PRIMARY KEY(id);
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT pk_users_id PRIMARY KEY (id);
+
+
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT fk_users_id FOREIGN KEY (user_id) REFERENCES users(id);
+
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id);
+
+-- ==============================================
+
+
+
+
 
 INSERT INTO question VALUES (0, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', 'none.jpg');
 INSERT INTO question VALUES (1, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
