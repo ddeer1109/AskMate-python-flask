@@ -494,3 +494,31 @@ def update_views_count(cursor: RealDictCursor, question_id):
 
     cursor.execute(command, {'question_id': question_id})
 
+
+#==================== CLIENT
+def is_authenticated(login, password):
+    return is_existing_user(login) and is_password_ok(login, password)
+
+
+@data_handler.connection_handler
+def is_existing_user(cursor: RealDictCursor, login):
+    query = """
+        SELECT * 
+        FROM users
+        WHERE login=%(login)s
+    """
+
+    cursor.execute(query, {'login': login})
+    return bool(cursor.fetchone())
+
+@data_handler.connection_handler
+def is_password_ok(cursor: RealDictCursor, login, password):
+    query = """
+        SELECT *
+        FROM users
+        WHERE login=%(login)s and password=%(password)s
+    """
+
+    cursor.execute(query, {'login': login, 'password': password})
+    return bool(cursor.fetchone())
+

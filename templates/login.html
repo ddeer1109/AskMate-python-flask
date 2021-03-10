@@ -9,6 +9,12 @@
        <h3 class="display-3"><i class="fas fa-edit text-warning"></i> Login</h3>
     <hr>
 
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+          {{ message }}
+        </div>
+    {% endif %}
+
     <form style="width: 35%" action="{{ url_for('login') }}" method="post">
         <label class="form-label" for="login">Login:</label><br>
         <input type="text" name="login" id="login" required class="form-control">

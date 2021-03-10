@@ -1,8 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
-import data_manager
+from flask import Flask, render_template, request, redirect, url_for, session
+import data_manager, client_manager
+from os import environ
 
 app = Flask(__name__)
 PATH = app.root_path
+
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
+
 
 #
 #          ------>> DISPLAY AND INSERTING <<------
@@ -22,7 +26,8 @@ def get_list_of_questions():
     if len(request.args) == 0:
         questions = data_manager.get_all_data()
     else:
-        questions = data_manager.get_all_data_by_query(request.args.get('order_by'), request.args.get('order_direction'))
+        questions = data_manager.get_all_data_by_query(request.args.get('order_by'),
+                                                       request.args.get('order_direction'))
 
     return render_template('list.html', questions=questions, sorted=True)
 
@@ -98,13 +103,11 @@ def new_answer(question_id):
 
 @app.route("/answer/<answer_id>/add-comment")
 def add_answer_comment(answer_id):
-
     return render_template('add_answer_comment.html', answer_id=answer_id)
 
 
 @app.route("/answer/<answer_id>/add-comment", methods=['POST'])
 def post_answer_comment(answer_id):
-
     message = request.form['message']
     redirection_id = data_manager.add_comment(message, 'answer', answer_id)
     return redirect(url_for('display_question', question_id=redirection_id))
@@ -112,13 +115,11 @@ def post_answer_comment(answer_id):
 
 @app.route("/question/<question_id>/add-comment")
 def display_add_comment(question_id):
-
     return render_template('add_comment.html')
 
 
 @app.route("/question/<question_id>/add-comment", methods=["POST"])
 def new_comment(question_id):
-
     data_manager.add_comment(request.form['message'], 'question', question_id)
     return redirect(f'/question/{question_id}')
 
@@ -236,24 +237,28 @@ def display_comment_edit(comment_id):
 
 @app.route("/comment/<comment_id>/edit", methods=["POST"])
 def edit_comment(comment_id):
-
     new_message = request.form['message']
     redirection_id = data_manager.update_comment(comment_id, new_message)
 
     return redirect(url_for('display_question', question_id=redirection_id))
 
+
 @app.route('/login')
 def login():
     return render_template('login.html')
+
 
 @app.route('/login', methods=['POST'])
 def post_login():
     login = request.form['login']
     password = request.form['password']
 
-    print(login, password)
+    if data_manager.is_authenticated(login, password):
+        client_manager.set_session(login)
 
-    return render_template('login.html')
+        return redirect(url_for('get_five_question'))
+
+    return render_template('login.html', message="Incorrect Login or Password")
 
 
 if __name__ == "__main__":
