@@ -24,7 +24,7 @@
             <a class="navbar-brand fs-1" href="/"><i class="fas fa-users"></i> AskMate</a>
         </span>
 
-        <div class="navbar-brand mb-0 h1 " style="width:50%;">
+        <div class="navbar-brand mb-0 h1 " style="width:30%;">
 
                 <form action="{{ url_for('get_entries_by_search_phrase') }}">
                     <div class="input-group" >
@@ -35,13 +35,23 @@
 
         </div>
 
-        <span class="navbar-brand mb-0 h1">
-            <a class="navbar-brand fs-5" href="/login"><i class="far fa-hand-point-left"></i> Login</a>
-        </span>
 
         <span class="navbar-brand mb-0 h1">
             <a class="navbar-brand fs-5" href="/"><i class="far fa-hand-point-left"></i> Home Page</a>
         </span>
+        
+        {% if session['logged_user'] %}
+            <span class="navbar-brand mb-0 h3">
+                <a class="navbar-brand fs-5" href="/user/{{ session['user_id'] }}"><i class="far fa-hand-point-left"></i> Logged as: {{ session.get('logged_user', None) }}</a>
+            </span>
+            <span class="navbar-brand mb-0 h3">
+                <a class="navbar-brand fs-5" href="/logout"><i class="far fa-hand-point-left"></i> Logout</a>
+            </span>
+        {% else %}
+            <span class="navbar-brand mb-0 h1">
+                <a class="navbar-brand fs-5" href="/login"><i class="far fa-hand-point-left"></i> Login</a>
+            </span>
+        {% endif %}
 
     </div>
 </nav>

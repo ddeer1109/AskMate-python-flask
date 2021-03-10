@@ -254,12 +254,17 @@ def post_login():
     password = request.form['password']
 
     if data_manager.is_authenticated(login, password):
-        client_manager.set_session(login)
+        user = data_manager.get_users_session_data(login)
+        client_manager.set_session(user['login'], user['id'])
 
         return redirect(url_for('get_five_question'))
 
     return render_template('login.html', message="Incorrect Login or Password")
 
+@app.route('/logout')
+def logout():
+    client_manager.drop_session()
+    return redirect(url_for('get_five_question'))
 
 if __name__ == "__main__":
     app.run(

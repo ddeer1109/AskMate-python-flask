@@ -499,11 +499,22 @@ def update_views_count(cursor: RealDictCursor, question_id):
 def is_authenticated(login, password):
     return is_existing_user(login) and is_password_ok(login, password)
 
+@data_handler.connection_handler
+def get_users_session_data(cursor: RealDictCursor, login):
+    query = """
+        SELECT id, login
+        FROM users
+        WHERE login=%(login)s
+    """
+
+    cursor.execute(query, {'login': login})
+    user = cursor.fetchone()
+    return user
 
 @data_handler.connection_handler
 def is_existing_user(cursor: RealDictCursor, login):
     query = """
-        SELECT * 
+        SELECT login 
         FROM users
         WHERE login=%(login)s
     """
@@ -514,7 +525,7 @@ def is_existing_user(cursor: RealDictCursor, login):
 @data_handler.connection_handler
 def is_password_ok(cursor: RealDictCursor, login, password):
     query = """
-        SELECT *
+        SELECT login
         FROM users
         WHERE login=%(login)s and password=%(password)s
     """
