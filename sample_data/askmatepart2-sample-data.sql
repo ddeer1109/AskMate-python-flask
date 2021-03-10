@@ -20,6 +20,9 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_
 -- ==============================================================================
 ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_users_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_answer_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_comment_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
 DROP TABLE IF EXISTS public.users;
 CREATE TABLE users (
@@ -145,6 +148,15 @@ ALTER TABLE ONLY users_activity
 ALTER TABLE ONLY users_activity
     ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id);
 
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id);
+
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT fk_comment_id FOREIGN KEY (comment_id) REFERENCES comment(id);
+
+ALTER TABLE ONLY users_activity
+    ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id);
+
 -- ==============================================
 
 
@@ -180,5 +192,23 @@ SELECT pg_catalog.setval('tag_id_seq', 3, true);
 INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
+
+-- ===========================================================================
+INSERT INTO users VALUES (1, 'user1', 'pass1', '2020-05-01 05:49:00');
+INSERT INTO users VALUES (2, 'user2', 'pass2', '2020-06-01 05:49:00');
+
+INSERT INTO users_activity VALUES (1, 1, 1, null, null, null);
+INSERT INTO users_activity VALUES (2, 1, 2, null, null, null);
+
+INSERT INTO users_activity VALUES (3, 1, null, 1, null, null);
+INSERT INTO users_activity VALUES (4, 1, null, 2, null, null);
+
+INSERT INTO users_activity VALUES (5, 1, null, null, 1, null);
+INSERT INTO users_activity VALUES (6, 1, null, null, 2, null);
+
+INSERT INTO users_activity VALUES (7, 1, null, null, null, 1);
+INSERT INTO users_activity VALUES (8, 1, null, null, null, 2);
+-- SELECT pg_catalog.setval('users_activity_id_seq',9,true);
+
 
 -- INSERT INTO images VALUES (1, '/home/cecylia/Pictures/Screenshot from 2020-03-24 2-44-44.png')
