@@ -83,7 +83,6 @@ def add_answer_snippets(questions_list):
         question['answers'] = data_manager.get_answers_for_question(question['id'])
 
 
-
 def process_phrase_searched_in_both_question_and_answer(highlighted_questions, highlighted_answers):
     ids_with_highlighted_answers = [question['id'] for question in highlighted_answers]
     indexes_to_delete = []
@@ -98,6 +97,7 @@ def process_phrase_searched_in_both_question_and_answer(highlighted_questions, h
     for index in indexes_to_delete:
         del highlighted_questions[index]
 
+
 def hash_given_password(password):
     password = password.encode('utf-8')
     salt = bcrypt.gensalt()
@@ -105,6 +105,10 @@ def hash_given_password(password):
 
     return hashed
 
-def check_password(password, hashed):
-    return bcrypt.checkpw(password, hashed)
 
+def check_password(password, hashed):
+    user_pass = password.encode('utf-8')
+    hashed_pass = hashed.encode('utf-8')
+    checker = bcrypt.checkpw(user_pass, hashed_pass)
+
+    return checker

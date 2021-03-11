@@ -522,37 +522,41 @@ def is_existing_user(cursor: RealDictCursor, login):
     cursor.execute(query, {'login': login})
     return bool(cursor.fetchone())
 
+
 @data_handler.connection_handler
 def is_password_ok(cursor: RealDictCursor, login, password):
     query = """
-        SELECT login
+        SELECT password
         FROM users
-        WHERE login=%(login)s and password=%(password)s
+        WHERE login=%(login)s
     """
 
     cursor.execute(query, {'login': login, 'password': password})
-    return bool(cursor.fetchone())
+    hashed_password = cursor.fetchone()['password']
+
+    return util.check_password(password, hashed_password)
+
 
 def process_registration(login, password):
     if is_existing_user(login):
         return "Login is not available"
 
     password = util.hash_given_password(password)
+    create_new_user(login, password)
 
-    login = create_new_user(login, password)
-    return f"{login} has been registered"
+    return ""
+
 
 @data_handler.connection_handler
 def create_new_user(cursor: RealDictCursor, login, password):
     registration_time = util.get_datetime_now()
 
-    command = """
+    command = f"""
         INSERT INTO users
         (login, password, registration_date)
-        VALUES (%(login)s, %(password)s, %(registration_time)s)
-        RETURNING login
+        VALUES (%(login)s, "{password}", %(registration_time)s)
+        
     """
 
-    cursor.execute(command, {'login': login, 'password': password, 'registration_time': registration_time})
-    return cursor.fetchone()['login']
+    cursor.execute(command, {'login': login, 'registration_time': registration_time})
 

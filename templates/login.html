@@ -13,6 +13,10 @@
         <div class="alert alert-danger" role="alert">
           {{ message }}
         </div>
+    {% elif registration_message %}
+        <div class="alert alert-success" role="alert">
+          {{ registration_message }}
+        </div>
     {% endif %}
 
     <form style="width: 35%" action="{{ url_for('login') }}" method="post">

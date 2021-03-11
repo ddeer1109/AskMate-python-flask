@@ -261,23 +261,30 @@ def post_login():
 
     return render_template('login.html', message="Incorrect Login or Password")
 
+
 @app.route('/logout')
 def logout():
     client_manager.drop_session()
     return redirect(url_for('get_five_question'))
 
+
 @app.route('/registration')
 def display_registration():
     return render_template('registration.html')
 
+
 @app.route('/registration', methods=['POST'])
 def registration():
     login = request.form.get('login')
-    password = request.form.get('password');
+    password = request.form.get('password')
 
     response = data_manager.process_registration(login, password)
 
-    return render_template('registration.html', message=response)
+    if response:
+        return render_template('registration.html', message=response)
+    else:
+        return render_template('login.html', registration_message="You've been registered")
+
 
 if __name__ == "__main__":
     app.run(
