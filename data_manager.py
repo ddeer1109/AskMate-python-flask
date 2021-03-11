@@ -554,9 +554,9 @@ def create_new_user(cursor: RealDictCursor, login, password):
     command = f"""
         INSERT INTO users
         (login, password, registration_date)
-        VALUES (%(login)s, "{password}", %(registration_time)s)
+        VALUES (%(login)s, %(password)s, %(registration_time)s)
         
     """
 
-    cursor.execute(command, {'login': login, 'registration_time': registration_time})
+    cursor.execute(command, {'login': login, 'registration_time': registration_time, 'password': str(password)[2:-1]})
 
