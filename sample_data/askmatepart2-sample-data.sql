@@ -196,6 +196,7 @@ INSERT INTO question_tag VALUES (2, 3);
 -- ===========================================================================
 INSERT INTO users VALUES (1, 'user1', 'pass1', '2020-05-01 05:49:00');
 INSERT INTO users VALUES (2, 'user2', 'pass2', '2020-06-01 05:49:00');
+SELECT pg_catalog.setval('users_id_seq', 3, true);
 
 INSERT INTO users_activity VALUES (1, 1, 1, null, null, null);
 INSERT INTO users_activity VALUES (2, 1, 2, null, null, null);
@@ -208,7 +209,7 @@ INSERT INTO users_activity VALUES (6, 1, null, null, 2, null);
 
 INSERT INTO users_activity VALUES (7, 1, null, null, null, 1);
 INSERT INTO users_activity VALUES (8, 1, null, null, null, 2);
--- SELECT pg_catalog.setval('users_activity_id_seq',9,true);
+SELECT pg_catalog.setval('users_activity_id_seq',9,true);
 
 
 -- INSERT INTO images VALUES (1, '/home/cecylia/Pictures/Screenshot from 2020-03-24 2-44-44.png')

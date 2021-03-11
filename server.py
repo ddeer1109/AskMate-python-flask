@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import data_manager, client_manager
+import data_manager, client_manager, util
 from os import environ
 
 app = Flask(__name__)
@@ -265,6 +265,19 @@ def post_login():
 def logout():
     client_manager.drop_session()
     return redirect(url_for('get_five_question'))
+
+@app.route('/registration')
+def display_registration():
+    return render_template('registration.html')
+
+@app.route('/registration', methods=['POST'])
+def registration():
+    login = request.form.get('login')
+    password = request.form.get('password');
+
+    response = data_manager.process_registration(login, password)
+
+    return render_template('registration.html', message=response)
 
 if __name__ == "__main__":
     app.run(

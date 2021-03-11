@@ -1,5 +1,6 @@
 import time
 import datetime
+import bcrypt
 
 def get_current_timestamp():
     """Return current timestamp in seconds"""
@@ -96,4 +97,14 @@ def process_phrase_searched_in_both_question_and_answer(highlighted_questions, h
 
     for index in indexes_to_delete:
         del highlighted_questions[index]
+
+def hash_given_password(password):
+    password = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password, salt)
+
+    return hashed
+
+def check_password(password, hashed):
+    return bcrypt.checkpw(password, hashed)
 

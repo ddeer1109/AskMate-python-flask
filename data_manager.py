@@ -533,3 +533,26 @@ def is_password_ok(cursor: RealDictCursor, login, password):
     cursor.execute(query, {'login': login, 'password': password})
     return bool(cursor.fetchone())
 
+def process_registration(login, password):
+    if is_existing_user(login):
+        return "Login is not available"
+
+    password = util.hash_given_password(password)
+
+    login = create_new_user(login, password)
+    return f"{login} has been registered"
+
+@data_handler.connection_handler
+def create_new_user(cursor: RealDictCursor, login, password):
+    registration_time = util.get_datetime_now()
+
+    command = """
+        INSERT INTO users
+        (login, password, registration_date)
+        VALUES (%(login)s, %(password)s, %(registration_time)s)
+        RETURNING login
+    """
+
+    cursor.execute(command, {'login': login, 'password': password, 'registration_time': registration_time})
+    return cursor.fetchone()['login']
+
