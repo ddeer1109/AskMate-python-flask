@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for
+# from flask import flash
 import data_manager, client_manager, util
 from os import environ
 
@@ -11,7 +12,6 @@ app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 #
 #          ------>> DISPLAY AND INSERTING <<------
 #
-
 
 @app.route("/")
 def get_five_question():
