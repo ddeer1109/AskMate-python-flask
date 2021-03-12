@@ -554,17 +554,36 @@ def create_new_user(cursor: RealDictCursor, login, password):
     command = f"""
         INSERT INTO users
         (login, password, registration_date)
-        VALUES (%(login)s, %(password)s, %(registration_time)s)    
+        VALUES (%(login)s, %(password)s, %(registration_time)s)
+        RETURNING id
+
     """
 
     cursor.execute(command, {'login': login, 'registration_time': registration_time, 'password': str(password)[2:-1]})
+    new_user_id = cursor.fetchone()['id']
+
+    query = f"""
+        INSERT INTO users_statistics
+        (user_id, question_count, answer_count, comment_count, reputation_value)
+        VALUES (%(new_user_id)s, 1, 1, 1, 1)
+    """
+    cursor.execute(query, {'new_user_id': new_user_id})
+
     # TODO - improve password management, bytes etc.
 
 @data_handler.connection_handler
 def get_users(cursor: RealDictCursor):
     query = """
-    SELECT *
+    SELECT users.login AS Login,
+    users.registration_date AS Registration_Date,
+    users_statistics.question_count AS Question_Count, 
+    users_statistics.answer_count AS Answers_Count,
+    users_statistics.comment_count AS Comment_Count,
+    users_statistics.reputation_value AS Reputation
     FROM users
+    INNER JOIN users_statistics
+    ON users.id = users_statistics.user_id
+    ORDER BY Registration_Date
     """
 
     cursor.execute(query)
