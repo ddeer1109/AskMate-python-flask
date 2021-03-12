@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 # from flask import flash
 import data_manager, client_manager, util
 from os import environ
@@ -66,8 +66,11 @@ def display_question(question_id):
 @app.route("/add-question")
 def display_add_question():
     """Services redirection to displaying interface of adding question"""
+    if session.get('logged_user', None):
+        return render_template("add_question.html")
+    else:
+        return render_template("login.html", message="You have to be logged in to add questions or answers")
 
-    return render_template("add_question.html")
 
 
 @app.route("/add-question", methods=['POST'])
@@ -84,8 +87,10 @@ def add_question():
 @app.route("/question/<question_id>/add-answer")
 def display_add_answer(question_id):
     """Services redirection to displaying interface of adding answer."""
-
-    return render_template('add_answer.html')
+    if session.get('logged_user', None):
+        return render_template("add_answer.html")
+    else:
+        return render_template("login.html", message="You have to be logged in to add questions or answers")
 
 
 @app.route("/question/<question_id>/add-answer", methods=["POST"])
@@ -285,6 +290,14 @@ def registration():
     else:
         return render_template('login.html', registration_message="You've been registered")
 
+
+@app.route('/users')
+def users():
+    if session.get('logged_user', None):
+        users = data_manager.get_users()
+        return render_template("users.html", users=users)
+    else:
+        return render_template("login.html", message="You have to be logged in to see users")
 
 if __name__ == "__main__":
     app.run(

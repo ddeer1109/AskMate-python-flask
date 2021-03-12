@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+<table class="table table-striped table-hover">
+        <tr>
+            {% for header in users[0].keys() %}
+                <td>
+                {{ header }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% for user in users %}
+            <tr>
+
+                    {% for data in user.keys() %}
+                    <td>
+                    {{ user[data] }}
+                    </td>
+                    {% endfor %}
+
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

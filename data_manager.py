@@ -559,3 +559,13 @@ def create_new_user(cursor: RealDictCursor, login, password):
 
     cursor.execute(command, {'login': login, 'registration_time': registration_time, 'password': str(password)[2:-1]})
     # TODO - improve password management, bytes etc.
+
+@data_handler.connection_handler
+def get_users(cursor: RealDictCursor):
+    query = """
+    SELECT *
+    FROM users
+    """
+
+    cursor.execute(query)
+    return cursor.fetchall()
