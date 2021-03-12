@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+
+    {% if user %}
+    <table class="table table-striped table-hover">
+        <tr>
+            {% for header in user.keys() %}
+                <td>
+                {{ header }}
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+        {% for data in user.keys() %}
+            <td>
+            {{ user[data] }}
+            </td>
+        {% endfor %}
+        </tr>
+    </table>
+
+
+    {% if questions %}
+    <table class="table table-striped table-hover">
+        <tr>
+            {% for header in questions[0].keys() %}
+                <td>
+                {{ header }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% for question in questions %}
+            <tr>
+
+                    {% for data in question.keys() %}
+                    <td>
+                    {{ question[data] }}
+                    </td>
+                    {% endfor %}
+
+            </tr>
+        {% endfor %}
+    </table>
+
+
+        {% else %}
+        <h1>No questions for this user</h1>
+        {% endif %}
+
+
+            {% if answers %}
+    <table class="table table-striped table-hover">
+        <tr>
+            {% for header in answers[0].keys() %}
+                <td>
+                {{ header }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% for answer in answers %}
+            <tr>
+
+                    {% for data in answer.keys() %}
+                    <td>
+                    {{ answer[data] }}
+                    </td>
+                    {% endfor %}
+
+            </tr>
+        {% endfor %}
+    </table>
+
+
+        {% else %}
+        <h1>No answers for this user</h1>
+        {% endif %}
+
+            {% if comments %}
+    <table class="table table-striped table-hover">
+        <tr>
+            {% for header in comments[0].keys() %}
+                <td>
+                {{ header }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% for comment in comments %}
+            <tr>
+
+                    {% for data in comment.keys() %}
+                    <td>
+                    {{ comment[data] }}
+                    </td>
+                    {% endfor %}
+
+            </tr>
+        {% endfor %}
+    </table>
+
+
+        {% else %}
+        <h1>No comments for this user</h1>
+        {% endif %}
+
+    {% else %}
+    <h1>No such user</h1>
+
+    {% endif %}
+
+
+
+{% endblock %}

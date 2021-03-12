@@ -299,6 +299,18 @@ def users():
     else:
         return render_template("login.html", message="You have to be logged in to see users")
 
+
+@app.route('/user/<user_id>')
+def user_page(user_id):
+    if session.get('logged_user', None):
+        user = data_manager.get_user_data(user_id)
+        questions = data_manager.get_questions_of_user(user_id)
+        answers = data_manager.get_answers_of_user(user_id)
+        comments = data_manager.get_comments_of_user(user_id)
+        return render_template("user_page.html", user=user, questions=questions, answers=answers, comments=comments)
+    else:
+        return render_template("login.html", message="You have to be logged in to see users")
+
 if __name__ == "__main__":
     app.run(
         host='127.0.0.1',
