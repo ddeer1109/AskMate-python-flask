@@ -209,6 +209,18 @@ def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
 #          ------>> INSERTS <<------
 #
 
+@data_handler.connection_handler
+def add_user_question_activity(cursor: RealDictCursor, user_id, question_id):
+    command = """
+        INSERT INTO users_activity(user_id, question_id)
+        VALUES (%(user_id)s, %(question_id)s)
+    """
+
+    cursor.execute(command, {'user_id': user_id, 'question_id': question_id})
+
+
+
+
 
 @data_handler.connection_handler
 def add_new_tag_to_db(cursor: RealDictCursor, tag):

@@ -81,6 +81,8 @@ def add_question():
         form_data=request.form,
         request_files=request.files)
 
+    data_manager.add_user_question_activity(session['user_id'], question_id)
+
     return redirect(url_for('display_question', question_id=question_id))
 
 
@@ -97,11 +99,13 @@ def display_add_answer(question_id):
 def new_answer(question_id):
     """Services posting answer."""
 
-    data_manager.add_new_entry(
+    answer_id = data_manager.add_new_entry(
         table_name='answer',
         form_data=request.form,
         request_files=request.files,
         question_id=question_id)
+
+    data_manager.add_user_answer_activity(session['user_id'], answer_id)
 
     return redirect(f'/question/{question_id}')
 
