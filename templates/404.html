@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+
+    <div class="alert alert-danger" role="alert">
+      <h4 class="alert-heading">ERROR 404</h4>
+      <p>Page not found</p>
+      <hr>
+        <a href="/" class="btn btn-primary">Go back to main page</a>
+    </div>
+
+
+
+
+{% endblock %}

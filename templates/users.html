@@ -22,7 +22,11 @@
 
                     {% for data in user.keys() %}
                     <td>
-                    {{ user[data] }}
+                    {% if data == 'login' %}
+                        <a href="/user/{{ user['id'] }}">{{ user[data] }}</a>
+                    {% else %}
+                        {{ user[data] }}
+                    {% endif %}
                     </td>
                     {% endfor %}
 

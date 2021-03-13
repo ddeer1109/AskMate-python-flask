@@ -33,12 +33,12 @@
     {% endif %}
     <table class="table table-striped table-hover">
     {% if questions|length == 0 %}
-            <h3>No questions</h3>
+            <h3 class="display-5">No questions</h3>
 
     {% elif sorted or searched %}
 
             <tr>{% for header in ['submission_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
-                        <th class="main {{ header }}">{{ header.capitalize().replace('_', ' ') }}</th>
+                <th class="main {{ header }}">{{ header.capitalize().replace('_', ' ') }}</th>
             {% endfor %}</tr>
 
 

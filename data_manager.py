@@ -574,7 +574,7 @@ def create_new_user(cursor: RealDictCursor, login, password):
 @data_handler.connection_handler
 def get_users(cursor: RealDictCursor):
     query = """
-    SELECT users.login AS Login,
+    SELECT users.id AS id, users.login AS Login,
     users.registration_date AS Registration_Date,
     users_statistics.question_count AS Question_Count, 
     users_statistics.answer_count AS Answers_Count,
@@ -587,4 +587,54 @@ def get_users(cursor: RealDictCursor):
     """
 
     cursor.execute(query)
+    return cursor.fetchall()
+
+@data_handler.connection_handler
+def get_user_data(cursor: RealDictCursor, user_id):
+    query ="""
+        SELECT u.login, u.registration_date, us.question_count, 
+            us.answer_count, us.comment_count, us.reputation_value
+        FROM users as u
+        INNER JOIN users_statistics as us
+            ON u.id = us.user_id
+        WHERE u.id=%(user_id)s
+    """
+
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchone()
+
+@data_handler.connection_handler
+def get_questions_of_user(cursor: RealDictCursor, user_id):
+    query ="""
+        SELECT qst.* FROM question as qst
+        INNER JOIN users_activity as act
+            ON qst.id = act.question_id
+        WHERE act.user_id = %(user_id)s
+    """
+
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+@data_handler.connection_handler
+def get_answers_of_user(cursor: RealDictCursor, user_id):
+    query = """
+        SELECT ans.* FROM answer as ans
+        INNER JOIN users_activity as act
+            ON ans.id = act.answer_id
+        WHERE act.user_id = %(user_id)s
+    """
+
+    cursor.execute(query, {'user_id': user_id})
+    return cursor.fetchall()
+
+@data_handler.connection_handler
+def get_comments_of_user(cursor: RealDictCursor, user_id):
+    query = """
+            SELECT com.* FROM comment as com
+            INNER JOIN users_activity as act
+                ON com.id = act.comment_id
+            WHERE act.user_id = %(user_id)s
+        """
+
+    cursor.execute(query, {'user_id': user_id})
     return cursor.fetchall()

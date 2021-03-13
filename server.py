@@ -307,9 +307,17 @@ def user_page(user_id):
         questions = data_manager.get_questions_of_user(user_id)
         answers = data_manager.get_answers_of_user(user_id)
         comments = data_manager.get_comments_of_user(user_id)
-        return render_template("user_page.html", user=user, questions=questions, answers=answers, comments=comments)
+        return render_template("user_page.html",
+                               user=user,
+                               questions=questions,
+                               answers=answers,
+                               comments=comments)
     else:
         return render_template("login.html", message="You have to be logged in to see users")
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == "__main__":
     app.run(
