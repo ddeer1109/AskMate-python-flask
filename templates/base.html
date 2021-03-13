@@ -35,12 +35,11 @@
 
         </div>
 
-
-        <span class="navbar-brand mb-0 h1">
-            <a class="navbar-brand fs-5" href="/"><i class="far fa-hand-point-left"></i> Home Page</a>
-        </span>
-        
         {% if session['logged_user'] %}
+            <span class="navbar-brand mb-0 h1">
+                <a class="navbar-brand fs-5" href="/users"><i class="far fa-hand-point-left"></i> Users Ranking</a>
+            </span>
+
             <span class="navbar-brand mb-0 h3">
                 <a class="navbar-brand fs-5" href="/user/{{ session['user_id'] }}"><i class="far fa-hand-point-left"></i> Logged as: {{ session.get('logged_user', None) }}</a>
             </span>
