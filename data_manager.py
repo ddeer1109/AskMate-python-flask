@@ -210,6 +210,15 @@ def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
 #
 
 @data_handler.connection_handler
+def add_user_answer_activity(cursor: RealDictCursor,  user_id, answer_id):
+    command = """
+            INSERT INTO users_activity(user_id, answer_id)
+            VALUES (%(user_id)s, %(answer_id)s)
+        """
+
+    cursor.execute(command, {'user_id': user_id, 'answer_id': answer_id})
+
+@data_handler.connection_handler
 def add_user_question_activity(cursor: RealDictCursor, user_id, question_id):
     command = """
         INSERT INTO users_activity(user_id, question_id)
@@ -269,8 +278,8 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
         elif table_name == 'answer':
             data_handler.save_image(request_files['image'], 'answers', entry_id)
 
-    if table_name == 'question':
-        return entry_id
+    # if table_name == 'question':
+    return entry_id
 
 
 @data_handler.connection_handler
