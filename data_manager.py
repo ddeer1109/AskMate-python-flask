@@ -766,7 +766,7 @@ def get_user_post(cursor: RealDictCursor, user_id, post_id, post_type):
     query = f"""
         SELECT *
         FROM users_activity
-        WHERE user_id=%(user_id) AND {column_name}=%(post_id)s
+        WHERE user_id=%(user_id)s AND {column_name}=%(post_id)s
     """
 
     cursor.execute(query, {'user_id': user_id, 'post_id': post_id})

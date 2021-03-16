@@ -20,6 +20,6 @@ def get_post_if_permitted(post_id, post_type):
     logged_user_id = get_logged_user_id()
 
     if logged_user_id:
-        user_post = data_manager.get_user_post(user_id, post_id, post_type)
+        user_post = data_manager.get_user_post(logged_user_id, post_id, post_type)
 
     return user_post
