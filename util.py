@@ -2,6 +2,7 @@ import time
 import datetime
 import bcrypt
 
+
 def get_current_timestamp():
     """Return current timestamp in seconds"""
 

@@ -2,11 +2,21 @@ from flask import Flask, render_template, request, redirect, url_for, session
 # from flask import flash
 import data_manager, client_manager, util
 from os import environ
+from functools import wraps
 
 app = Flask(__name__)
 PATH = app.root_path
 
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if client_manager.get_logged_user_id() is None:
+            return render_template("login.html", message="You have to be logged in to perform this action.")
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 #
@@ -64,16 +74,18 @@ def display_question(question_id):
 
 
 @app.route("/add-question")
+@login_required
 def display_add_question():
     """Services redirection to displaying interface of adding question"""
-    if session.get('logged_user', None):
-        return render_template("add_question.html")
-    else:
-        return render_template("login.html", message="You have to be logged in to add questions or answers")
+    # if session.get('logged_user', None):
+    return render_template("add_question.html")
+    # else:
+    #     return render_template("login.html", message="You have to be logged in to add questions or answers")
 
 
 
 @app.route("/add-question", methods=['POST'])
+@login_required
 def add_question():
     """Services posting question."""
     question_id = data_manager.add_new_entry(
@@ -89,15 +101,17 @@ def add_question():
 
 
 @app.route("/question/<question_id>/add-answer")
+@login_required
 def display_add_answer(question_id):
     """Services redirection to displaying interface of adding answer."""
-    if session.get('logged_user', None):
-        return render_template("add_answer.html")
-    else:
-        return render_template("login.html", message="You have to be logged in to add questions or answers")
+    # if session.get('logged_user', None):
+    return render_template("add_answer.html")
+    # else:
+    #     return render_template("login.html", message="You have to be logged in to add questions or answers")
 
 
 @app.route("/question/<question_id>/add-answer", methods=["POST"])
+@login_required
 def new_answer(question_id):
     """Services posting answer."""
 
@@ -114,11 +128,13 @@ def new_answer(question_id):
 
 
 @app.route("/answer/<answer_id>/add-comment")
+@login_required
 def add_answer_comment(answer_id):
     return render_template('add_answer_comment.html', answer_id=answer_id)
 
 
 @app.route("/answer/<answer_id>/add-comment", methods=['POST'])
+@login_required
 def post_answer_comment(answer_id):
     message = request.form['message']
 
@@ -127,19 +143,21 @@ def post_answer_comment(answer_id):
     return redirect(url_for('display_question', question_id=redirection_id))
 
 
-
 @app.route("/question/<question_id>/add-comment")
+@login_required
 def display_add_comment(question_id):
     return render_template('add_comment.html')
 
 
 @app.route("/question/<question_id>/add-comment", methods=["POST"])
+@login_required
 def post_question_comment(question_id):
     data_manager.add_comment(request.form['message'], 'question', question_id, client_manager.get_logged_user_id())
     return redirect(f'/question/{question_id}')
 
 
 @app.route("/question/<question_id>/new-tag")
+@login_required
 def display_new_tag(question_id):
     all_tags = data_manager.get_all_tags()
     return render_template('new_tag.html',
@@ -149,12 +167,14 @@ def display_new_tag(question_id):
 
 
 @app.route("/question/<question_id>/new-tag", methods=['POST'])
+@login_required
 def add_new_tag(question_id):
     data_manager.add_new_tag_to_db(request.form['tag'])
     return redirect(url_for('display_new_tag', question_id=question_id))
 
 
 @app.route("/question/<question_id>/new-tag-question", methods=['POST'])
+@login_required
 def add_new_tag_to_question(question_id):
     print(request.form['tag_id'])
     message = data_manager.add_new_tag_to_question(question_id, request.form['tag_id'])
@@ -167,6 +187,7 @@ def add_new_tag_to_question(question_id):
 
 
 @app.route("/question/<question_id>/delete")
+@login_required
 def delete_question(question_id):
     data_manager.delete_question(question_id)
 
@@ -174,12 +195,14 @@ def delete_question(question_id):
 
 
 @app.route("/question/<question_id>/tag/<tag_id>/delete")
+@login_required
 def delete_single_tag_from_question(question_id, tag_id):
     data_manager.remove_single_tag_from_question(question_id, tag_id)
     return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route("/answer/<answer_id>/delete")
+@login_required
 def delete_answer(answer_id):
     """Services deleting answer."""
 
@@ -189,6 +212,7 @@ def delete_answer(answer_id):
 
 
 @app.route("/comment/<comment_id>/delete")
+@login_required
 def delete_comment(comment_id):
     redirection_id = data_manager.delete_comment_by_id(comment_id)
 
@@ -201,6 +225,7 @@ def delete_comment(comment_id):
 
 
 @app.route("/question/<question_id>/edit")
+@login_required
 def edit_question(question_id):
     """Services displaying edition of question and posting edited version."""
     question = data_manager.get_single_question(question_id)
@@ -208,6 +233,7 @@ def edit_question(question_id):
 
 
 @app.route("/question/<question_id>/edit", methods=['POST'])
+@login_required
 def save_edited_question(question_id):
     title = request.form['title']
     message = request.form['message']
@@ -218,6 +244,7 @@ def save_edited_question(question_id):
 
 
 @app.route("/answer/<answer_id>/edit")
+@login_required
 def display_answer_to_edit(answer_id):
     """Services displaying edition of answer and posting edited version."""
 
@@ -226,6 +253,7 @@ def display_answer_to_edit(answer_id):
 
 
 @app.route("/answer/<answer_id>/edit", methods=['POST'])
+@login_required
 def save_edited_answer(answer_id):
     redirection_id = data_manager.save_edited_answer(answer_id, request.form['message'])
 
@@ -233,6 +261,7 @@ def save_edited_answer(answer_id):
 
 
 @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
+@login_required
 def vote_on_post(entry_id, vote_value, entry_type):
     """Services voting on questions and answers"""
 
@@ -242,6 +271,7 @@ def vote_on_post(entry_id, vote_value, entry_type):
 
 
 @app.route("/comment/<comment_id>/edit")
+@login_required
 def display_comment_edit(comment_id):
     comment = data_manager.get_comment_by_id(comment_id)
 
@@ -251,6 +281,7 @@ def display_comment_edit(comment_id):
 
 
 @app.route("/comment/<comment_id>/edit", methods=["POST"])
+@login_required
 def edit_comment(comment_id):
     new_message = request.form['message']
     redirection_id = data_manager.update_comment(comment_id, new_message)
@@ -302,28 +333,30 @@ def registration():
 
 
 @app.route('/users')
+@login_required
 def users():
-    if session.get('logged_user', None):
-        users = data_manager.get_users()
-        return render_template("users.html", users=users)
-    else:
-        return render_template("login.html", message="You have to be logged in to see users")
+    # if session.get('logged_user', None):
+    users = data_manager.get_users()
+    return render_template("users.html", users=users)
+    # else:
+    #     return render_template("login.html", message="You have to be logged in to see users")
 
 
 @app.route('/user/<user_id>')
+@login_required
 def user_page(user_id):
-    if session.get('logged_user', None):
-        user = data_manager.get_user_data(user_id)
-        questions = data_manager.get_questions_of_user(user_id)
-        answers = data_manager.get_answers_of_user(user_id)
-        comments = data_manager.get_comments_of_user(user_id)
-        return render_template("user_page.html",
-                               user=user,
-                               questions=questions,
-                               answers=answers,
-                               comments=comments)
-    else:
-        return render_template("login.html", message="You have to be logged in to see users")
+    # if session.get('logged_user', None):
+    user = data_manager.get_user_data(user_id)
+    questions = data_manager.get_questions_of_user(user_id)
+    answers = data_manager.get_answers_of_user(user_id)
+    comments = data_manager.get_comments_of_user(user_id)
+    return render_template("user_page.html",
+                           user=user,
+                           questions=questions,
+                           answers=answers,
+                           comments=comments)
+    # else:
+    #     return render_template("login.html", message="You have to be logged in to see users")
 
 @app.errorhandler(404)
 def page_not_found(e):
