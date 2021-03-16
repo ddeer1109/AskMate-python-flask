@@ -79,9 +79,11 @@ def add_question():
     question_id = data_manager.add_new_entry(
         table_name='question',
         form_data=request.form,
-        request_files=request.files)
+        request_files=request.files,
+        user_id=client_manager.get_logged_user_id()
+        )
 
-    data_manager.add_user_question_activity(session['user_id'], question_id)
+    # data_manager.add_user_question_activity(session['user_id'], question_id)
 
     return redirect(url_for('display_question', question_id=question_id))
 
@@ -103,9 +105,10 @@ def new_answer(question_id):
         table_name='answer',
         form_data=request.form,
         request_files=request.files,
-        question_id=question_id)
+        question_id=question_id,
+        user_id=client_manager.get_logged_user_id())
 
-    data_manager.add_user_answer_activity(session['user_id'], answer_id)
+    # data_manager.add_user_answer_activity(session['user_id'], answer_id)
 
     return redirect(f'/question/{question_id}')
 
@@ -118,8 +121,11 @@ def add_answer_comment(answer_id):
 @app.route("/answer/<answer_id>/add-comment", methods=['POST'])
 def post_answer_comment(answer_id):
     message = request.form['message']
-    redirection_id = data_manager.add_comment(message, 'answer', answer_id)
+
+    redirection_id = data_manager.add_comment(message, 'answer', answer_id, client_manager.get_logged_user_id())
+
     return redirect(url_for('display_question', question_id=redirection_id))
+
 
 
 @app.route("/question/<question_id>/add-comment")
@@ -128,8 +134,8 @@ def display_add_comment(question_id):
 
 
 @app.route("/question/<question_id>/add-comment", methods=["POST"])
-def new_comment(question_id):
-    data_manager.add_comment(request.form['message'], 'question', question_id)
+def post_question_comment(question_id):
+    data_manager.add_comment(request.form['message'], 'question', question_id, client_manager.get_logged_user_id())
     return redirect(f'/question/{question_id}')
 
 

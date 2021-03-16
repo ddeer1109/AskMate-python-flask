@@ -10,3 +10,6 @@ def drop_session():
 
 def get_logged_user():
     return session.get('logged_user', None)
+
+def get_logged_user_id():
+    return session.get('user_id', None)

@@ -227,8 +227,14 @@ def add_user_question_activity(cursor: RealDictCursor, user_id, question_id):
 
     cursor.execute(command, {'user_id': user_id, 'question_id': question_id})
 
+@data_handler.connection_handler
+def add_user_comment_activity(cursor: RealDictCursor, user_id, comment_id):
+    command = """
+            INSERT INTO users_activity(user_id, comment_id)
+            VALUES (%(user_id)s, %(comment_id)s)
+        """
 
-
+    cursor.execute(command, {'user_id': user_id, 'comment_id': comment_id})
 
 
 @data_handler.connection_handler
@@ -254,7 +260,7 @@ def add_new_tag_to_question(cursor: RealDictCursor, question_id, tag_id):
 
 
 @data_handler.connection_handler
-def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None):
+def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None, user_id=None):
 
     complete_dict_data = util.init_complete_dict_entry(table_name, form_data, request_files, question_id)
 
@@ -271,6 +277,11 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
     cursor.execute(comment, complete_dict_data)
     entry_id = str(cursor.fetchone()['id'])
 
+    if table_name == 'answer':
+        add_user_answer_activity(user_id, entry_id)
+    else:
+        add_user_question_activity(user_id, entry_id)
+
     if request_files['image'].filename:
 
         if table_name == 'question':
@@ -283,7 +294,7 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
 
 
 @data_handler.connection_handler
-def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
+def add_comment(cursor: RealDictCursor, message, entry_type, entry_id, user_id):
     entry_column_name = 'question_id' if entry_type == 'question' else 'answer_id'
     submission_time = util.get_datetime_now()
 
@@ -291,14 +302,18 @@ def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
         INSERT INTO comment
         ({entry_column_name}, submission_time, message)
         VALUES (%(entry_id)s, %(submission_time)s, %(message)s)
+        RETURNING id
     """
 
     cursor.execute(query, {'entry_id': entry_id, 'submission_time': submission_time, 'message': message})
+
+    add_user_comment_activity(user_id, cursor.fetchone()['id'])
 
     if entry_type == 'question':
         return entry_id
     else:
         return get_answer(entry_id)['question_id']
+
 
 
 
@@ -311,6 +326,7 @@ def add_comment(cursor: RealDictCursor, message, entry_type, entry_id):
 def delete_answer_by_id(cursor: RealDictCursor, answer_id: str):
 
     delete_comments_of_entry(entry_type="answer", entry_id=answer_id)
+    delete_user_activities(answer_id, "answer")
 
     comment = """
     DELETE 
@@ -333,6 +349,7 @@ def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
     question_answers = get_answers_for_question(question_id)
     for answer in question_answers:
         delete_comments_of_entry(entry_type="answer", entry_id=answer['id'])
+        delete_user_activities(answer['id'], "answer")
 
     comment = """
         DELETE 
@@ -352,6 +369,7 @@ def delete_answers_by_question_id(cursor: RealDictCursor, question_id):
 @data_handler.connection_handler
 def delete_question(cursor: RealDictCursor, question_id: str):
 
+    delete_user_activities(question_id, "question")
     delete_comments_of_entry(entry_type="question", entry_id=question_id)
     delete_answers_by_question_id(question_id)
     delete_question_tags(question_id)
@@ -393,6 +411,12 @@ def delete_question_tags(cursor: RealDictCursor, question_id):
 def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
     comment = """
     DELETE 
+    from users_activity
+    WHERE comment_id = %(id)s
+    """
+    cursor.execute(comment, {'id': comment_id})
+    comment = """
+    DELETE 
     FROM comment
     WHERE id=%(id)s
     RETURNING id, question_id, answer_id
@@ -409,16 +433,92 @@ def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
         return answer['question_id']
 
 
+# @data_handler.connection_handler
+# def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
+#     # delete_user_activities(comment_id, "comment")
+#
+#     entry_type_id = 'question_id' if entry_type == "question" else "answer_id"
+#     command = f"""
+#            DELETE FROM users_activity
+#            WHERE comment_id in (SELECT id
+#            FROM comment
+#            WHERE {entry_type_id}=%(entry_id)s)
+#            """
+#
+#     cursor.execute(command, {'entry_type_id'})
+#
+#
+#     comment = """
+#     DELETE
+#     FROM comment
+#     WHERE id=%(id)s
+#     RETURNING id, question_id, answer_id
+#     """
+#
+#     cursor.execute(comment, {'id': comment_id})
+#
+#     ids = cursor.fetchone()
+#
+#     if ids['question_id'] is not None:
+#         return ids['question_id']
+#     else:
+#         answer = get_answer(ids['answer_id'])
+#         return answer['question_id']
+
+@data_handler.connection_handler
+def delete_user_activities(cursor: RealDictCursor, entry_id, type_of_entry):
+    column_name = type_of_entry + "_id"
+    # if type_of_entry in ['question', 'answer']:
+    #     votes_delete_query = f"""DELETE from users_votes
+    #             WHERE {column_name} = %(entry_id)s;"""
+    # else:
+    #     votes_delete_query = ""
+
+    # command = f"""DELETE from users_activity
+    #             WHERE {column_name} = %(entry_id)s;
+    #             {votes_delete_query}
+    # """
+
+    command = f"""
+        DELETE from users_activity
+        WHERE {column_name} = %(entry_id)s;
+        """
+
+    cursor.execute(command, {'entry_id': entry_id})
+
 @data_handler.connection_handler
 def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
+
     entry_type_id = 'question_id' if entry_type == "question" else "answer_id"
 
+    command = f"""
+                   DELETE FROM users_activity 
+                   WHERE comment_id in (SELECT id
+                   FROM comment
+                   WHERE {entry_type_id}=%(entry_id)s)
+                   """
+    cursor.execute(command, {'entry_id': entry_id})
     command = f"""
                    DELETE
                    FROM comment
                    WHERE {entry_type_id}=%(entry_id)s
                    """
     cursor.execute(command, {'entry_id': entry_id})
+
+
+
+# @data_handler.connection_handler
+# def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
+#     entry_type_id = 'question_id' if entry_type == "question" else "answer_id"
+#
+#     delete_user_activities(entry_id, "comment")
+#
+#     command = f"""
+#                    DELETE
+#                    FROM comment
+#                    WHERE {entry_type_id}=%(entry_id)s
+#                    """
+#     cursor.execute(command, {'entry_id': entry_id})
 
 
 #
