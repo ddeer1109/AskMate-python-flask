@@ -8,6 +8,19 @@ import util
 
 
 @data_handler.connection_handler
+def get_five_questions(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT id, submission_time as post_time, title, message, image
+            FROM question
+            ORDER BY post_time DESC
+            LIMIT 5"""
+
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return data
+
+
+@data_handler.connection_handler
 def get_all_data(cursor: RealDictCursor) -> list:
 
     query = """
@@ -39,7 +52,7 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
 @data_handler.connection_handler
 def get_answer(cursor: RealDictCursor, answer_id):
     query = """
-        SELECT * FROM answer
+        SELECT id, question_id, message FROM answer
         WHERE id = %(answer_id)s
     """
     cursor.execute(query, {'answer_id': answer_id})
@@ -63,7 +76,14 @@ def get_question_by_id(cursor: RealDictCursor, id_string: str):
     # question_id = int(id_string)
 
     query = """
-            SELECT *
+            SELECT 
+            id, 
+            submission_time as post_time,
+            view_number as views, 
+            vote_number as votes, 
+            title, 
+            message, 
+            image
             FROM question
             WHERE id=%(question_id)s
     """
@@ -76,10 +96,15 @@ def get_question_by_id(cursor: RealDictCursor, id_string: str):
 def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 
     query = """
-                SELECT *
+                SELECT 
+                id, 
+                submission_time as post_time, 
+                vote_number as votes, 
+                message, 
+                image
                 FROM answer
                 WHERE question_id=%(question_id)s
-                ORDER BY submission_time
+                ORDER BY post_time
         """
 
     cursor.execute(query, {'question_id': question_id_int})
@@ -151,19 +176,6 @@ def get_all_tags(cursor: RealDictCursor):
 
     cursor.execute(query)
     return cursor.fetchall()
-
-
-@data_handler.connection_handler
-def get_five_questions(cursor: RealDictCursor) -> list:
-    query = """
-            SELECT *
-            FROM question
-            ORDER BY submission_time DESC
-            LIMIT 5"""
-
-    cursor.execute(query)
-    data = cursor.fetchall()
-    return data
 
 
 @data_handler.connection_handler
@@ -712,7 +724,7 @@ def get_users(cursor: RealDictCursor):
 
 @data_handler.connection_handler
 def get_user_data(cursor: RealDictCursor, user_id):
-    query ="""
+    query = """
         SELECT u.login, u.registration_date, us.question_count, 
             us.answer_count, us.comment_count, us.reputation_value
         FROM users as u
@@ -764,7 +776,7 @@ def get_comments_of_user(cursor: RealDictCursor, user_id):
 def get_user_post(cursor: RealDictCursor, user_id, post_id, post_type):
     column_name = post_type + "_id"
     query = f"""
-        SELECT *
+        SELECT user_id, {column_name}
         FROM users_activity
         WHERE user_id=%(user_id)s AND {column_name}=%(post_id)s
     """

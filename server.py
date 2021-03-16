@@ -200,12 +200,11 @@ def delete_question(question_id):
 @app.route("/question/<question_id>/tag/<tag_id>/delete")
 @login_required
 def delete_single_tag_from_question(question_id, tag_id):
-    if client_manager.get_post_if_permitted(tag_id, 'tag'):
+    if client_manager.get_post_if_permitted(question_id, 'question'):
         data_manager.remove_single_tag_from_question(question_id, tag_id)
         return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template("login.html", message="You don't have permission to perform this action")
-
 
 
 
@@ -385,3 +384,4 @@ if __name__ == "__main__":
         host='127.0.0.1',
         port=5050,
         debug=True)
+

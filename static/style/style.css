@@ -103,6 +103,9 @@ button:hover.btn.btn-outline-secondary.btn-warning {
 td.message, th.message {
     min-width: 20vw;
 }
+td.post_time, th.post_time {
+    min-width: 6vw;
+}
 
 
 

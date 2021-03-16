@@ -122,14 +122,14 @@
         <h2>Five newest questions</h2>
         <br>
 
-            <tr>{% for header in ['submission_time', 'title', 'message', 'image'] %}
+            <tr>{% for header in ['post_time', 'title', 'message', 'image'] %}
                     <th class="main {{ header }}">{{ header.capitalize().replace('_', ' ') }}</th>
                 {% endfor %}</tr>
 
             {% for question in questions %}
             <tr>
 
-                {% for data in ['submission_time', 'title', 'message', 'image'] %}
+                {% for data in ['post_time', 'title', 'message', 'image'] %}
                     <td class="{{ data }}">
                     {% if data == "title" %}
 
