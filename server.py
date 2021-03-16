@@ -189,35 +189,45 @@ def add_new_tag_to_question(question_id):
 @app.route("/question/<question_id>/delete")
 @login_required
 def delete_question(question_id):
-    data_manager.delete_question(question_id)
+    if client_manager.get_post_if_permitted(question_id, 'question'):
+        data_manager.delete_question(question_id)
+        return redirect('/')
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
-    return redirect('/')
 
 
 @app.route("/question/<question_id>/tag/<tag_id>/delete")
 @login_required
 def delete_single_tag_from_question(question_id, tag_id):
-    data_manager.remove_single_tag_from_question(question_id, tag_id)
-    return redirect(url_for('display_question', question_id=question_id))
+    if client_manager.get_post_if_permitted(tag_id, 'tag'):
+        data_manager.remove_single_tag_from_question(question_id, tag_id)
+        return redirect(url_for('display_question', question_id=question_id))
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
+
+
 
 
 @app.route("/answer/<answer_id>/delete")
 @login_required
 def delete_answer(answer_id):
     """Services deleting answer."""
-
-    redirection_id = data_manager.delete_answer_by_id(answer_id)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
+    if client_manager.get_post_if_permitted(answer_id, 'answer'):
+        redirection_id = data_manager.delete_answer_by_id(answer_id)
+        return redirect(url_for('display_question', question_id=redirection_id))
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
 
 @app.route("/comment/<comment_id>/delete")
 @login_required
 def delete_comment(comment_id):
-    redirection_id = data_manager.delete_comment_by_id(comment_id)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
-
+    if client_manager.get_post_if_permitted(comment_id, 'comment'):
+        redirection_id = data_manager.delete_comment_by_id(comment_id)
+        return redirect(url_for('display_question', question_id=redirection_id))
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
 #
 #          ------>> EDITIONS <<------
@@ -228,8 +238,11 @@ def delete_comment(comment_id):
 @login_required
 def edit_question(question_id):
     """Services displaying edition of question and posting edited version."""
-    question = data_manager.get_single_question(question_id)
-    return render_template('edit_question.html', question_id=question_id, question=question)
+    if client_manager.get_post_if_permitted(question_id, 'question'):
+        question = data_manager.get_single_question(question_id)
+        return render_template('edit_question.html', question_id=question_id, question=question)
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
 
 @app.route("/question/<question_id>/edit", methods=['POST'])
@@ -247,9 +260,12 @@ def save_edited_question(question_id):
 @login_required
 def display_answer_to_edit(answer_id):
     """Services displaying edition of answer and posting edited version."""
+    if client_manager.get_post_if_permitted(answer_id, 'answer'):
+        answer = data_manager.get_answer(answer_id)
+        return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
-    answer = data_manager.get_answer(answer_id)
-    return render_template('edit_answer.html', answer_id=answer_id, answer=answer)
 
 
 @app.route("/answer/<answer_id>/edit", methods=['POST'])
@@ -264,20 +280,22 @@ def save_edited_answer(answer_id):
 @login_required
 def vote_on_post(entry_id, vote_value, entry_type):
     """Services voting on questions and answers"""
-
-    redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
-
+    if client_manager.get_post_if_permitted(entry_id, entry_type):
+        redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
+        return redirect(url_for('display_question', question_id=redirection_id))
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
 @app.route("/comment/<comment_id>/edit")
 @login_required
 def display_comment_edit(comment_id):
-    comment = data_manager.get_comment_by_id(comment_id)
-
-    return render_template('edit_comment.html',
-                           message=comment['message'],
-                           comment_id=comment_id)
+    if client_manager.get_post_if_permitted(comment_id, 'comment'):
+        comment = data_manager.get_comment_by_id(comment_id)
+        return render_template('edit_comment.html',
+                               message=comment['message'],
+                               comment_id=comment_id)
+    else:
+        return render_template("login.html", message="You don't have permission to perform this action")
 
 
 @app.route("/comment/<comment_id>/edit", methods=["POST"])

@@ -759,3 +759,15 @@ def get_comments_of_user(cursor: RealDictCursor, user_id):
 
     cursor.execute(query, {'user_id': user_id})
     return cursor.fetchall()
+
+@data_handler.connection_handler
+def get_user_post(cursor: RealDictCursor, user_id, post_id, post_type):
+    column_name = post_type + "_id"
+    query = f"""
+        SELECT *
+        FROM users_activity
+        WHERE user_id=%(user_id) AND {column_name}=%(post_id)s
+    """
+
+    cursor.execute(query, {'user_id': user_id, 'post_id': post_id})
+    return cursor.fetchone()
