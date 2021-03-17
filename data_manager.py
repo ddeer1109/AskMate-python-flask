@@ -120,7 +120,7 @@ def get_answers_for_question(cursor: RealDictCursor, question_id_int: int):
 def get_comments_for_answer(cursor: RealDictCursor, answer_id):
 
     query = """
-        SELECT id, submission_time, message, edited_count 
+        SELECT id, submission_time as post_time, message, edited_count 
         FROM comment
         WHERE answer_id=%(answer_id)s
     """
@@ -146,7 +146,7 @@ def get_tags_for_question(cursor: RealDictCursor, question_id):
 @data_handler.connection_handler
 def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
     query = """
-                    SELECT *
+                    SELECT id, submission_time as post_time, message, edited_count 
                     FROM comment
                     WHERE question_id=%(question_id)s
             """

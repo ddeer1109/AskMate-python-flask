@@ -104,14 +104,22 @@ td.message, th.message {
     min-width: 20vw;
 }
 td.post_time, th.post_time {
-    min-width: 6vw;
+    max-width: 6vw;
+}
+td.tags, th.tags {
+    max-width: 6vw;
+}
+td.votes, th.votes {
+    max-width: 3vw;
+}
+td.actions, th.actions {
+    width:1vw;
 }
 
-
-
-th.main {
+td.image {
     text-align: center;
 }
+
 
 div.accordion-item {
     width:80%;
@@ -159,13 +167,13 @@ div#question_respond_container {
 }
 
 #question_respond_container>div.comments_section>a.btn.btn-primary{
-    margin-left: 10%;
+    margin-left:20%;
 }
 
-#question_respond_container>div.comments_section>h3 {
+#question_respond_container>div.comments_section>h5, p {
     font-size: 120%;
-    margin-left: 10%;
-    font-weight: lighter;
+        margin-left:20%;
+
 }
 
 hr.before.snippets {

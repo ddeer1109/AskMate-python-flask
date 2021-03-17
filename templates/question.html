@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import 'blocks.html' as blocks %}
 {% block head %}
 
     {{ super() }}
@@ -13,12 +14,17 @@
 
     <table class="table table-striped table-hover">
         <tr>
-            {% for header in ['post_time', 'views', 'title', 'message', 'image'] %}
-                <th>{{ header.capitalize().replace('_', ' ') }}</th>
-            {% endfor %}
-            <th>Tags</th>
-            <th>Votes</th>
-            <th>Actions</th>
+            {{ blocks.generate_headers(
+                                wished_headers = [
+                                'post_time',
+                                 'views',
+                                 'title',
+                                 'message',
+                                 'image',
+                                 'tags',
+                                 'votes',
+                                 'actions']
+                                ) }}
         </tr>
 
         <tr>
@@ -30,21 +36,21 @@
                     <b>{{ question[data] }}</b>
 
                 {% elif data == "image" %}
-                        {% if question['image'] == 'none.jpg' %}
-                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                        {% else %}
-                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">
-                        {% endif %}
+                    {{ blocks.get_image(
+                                        question['image'],
+                                        entry_id=question['id'],
+                                        entry_type='question') }}
                 {% else %}
 
                     {{ question[data] }}
 
                 {% endif %}
+                    </td>
                 {% endfor %}
-                </td>
-            <td class="align-middle">
+
+            <td class="tags align-middle">
                     {% for tag in tags %}
-                        <div style="display: flex; justify-content: space-between; align-items: center">
+                        <div style="display: flex; justify-content: center; align-items: center">
                             <span>{{ tag['name'] }}</span>
                             <a class="btn btn-danger btn-sm m-1" href="/question/{{ question["id"] }}/tag/{{ tag["id"] }}/delete">
                                 <i class="far fa-trash-alt"></i>
@@ -54,21 +60,16 @@
 
             </td>
 
-            <td class="align-middle">
-                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
-                    <button type="submit" class="btn btn-success btn-sm d-block mx-auto">
-                       <i class="far fa-thumbs-up"></i>
-                    </button>
-                </form>
-                <span class="badge bg-primary d-block mx-auto mt-1 mb-1" style="width: 100%;">{{ question['votes'] }}</span>
-                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
-                    <button type="submit" class="btn btn-danger btn-sm d-block mx-auto">
-                        <i class="far fa-thumbs-down"></i>
-                    </button>
-                </form>
+            <td class="votes align-middle">
+                {{ blocks.generate_votes_section(
+                                    question['id'],
+                                    entry_type='question',
+                                    votes_value=question['votes']
+                        )
+                                    }}
             </td>
 
-            <td class="align-middle">
+            <td class="actions align-middle">
                 <div class="d-flex flex-column">
 
                 <a class="btn btn-danger btn-sm mt-1" href="{{ question['id'] }}/delete">DELETE</a>
@@ -82,138 +83,76 @@
     </table>
 
     <div id="question_respond_container">
-    <div class="comments_section">
-    {% if comments %}
-        <h3 class="display-6">Question Comments:</h3>
 
-        <table class="table table-striped table-hover">
-            <tr>
-                <th>Submission time</th>
-                <th>Message</th>
+        <div class="comments_section">
 
-                <th>Actions</th>
-            </tr>
-            {% for comment in comments %}
-                <tr>
-                    <td>{{ comment.submission_time }}</td>
-                    <td class="message">{{ comment.message }}</td>
-                        <td>
-                            <div class="d-flex flex-column">
-                            <a class="btn btn-danger btn-sm mt-1" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
-                            <a class="btn btn-success btn-sm mt-1" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
-                            </div>
-                        </td>
-                </tr>
-            {% endfor %}
+            <h5 class="mt-2">Comments</h5>
 
-        </table>
-    {% else %}
-        <h3 class="display-6">No comments for question.</h3>
-    {% endif %}
+            {{ blocks.generate_comment_section(comments) }}
+            <a class="btn btn-primary" href="/question/{{ question['id'] }}/add-comment">New comment</a>
 
-        <a class="btn btn-primary" href="/question/{{ question['id'] }}/add-comment">New comment</a>
+            <hr class="mt-5">
 
-    </div>
-    <hr class="mt-5">
+        </div>
 
+        <h3 class="display-6 mt-4"><i class="fas fa-voicemail text-warning"></i>Answers</h3>
+        <hr>
+            {% if  answers|length > 0  %}
+                <table class="table table-striped table-hover">
+                    <tr>
+                    {{ blocks.generate_headers(
+                            wished_headers = ['post_time', 'message', 'image', 'votes', 'actions', 'comments']
+                            ) }}
+                    </tr>
 
-    <h3 class="display-6 mt-4"><i class="fas fa-voicemail text-warning"></i> Answers</h3>
-    <hr>
+                        {% for answer in answers %}
+                            <tr>
+                            {% for data in ['post_time', 'message', 'image'] %}
+                                {% if data != 'comments' %}
+                                <td class="{{ data }} align-middle">
+                                    {% if data == "image" %}
+                                            {{ blocks.get_image(
+                                            answer['image'],
+                                            entry_id=answer['id'],
+                                            entry_type='answer') }}
+                                    {% else %}
 
+                                        {{ answer[data] }}
 
-
-        {% if  answers|length > 0  %}
-            <table class="table table-striped table-hover">
-                <tr>
-                    {% for header in ['post_time', 'message', 'image'] %}
-                        {% if header != 'comments' %}
-                        <th>{{ header.capitalize().replace('_', ' ') }}</th>
-                        {% endif %}
-                    {% endfor %}
-
-                    <th>Votes</th>
-                    <th>Actions</th>
-                    <th>Comments</th>
-                </tr>
-
-                    {% for answer in answers %}
-                        <tr>
-                        {% for data in ['post_time', 'message', 'image'] %}
-                            {% if data != 'comments' %}
-                            <td class="{{ data }} align-middle">
-                                {% if data == "image" %}
-                                        {% if answer[data] == 'none.jpg' %}
-                                            <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
-                                        {% else %}
-                                            <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/answers/" + answer['id']|string + "/" + answer['image']) }}" alt="">
-                                        {% endif %}
-                                {% else %}
-
-                                    {{ answer[data] }}
-
+                                    {% endif %}
+                                </td>
                                 {% endif %}
-                            </td>
-                            {% endif %}
-                        {% endfor %}
+                            {% endfor %}
+
+                            <td class="votes align-middle">
+
+                                {{ blocks.generate_votes_section(
+                                        answer['id'],
+                                        entry_type='answer',
+                                        votes_value=answer['votes']
+                                    )
+                                        }}
 
 
-                            <td class="align-middle">
-                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_up', entry_type='answer') }}" method="post">
-                                    <button type="submit" class="btn btn-success btn-sm d-block mx-auto">
-                                        <i class="far fa-thumbs-up"></i>
-                                    </button>
-                                </form>
-                                <span class="badge bg-primary d-block mx-auto mt-1 mb-1" style="width: 100%;">{{ answer['votes'] }}</span>
-                                <form action="{{ url_for('vote_on_post', entry_id=answer['id'], vote_value='vote_down', entry_type='answer') }}" method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm d-block mx-auto">
-                                        <i class="far fa-thumbs-down"></i>
-                                    </button>
-                                </form>
                             </td>
 
-                            <td class="align-middle">
-                                <div class="d-flex flex-column actions" >
-                                    <a class="btn btn-danger btn-sm mt-1" href="../answer/{{ answer['id'] }}/delete">DELETE</a>
-                                    <a class="btn btn-success btn-sm mt-1" href="../answer/{{ answer['id'] }}/edit">EDIT</a>
-                                    <a class="btn btn-primary btn-sm mt-1" href="../answer/{{ answer['id'] }}/add-comment" method="GET">COMMENT</a>
-                                </div>
-                            </td>
+                                <td class="actions align-middle">
+                                    <div class="d-flex flex-column actions" >
+                                        <a class="btn btn-danger btn-sm mt-1" href="../answer/{{ answer['id'] }}/delete">DELETE</a>
+                                        <a class="btn btn-success btn-sm mt-1" href="../answer/{{ answer['id'] }}/edit">EDIT</a>
+                                        <a class="btn btn-primary btn-sm mt-1" href="../answer/{{ answer['id'] }}/add-comment" method="GET">COMMENT</a>
+                                    </div>
+                                </td>
 
-                            <td>
-                                       {% if answer['comments']|length != 0 %}
-                                            <table class="table">
-                                                <tr>
-                                                    <th>submission time</th>
-                                                    <th>times edited</th>
-                                                    <th>message </th>
-                                                    <th>Actions</th>
-                                                </tr>
-
-                                                {% for comment in answer['comments'] %}
-                                                    <tr>
-                                                        <td>{{ comment['submission_time'] }}</td>
-                                                        <td>{{ comment['edited_count'] }}</td>
-                                                        <td>{{ comment['message'] }}</td>
-                                                        <td>
-                                                            <div class="d-flex flex-column">
-                                                                <a class="btn btn-danger btn-sm mt-1" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
-                                                                <a class="btn btn-success btn-sm mt-1" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                           </table>
-                                        {% else %}
-                                           No comments
-                                        {% endif %}
-                            </td>
-
+                                <td class="comments section">
+                                    {{ blocks.generate_comment_section(answer['comments']) }}
+                                </td>
 
                     {% endfor %}
             </tr>
             </table>
         {% else %}
-            <h3 class="display-6">no answers
+            <h3 class="display-6">no answers</h3>
         {% endif %}
             <a class="btn btn-primary mt-1" href="/question/{{ question['id'] }}/add-answer">Add an answer</a>
         </div>

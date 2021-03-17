@@ -285,6 +285,7 @@ def vote_on_post(entry_id, vote_value, entry_type):
     else:
         return render_template("login.html", message="You don't have permission to perform this action")
 
+
 @app.route("/comment/<comment_id>/edit")
 @login_required
 def display_comment_edit(comment_id):

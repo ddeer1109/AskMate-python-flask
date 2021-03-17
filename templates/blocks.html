@@ -1,0 +1,79 @@
+{#{% block image_getter %}#}
+{#    {% variables %}#}
+{##}
+{#    {% endblock %}#}
+{##}
+{#    {% if entry_type['image'] == 'none.jpg' %}#}
+{#        <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
+{#    {% else %}#}
+{#        <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">#}
+{#    {% endif %}#}
+{#{% endblock %}#}
+{% extends 'base.html' %}
+
+
+question['image']
+{% macro get_image(image, entry_id, entry_type='question') -%}
+    {% if image == 'none.jpg' %}
+        <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+    {% else %}
+        <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/" + entry_type+"s" + "/" + entry_id|string + "/" + image) }}" alt="">
+    {% endif %}
+{%- endmacro %}
+
+
+
+{% macro generate_headers(wished_headers) -%}
+    {% for header in wished_headers %}
+        <th class="{{ header }} text-center">{{ header.capitalize().replace('_', ' ') }}</th>
+    {% endfor %}
+{% endmacro %}
+
+
+
+{% macro generate_votes_section(entry_id, entry_type, votes_value) -%}
+    <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_up', entry_type=entry_type) }}" method="post">
+        <button type="submit" class="btn btn-success btn-sm d-block mx-auto vote-up">
+           <i class="far fa-thumbs-up"></i>
+        </button>
+    </form>
+
+        <span class="badge bg-primary d-block mx-auto mt-1 mb-1 votes-value" style="width: 2vw;">{{ votes_value }}</span>
+
+    <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_down', entry_type=entry_type) }}" method="post">
+        <button type="submit" class="btn btn-danger btn-sm d-block mx-auto vote-down">
+            <i class="far fa-thumbs-down"></i>
+        </button>
+    </form>
+{% endmacro %}
+
+
+
+{% macro generate_comment_section(comments) -%}
+
+    {% if comments|length != 0 %}
+    <table class="table">
+            <tr>
+                {{ generate_headers([
+                    "post_time",
+                   "message",
+                    "actions"])}}
+            </tr>
+            {% for comment in comments %}
+            <tr>
+                    <td class="post_time">{{ comment.get("post_time") }}</td>
+                    <td class="message">{{ comment.get('message') }}</td>
+                    <td class="actions">
+                        <div class="d-flex flex-column actions-div">
+                            <a class="btn btn-danger btn-sm mt-1 delete-button" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
+                            <a class="btn btn-success btn-sm mt-1 edit-button" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
+                        </div>
+                    </td>
+            </tr>
+            {% endfor %}
+
+    </table>
+    {% else %}
+        <p>No comments</p>
+    {% endif %}
+{%- endmacro %}
