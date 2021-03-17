@@ -445,51 +445,22 @@ def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
         return answer['question_id']
 
 
-# @data_handler.connection_handler
-# def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
-#     # delete_user_activities(comment_id, "comment")
-#
-#     entry_type_id = 'question_id' if entry_type == "question" else "answer_id"
-#     command = f"""
-#            DELETE FROM users_activity
-#            WHERE comment_id in (SELECT id
-#            FROM comment
-#            WHERE {entry_type_id}=%(entry_id)s)
-#            """
-#
-#     cursor.execute(command, {'entry_type_id'})
-#
-#
-#     comment = """
-#     DELETE
-#     FROM comment
-#     WHERE id=%(id)s
-#     RETURNING id, question_id, answer_id
-#     """
-#
-#     cursor.execute(comment, {'id': comment_id})
-#
-#     ids = cursor.fetchone()
-#
-#     if ids['question_id'] is not None:
-#         return ids['question_id']
-#     else:
-#         answer = get_answer(ids['answer_id'])
-#         return answer['question_id']
-
 @data_handler.connection_handler
 def delete_user_activities(cursor: RealDictCursor, entry_id, type_of_entry):
     column_name = type_of_entry + "_id"
-    # if type_of_entry in ['question', 'answer']:
-    #     votes_delete_query = f"""DELETE from users_votes
-    #             WHERE {column_name} = %(entry_id)s;"""
-    # else:
-    #     votes_delete_query = ""
+    if type_of_entry in ['question', 'answer']:
+        votes_delete_query = f"""
+                DELETE from users_votes
+                WHERE {column_name} = %(entry_id)s;"""
 
-    # command = f"""DELETE from users_activity
-    #             WHERE {column_name} = %(entry_id)s;
-    #             {votes_delete_query}
-    # """
+    else:
+        votes_delete_query = ""
+
+    command = f"""DELETE from users_activity
+                WHERE {column_name} = %(entry_id)s;
+                {votes_delete_query}
+    """
+    cursor.execute(command, {'entry_id': entry_id})
 
     command = f"""
         DELETE from users_activity
@@ -497,6 +468,7 @@ def delete_user_activities(cursor: RealDictCursor, entry_id, type_of_entry):
         """
 
     cursor.execute(command, {'entry_id': entry_id})
+
 
 @data_handler.connection_handler
 def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
@@ -516,26 +488,6 @@ def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
                    WHERE {entry_type_id}=%(entry_id)s
                    """
     cursor.execute(command, {'entry_id': entry_id})
-
-
-
-# @data_handler.connection_handler
-# def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
-#     entry_type_id = 'question_id' if entry_type == "question" else "answer_id"
-#
-#     delete_user_activities(entry_id, "comment")
-#
-#     command = f"""
-#                    DELETE
-#                    FROM comment
-#                    WHERE {entry_type_id}=%(entry_id)s
-#                    """
-#     cursor.execute(command, {'entry_id': entry_id})
-
-
-#
-#          ------>> UPDATES <<------
-#
 
 
 @data_handler.connection_handler
@@ -628,42 +580,6 @@ def clear_vote(cursor: RealDictCursor, user_vote):
     """
     cursor.execute(command, {'entry_id': entry_id})
     return redirect_id
-
-
-
-#
-# @data_handler.connection_handler
-# def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
-#     params = {'entry_id': entry_id}
-#     if entry_type == 'answer':
-#         selection_query = 'id, vote_number, question_id'
-#     elif entry_type == 'question':
-#         selection_query = 'id, vote_number'
-#
-#     query = f"""
-#     SELECT {selection_query}
-#     FROM {entry_type}
-#     WHERE id=%(entry_id)s"""
-#
-#     cursor.execute(query, params)
-#     fetched_data = cursor.fetchone()
-#
-#     if vote_value == 'vote_up':
-#         new_vote_value = fetched_data['vote_number'] + 1
-#     else:
-#         new_vote_value = fetched_data['vote_number'] - 1
-#     params['new_vote_value'] = new_vote_value
-#
-#     comment = f"""
-#     UPDATE {entry_type}
-#     SET vote_number = %(new_vote_value)s
-#     WHERE id=%(entry_id)s"""
-#     cursor.execute(comment, params)
-#
-#     if entry_type == 'answer':
-#         return fetched_data['question_id']
-#     elif entry_type == 'question':
-#         return fetched_data['id']
 
 
 @data_handler.connection_handler
