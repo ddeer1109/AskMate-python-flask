@@ -31,9 +31,9 @@ question['image']
 
 
 
-{% macro generate_votes_section(entry_id, entry_type, votes_value) -%}
+{% macro generate_votes_section(entry_id, entry_type, votes_value, votes_to_render=None) -%}
     <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_up', entry_type=entry_type) }}" method="post">
-        <button type="submit" class="btn btn-success btn-sm d-block mx-auto vote-up">
+        <button type="submit" class="btn btn-success btn-sm d-block mx-auto vote-up {{ votes_to_render['vote_up'] }}">
            <i class="far fa-thumbs-up"></i>
         </button>
     </form>
@@ -41,10 +41,24 @@ question['image']
         <span class="badge bg-primary d-block mx-auto mt-1 mb-1 votes-value" style="width: 2vw;">{{ votes_value }}</span>
 
     <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_down', entry_type=entry_type) }}" method="post">
-        <button type="submit" class="btn btn-danger btn-sm d-block mx-auto vote-down">
+        <button type="submit" class="btn btn-danger btn-sm d-block mx-auto vote-down {{ votes_to_render['vote_down'] }}">
             <i class="far fa-thumbs-down"></i>
         </button>
     </form>
+
+{#
+{#            <td class="votes">
+{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
+{#                    <button type="submit" class="btn btn-primary {{ question_to_render['vote_up'] }} btn-sm mt-1">
+{#                       <i class="far fa-thumbs-up"></i>
+{#                    </button>
+{#                </form>
+{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
+{#                    <button type="submit" class="btn btn-primary {{ question_to_render['vote_down'] }} btn-sm mt-1">
+{#                        <i class="far fa-thumbs-down"></i>
+{#                    </button>
+{#                </form>
+{#            </td> #}
 {% endmacro %}
 
 

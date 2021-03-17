@@ -64,12 +64,19 @@ def display_question(question_id):
     answers = data_manager.get_answers_for_question(question_id)
     tags = data_manager.get_tags_for_question(question_id)
     comments = data_manager.get_comments_for_question(question_id)
+    question_to_render = []
+    answers_to_render = {}
+    if client_manager.get_logged_user_id():
+        answer_ids = [answer['id'] for answer in answers]
+        question_to_render, answers_to_render = client_manager.get_voted_posts_to_render(question['id'], answer_ids)
 
     return render_template("question.html",
                            question=question,
                            answers=answers,
                            tags=tags,
-                           comments=comments
+                           comments=comments,
+                           question_to_render=question_to_render,
+                           answers_to_render=answers_to_render
                            )
 
 
@@ -279,11 +286,11 @@ def save_edited_answer(answer_id):
 @login_required
 def vote_on_post(entry_id, vote_value, entry_type):
     """Services voting on questions and answers"""
-    if client_manager.get_post_if_permitted(entry_id, entry_type):
-        redirection_id = data_manager.vote_on_post(entry_id, vote_value, entry_type)
-        return redirect(url_for('display_question', question_id=redirection_id))
-    else:
-        return render_template("login.html", message="You don't have permission to perform this action")
+    # if client_manager.get_post_if_permitted(entry_id, entry_type):
+    redirection_id = client_manager.process_voting(entry_id, vote_value, entry_type)
+    return redirect(url_for('display_question', question_id=redirection_id))
+    # else:
+    #     return render_template("login.html", message="You don't have permission to perform this action")
 
 
 @app.route("/comment/<comment_id>/edit")

@@ -64,7 +64,8 @@
                 {{ blocks.generate_votes_section(
                                     question['id'],
                                     entry_type='question',
-                                    votes_value=question['votes']
+                                    votes_value=question['votes'],
+                                    votes_to_render=question_to_render
                         )
                                     }}
             </td>
@@ -129,7 +130,8 @@
                                 {{ blocks.generate_votes_section(
                                         answer['id'],
                                         entry_type='answer',
-                                        votes_value=answer['votes']
+                                        votes_value=answer['votes'],
+                                        votes_to_render=answers_to_render[answer['id']|int]
                                     )
                                         }}
 

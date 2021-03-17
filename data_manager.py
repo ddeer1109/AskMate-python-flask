@@ -567,34 +567,103 @@ def save_edited_question(cursor: RealDictCursor, question_id, title, message):
 def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
     params = {'entry_id': entry_id}
     if entry_type == 'answer':
-        selection_query = 'id, vote_number, question_id'
+        returning_string = "RETURNING question_id"
     elif entry_type == 'question':
-        selection_query = 'id, vote_number'
-
-    query = f"""
-    SELECT {selection_query}
-    FROM {entry_type}
-    WHERE id=%(entry_id)s"""
-
-    cursor.execute(query, params)
-    fetched_data = cursor.fetchone()
+        returning_string = "RETURNING id"
 
     if vote_value == 'vote_up':
-        new_vote_value = fetched_data['vote_number'] + 1
+        params['vote'] = + 1
     else:
-        new_vote_value = fetched_data['vote_number'] - 1
-    params['new_vote_value'] = new_vote_value
+        params['vote'] = - 1
 
     comment = f"""
     UPDATE {entry_type}
-    SET vote_number = %(new_vote_value)s
-    WHERE id=%(entry_id)s"""
-    cursor.execute(comment, params)
+    SET vote_number = vote_number + %(vote)s
+    WHERE id=%(entry_id)s
+    {returning_string} as redirect_id"""
 
-    if entry_type == 'answer':
-        return fetched_data['question_id']
-    elif entry_type == 'question':
-        return fetched_data['id']
+    cursor.execute(comment, params)
+    return cursor.fetchone()['redirect_id']
+
+
+@data_handler.connection_handler
+def get_user_vote(cursor: RealDictCursor, user_id, entry_id_tuple):
+    column_name, entry_id = entry_id_tuple[0], entry_id_tuple[1]
+    query = f"""
+    SELECT * FROM users_votes
+    WHERE user_id = %(user_id)s 
+    AND {column_name} = %(entry_id)s
+    """
+    cursor.execute(query, {'user_id': user_id, 'entry_id': entry_id})
+    return cursor.fetchone()
+
+
+@data_handler.connection_handler
+def add_vote(cursor: RealDictCursor, user_id, vote_value, question_id=None, answer_id=None):
+    column = "question_id" if question_id else "answer_id"
+    entry_id = question_id if column == 'question_id' else answer_id
+    command = f"""
+    INSERT INTO users_votes(user_id, {column}, vote_value)
+    VALUES (%(user_id)s, %(entry_id)s, %(vote_value)s)
+    """
+    cursor.execute(command, {'user_id': user_id, 'entry_id': entry_id, 'vote_value': vote_value})
+
+
+@data_handler.connection_handler
+def clear_vote(cursor: RealDictCursor, user_vote):
+    vote_value = -user_vote.get('vote_value')
+    vote_value = "vote_up" if vote_value == 1 else "vote_down"
+
+    if user_vote.get('answer_id', None) is not None:
+        entry_type = 'answer'
+    elif user_vote.get('question_id', None) is not None:
+        entry_type = 'question'
+
+    entry_id = user_vote.get(f"{entry_type}_id")
+    redirect_id = vote_on_post(entry_id, vote_value, entry_type)
+
+    command = f"""
+    DELETE FROM users_votes
+    WHERE {entry_type}_id = %(entry_id)s
+    """
+    cursor.execute(command, {'entry_id': entry_id})
+    return redirect_id
+
+
+
+#
+# @data_handler.connection_handler
+# def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
+#     params = {'entry_id': entry_id}
+#     if entry_type == 'answer':
+#         selection_query = 'id, vote_number, question_id'
+#     elif entry_type == 'question':
+#         selection_query = 'id, vote_number'
+#
+#     query = f"""
+#     SELECT {selection_query}
+#     FROM {entry_type}
+#     WHERE id=%(entry_id)s"""
+#
+#     cursor.execute(query, params)
+#     fetched_data = cursor.fetchone()
+#
+#     if vote_value == 'vote_up':
+#         new_vote_value = fetched_data['vote_number'] + 1
+#     else:
+#         new_vote_value = fetched_data['vote_number'] - 1
+#     params['new_vote_value'] = new_vote_value
+#
+#     comment = f"""
+#     UPDATE {entry_type}
+#     SET vote_number = %(new_vote_value)s
+#     WHERE id=%(entry_id)s"""
+#     cursor.execute(comment, params)
+#
+#     if entry_type == 'answer':
+#         return fetched_data['question_id']
+#     elif entry_type == 'question':
+#         return fetched_data['id']
 
 
 @data_handler.connection_handler
