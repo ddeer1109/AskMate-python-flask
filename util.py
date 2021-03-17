@@ -2,6 +2,10 @@ import time
 import datetime
 import bcrypt
 
+from service_answer import get_answer
+from service_comment import get_comment_by_id
+from service_user import is_existing_user, is_password_ok
+
 
 def get_current_timestamp():
     """Return current timestamp in seconds"""
@@ -113,3 +117,26 @@ def check_password(password, hashed):
     checker = bcrypt.checkpw(user_pass, hashed_pass)
 
     return checker
+
+
+def is_authenticated(login, password):
+    return is_existing_user(login) and is_password_ok(login, password)
+
+
+def get_question_id_from_entry(entry_type, entry_id):
+    if entry_type == 'question':
+        return entry_id
+
+    elif entry_type == 'comment':
+        qst_id = get_comment_by_id(entry_id).get('question_id', None)
+        ans_id = get_comment_by_id(entry_id).get('answer', None)
+
+        if qst_id is not None:
+            return qst_id
+        else:
+            get_answer(ans_id)['question_id']
+
+    else:
+        return get_answer(entry_id)['question_id']
+
+
