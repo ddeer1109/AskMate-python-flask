@@ -1,13 +1,33 @@
 from psycopg2.extras import RealDictCursor
 import data_handler
-import util
-from service_user import add_user_answer_activity, add_user_question_activity
+
+from data_management.service_answer import get_answer
+from data_management.service_comment import get_comment_by_id
+from data_management.service_user import add_user_answer_activity, add_user_question_activity
+from data_management.util import init_complete_dict_entry
+
+
+def get_question_id_from_entry(entry_type, entry_id):
+    if entry_type == 'question':
+        return entry_id
+
+    elif entry_type == 'comment':
+        qst_id = get_comment_by_id(entry_id).get('question_id', None)
+        ans_id = get_comment_by_id(entry_id).get('answer_id', None)
+
+        if qst_id is not None:
+            return qst_id
+        else:
+            return get_answer(ans_id)['question_id']
+
+    else:
+        return get_answer(entry_id)['question_id']
 
 
 @data_handler.connection_handler
 def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, request_files=None, question_id=None, user_id=None):
 
-    complete_dict_data = util.init_complete_dict_entry(table_name, form_data, request_files, question_id)
+    complete_dict_data = init_complete_dict_entry(table_name, form_data, request_files, question_id)
 
     columns_sql_str = ", ".join([str(key) for key in complete_dict_data.keys()])
     values_sql_str = ", ".join(f'%({key})s' for key in complete_dict_data.keys())
@@ -34,7 +54,6 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
         elif table_name == 'answer':
             data_handler.save_image(request_files['image'], 'answers', entry_id)
 
-    # if table_name == 'question':
     return entry_id
 
 
@@ -53,6 +72,7 @@ def vote_on_post(cursor: RealDictCursor, entry_id, vote_value, entry_type):
     WHERE id=%(entry_id)s"""
 
     cursor.execute(comment, params)
+
 
 @data_handler.connection_handler
 def add_vote(cursor: RealDictCursor, user_id, vote_value, question_id=None, answer_id=None):
@@ -84,11 +104,3 @@ def clear_vote(cursor: RealDictCursor, user_vote):
     """
     cursor.execute(command, {'entry_id': entry_id})
 
-
-
-
-
-
-#
-#          ------>> DELETIONS <<------
-#

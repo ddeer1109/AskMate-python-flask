@@ -1,11 +1,13 @@
 from psycopg2.extras import RealDictCursor
 
 import data_handler
-import util
-from service_answer import delete_answers_by_question_id
-from service_comment import delete_comments_of_entry
-from service_tag import delete_question_tags
-from service_user import delete_user_activities
+
+from data_management.service_answer import delete_answers_by_question_id, get_answers_for_question
+from data_management.service_comment import delete_comments_of_entry
+from data_management.service_tag import delete_question_tags
+from data_management.service_user import delete_user_activities
+from data_management.util import highlight_search_phrases_in_lists, \
+    process_phrase_searched_in_both_question_and_answer
 
 
 @data_handler.connection_handler
@@ -31,7 +33,7 @@ def get_all_data(cursor: RealDictCursor) -> list:
 
     cursor.execute(query)
     questions = cursor.fetchall()
-    util.add_answer_snippets(questions)
+    add_answer_snippets(questions)
     return questions
 
 
@@ -45,7 +47,7 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
 
     cursor.execute(query)
     questions = cursor.fetchall()
-    util.add_answer_snippets(questions)
+    add_answer_snippets(questions)
 
     return questions
 
@@ -122,8 +124,8 @@ def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
 
     questions = cursor.fetchall()
 
-    util.highlight_search_phrases_in_lists(questions, original_phrase)
-    util.add_answer_snippets(questions)
+    highlight_search_phrases_in_lists(questions, original_phrase)
+    add_answer_snippets(questions)
 
     query = """
     SELECT 
@@ -139,12 +141,16 @@ def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
 
     questions_with_answers = cursor.fetchall()
 
-    util.add_answer_snippets(questions_with_answers)
-    util.highlight_search_phrases_in_lists(questions_with_answers, original_phrase, answers=True)
-    util.process_phrase_searched_in_both_question_and_answer(questions, questions_with_answers)
+    add_answer_snippets(questions_with_answers)
+    highlight_search_phrases_in_lists(questions_with_answers, original_phrase, answers=True)
+    process_phrase_searched_in_both_question_and_answer(questions, questions_with_answers)
 
     return questions, questions_with_answers
 
+def add_answer_snippets(questions_list):
+
+    for question in questions_list:
+        question['answers'] = get_answers_for_question(question['id'])
 
 @data_handler.connection_handler
 def delete_question(cursor: RealDictCursor, question_id: str):

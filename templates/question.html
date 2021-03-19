@@ -90,7 +90,7 @@
             <h5 class="mt-2">Comments</h5>
 
             {{ blocks.generate_comment_section(comments) }}
-            <a class="btn btn-primary" href="/question/{{ question['id'] }}/add-comment">New comment</a>
+            <a class="btn btn-primary" href="/question/{{ question['id'] }}/add-comment" methods="GET">New comment</a>
 
             <hr class="mt-5">
 

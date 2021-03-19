@@ -1,10 +1,9 @@
 import time
 import datetime
 import bcrypt
-
-from service_answer import get_answer, get_answers_for_question
-from service_comment import get_comment_by_id
-from service_user import is_existing_user, is_password_ok
+#
+# from data_management.service_answer import get_answers_for_question
+# from data_management.service_user import is_existing_user, is_password_ok
 
 
 def get_current_timestamp():
@@ -82,12 +81,6 @@ def highlight_search_phrase(string_message, search_phrase):
         return string_message
 
 
-def add_answer_snippets(questions_list):
-
-    for question in questions_list:
-        question['answers'] = get_answers_for_question(question['id'])
-
-
 def process_phrase_searched_in_both_question_and_answer(highlighted_questions, highlighted_answers):
     ids_with_highlighted_answers = [question['id'] for question in highlighted_answers]
     indexes_to_delete = []
@@ -119,24 +112,21 @@ def check_password(password, hashed):
     return checker
 
 
-def is_authenticated(login, password):
-    return is_existing_user(login) and is_password_ok(login, password)
-
-
-def get_question_id_from_entry(entry_type, entry_id):
-    if entry_type == 'question':
-        return entry_id
-
-    elif entry_type == 'comment':
-        qst_id = get_comment_by_id(entry_id).get('question_id', None)
-        ans_id = get_comment_by_id(entry_id).get('answer', None)
-
-        if qst_id is not None:
-            return qst_id
-        else:
-            get_answer(ans_id)['question_id']
-
-    else:
-        return get_answer(entry_id)['question_id']
-
-
+#
+# def get_question_id_from_entry(entry_type, entry_id):
+#     if entry_type == 'question':
+#         return entry_id
+#
+#     elif entry_type == 'comment':
+#         qst_id = get_comment_by_id(entry_id).get('question_id', None)
+#         ans_id = get_comment_by_id(entry_id).get('answer', None)
+#
+#         if qst_id is not None:
+#             return qst_id
+#         else:
+#             get_answer(ans_id)['question_id']
+#
+#     else:
+#         return get_answer(entry_id)['question_id']
+#
+#

@@ -1,11 +1,9 @@
-from service_question import update_views_count
-from service_user import create_new_user, get_user_vote, get_user_post, is_existing_user
-from random import random
-from flask import session
+from data_management.service_question import update_views_count
+from data_management.service_user import create_new_user, get_user_vote, get_user_post, is_existing_user, is_password_ok
+from flask import session, render_template
+from functools import wraps
 
-
-import data_manager
-import util
+from data_management import service_generic, util
 import random
 
 sessions_visited_questions = dict()
@@ -71,15 +69,15 @@ def process_voting(entry_id, vote_value, entry_type):
         user_vote = get_user_vote(user_id, (f'{entry_type}_id', entry_id))
 
         if user_vote is None:
-            data_manager.vote_on_post(entry_id, vote_value, entry_type)
+            service_generic.vote_on_post(entry_id, vote_value, entry_type)
 
             vote_value = 1 if vote_value == "vote_up" else -1
             if entry_type == 'question':
-                data_manager.add_vote(user_id, vote_value, question_id=entry_id)
+                service_generic.add_vote(user_id, vote_value, question_id=entry_id)
             else:
-                data_manager.add_vote(user_id, vote_value, answer_id=entry_id)
+                service_generic.add_vote(user_id, vote_value, answer_id=entry_id)
         else:
-            data_manager.clear_vote(user_vote)
+            service_generic.clear_vote(user_vote)
 
 
 def get_voted_posts_to_render(question_id, answers_ids):
@@ -93,7 +91,7 @@ def get_voted_posts_to_render(question_id, answers_ids):
         question_vote = get_user_vote(user_id, ('question_id', question_id))
 
         if question_vote:
-            question_vote = states[question_vote['vote_value']]
+            question_vote = states.get(question_vote.get('vote_value'))
         else:
             question_vote = states[0]
 
@@ -101,11 +99,22 @@ def get_voted_posts_to_render(question_id, answers_ids):
         for ans_id in answers_ids:
             answer_vote = get_user_vote(user_id, ('answer_id', ans_id))
             if answer_vote:
-                answers[ans_id] = states[answer_vote['vote_value']]
+                answers[ans_id] = states[answer_vote.get('vote_value')]
             else:
                 answers[ans_id] = states[0]
 
         return question_vote, answers
 
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if get_logged_user_id() is None:
+            return render_template("login.html", message="You have to be logged in to perform this action.")
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def is_authenticated(login, password):
+    return is_existing_user(login) and is_password_ok(login, password)
 

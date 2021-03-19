@@ -1,8 +1,8 @@
 from psycopg2.extras import RealDictCursor
 
 import data_handler
-from service_comment import delete_comments_of_entry
-from service_user import delete_user_activities
+from data_management.service_comment import delete_comments_of_entry
+from data_management.service_user import delete_user_activities
 
 
 @data_handler.connection_handler

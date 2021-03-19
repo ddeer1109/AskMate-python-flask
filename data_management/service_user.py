@@ -1,8 +1,7 @@
 from psycopg2.extras import RealDictCursor
 
 import data_handler
-import util
-
+from data_management.util import get_datetime_now, check_password
 
 
 @data_handler.connection_handler
@@ -103,7 +102,7 @@ def get_user_post(cursor: RealDictCursor, user_id, post_id, post_type):
 
 @data_handler.connection_handler
 def create_new_user(cursor: RealDictCursor, login, password):
-    registration_time = util.get_datetime_now()
+    registration_time = get_datetime_now()
 
     command = f"""
         INSERT INTO users
@@ -153,7 +152,7 @@ def is_password_ok(cursor: RealDictCursor, login, password):
     cursor.execute(query, {'login': login, 'password': password})
     hashed_password = cursor.fetchone()['password']
 
-    return util.check_password(password, hashed_password)
+    return check_password(password, hashed_password)
 
 
 @data_handler.connection_handler
@@ -220,6 +219,7 @@ def get_user_vote(cursor: RealDictCursor, user_id, entry_id_tuple):
     AND {column_name} = %(entry_id)s
     """
     cursor.execute(query, {'user_id': user_id, 'entry_id': entry_id})
+
     return cursor.fetchone()
 
 #==================== CLIENT

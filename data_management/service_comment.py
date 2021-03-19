@@ -1,9 +1,8 @@
 from psycopg2.extras import RealDictCursor
 
 import data_handler
-import util
-# from service_answer import get_answer
-from service_user import add_user_comment_activity
+from data_management.util import get_datetime_now
+from data_management.service_user import add_user_comment_activity
 
 
 @data_handler.connection_handler
@@ -21,7 +20,7 @@ def get_comment_by_id(cursor: RealDictCursor, comment_id):
 @data_handler.connection_handler
 def add_comment(cursor: RealDictCursor, message, entry_type, entry_id, user_id):
     entry_column_name = 'question_id' if entry_type == 'question' else 'answer_id'
-    submission_time = util.get_datetime_now()
+    submission_time = get_datetime_now()
 
     query = f"""
         INSERT INTO comment
