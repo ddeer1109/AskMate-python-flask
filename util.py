@@ -2,7 +2,7 @@ import time
 import datetime
 import bcrypt
 
-from service_answer import get_answer
+from service_answer import get_answer, get_answers_for_question
 from service_comment import get_comment_by_id
 from service_user import is_existing_user, is_password_ok
 
@@ -83,9 +83,9 @@ def highlight_search_phrase(string_message, search_phrase):
 
 
 def add_answer_snippets(questions_list):
-    import data_manager
+
     for question in questions_list:
-        question['answers'] = data_manager.get_answers_for_question(question['id'])
+        question['answers'] = get_answers_for_question(question['id'])
 
 
 def process_phrase_searched_in_both_question_and_answer(highlighted_questions, highlighted_answers):

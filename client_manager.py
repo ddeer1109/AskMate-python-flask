@@ -59,7 +59,6 @@ def process_voting(entry_id, vote_value, entry_type):
             data_manager.clear_vote(user_vote)
 
 
-
 def get_voted_posts_to_render(question_id, answers_ids):
     if get_logged_user():
         user_id = session.get('user_id', None)
