@@ -34,7 +34,6 @@ def add_comment(cursor: RealDictCursor, message, entry_type, entry_id, user_id):
     add_user_comment_activity(user_id, cursor.fetchone()['id'])
 
 
-
 @data_handler.connection_handler
 def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
     comment = """
@@ -51,8 +50,6 @@ def delete_comment_by_id(cursor: RealDictCursor, comment_id: str):
     """
 
     cursor.execute(comment, {'id': comment_id})
-
-
 
 
 @data_handler.connection_handler
@@ -73,7 +70,6 @@ def delete_comments_of_entry(cursor: RealDictCursor, entry_type, entry_id):
                    WHERE {entry_type_id}=%(entry_id)s
                    """
     cursor.execute(command, {'entry_id': entry_id})
-
 
 
 @data_handler.connection_handler

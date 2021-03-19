@@ -57,5 +57,5 @@ def delete_single_tag_from_question(question_id, tag_id):
 @app.route('/logout')
 def logout():
     drop_session()
-    return redirect(url_for('get_five_question'))
+    return redirect(url_for('display_5_questions_list'))
 

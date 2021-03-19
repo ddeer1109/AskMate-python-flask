@@ -51,17 +51,6 @@ def get_all_data_by_query(cursor: RealDictCursor, order_by, order_direction):
 
     return questions
 
-@data_handler.connection_handler
-def get_single_question(cursor: RealDictCursor, question_id):
-    query = """
-        SELECT *
-        FROM question
-        WHERE id = %(question_id)s
-    """
-
-    cursor.execute(query, {'question_id': question_id})
-    return cursor.fetchone()
-
 
 @data_handler.connection_handler
 def get_question_by_id(cursor: RealDictCursor, id_string: str):
@@ -84,19 +73,6 @@ def get_question_by_id(cursor: RealDictCursor, id_string: str):
 
 
 @data_handler.connection_handler
-def get_tags_for_question(cursor: RealDictCursor, question_id):
-    query = """
-    SELECT id, name 
-    FROM question_tag
-    INNER JOIN tag
-        ON question_tag.tag_id = tag.id
-    WHERE question_id = %(question_id)s
-    """
-    cursor.execute(query, {'question_id': question_id})
-    return cursor.fetchall()
-
-
-@data_handler.connection_handler
 def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
     query = """
                     SELECT id, submission_time as post_time, message, edited_count 
@@ -109,48 +85,80 @@ def get_comments_for_question(cursor: RealDictCursor, question_id_int: int):
 
 
 @data_handler.connection_handler
-def get_entries_by_search_phrase(cursor: RealDictCursor, search_phrase):
-    original_phrase = search_phrase
+def get_tags_for_question(cursor: RealDictCursor, question_id):
+    query = """
+    SELECT id, name 
+    FROM question_tag
+    INNER JOIN tag
+        ON question_tag.tag_id = tag.id
+    WHERE question_id = %(question_id)s
+    """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchall()
+
+
+def get_entries_by_search_phrase(search_phrase):
+    questions_with_phrase_in_self = get_questions_with_searched_phrase(search_phrase)
+    add_answer_snippets(questions_with_phrase_in_self)
+
+    highlight_search_phrases_in_lists(
+        questions_with_phrase_in_self,
+        search_phrase)
+
+    questions_with_phrase_in_answer = get_questions_with_searched_phrase_in_answers(search_phrase)
+    add_answer_snippets(questions_with_phrase_in_answer)
+
+    highlight_search_phrases_in_lists(
+        questions_with_phrase_in_answer,
+        search_phrase,
+        answers=True)
+
+    process_phrase_searched_in_both_question_and_answer(questions_with_phrase_in_self,
+                                                        questions_with_phrase_in_answer)
+
+    return questions_with_phrase_in_self, questions_with_phrase_in_answer
+
+
+@data_handler.connection_handler
+def get_questions_with_searched_phrase(cursor: RealDictCursor, search_phrase):
     search_phrase = "%" + search_phrase + "%"
 
     query = """
-    SELECT DISTINCT * 
-    FROM question 
-    WHERE (LOWER(title) LIKE LOWER(%(search_phrase)s)) 
-    or (LOWER(message) LIKE LOWER(%(search_phrase)s))
-    """
+        SELECT DISTINCT id, submission_time as post_time, view_number, 
+        vote_number, title, message, image
+        FROM question 
+        WHERE (LOWER(title) LIKE LOWER(%(search_phrase)s)) 
+        or (LOWER(message) LIKE LOWER(%(search_phrase)s))
+        """
 
     cursor.execute(query, {'search_phrase': search_phrase})
-
     questions = cursor.fetchall()
 
-    highlight_search_phrases_in_lists(questions, original_phrase)
-    add_answer_snippets(questions)
+    return questions
 
+
+@data_handler.connection_handler
+def get_questions_with_searched_phrase_in_answers(cursor: RealDictCursor, search_phrase):
     query = """
-    SELECT 
-    answer.question_id AS id, question.submission_time, question.view_number, 
-    question.vote_number, question.title, question.message, question.image
-    FROM question
-    INNER JOIN answer
-    ON answer.question_id = question.id
-    WHERE LOWER(answer.message) LIKE LOWER(%(search_phrase)s)
-    """
+        SELECT ans.question_id AS id, qst.submission_time as post_time, qst.view_number, 
+        qst.vote_number, qst.title, qst.message, qst.image
+        FROM question as qst
+        INNER JOIN answer as ans
+            ON ans.question_id = qst.id
+            WHERE LOWER(ans.message) LIKE LOWER(%(search_phrase)s)
+        """
 
     cursor.execute(query, {'search_phrase': search_phrase})
-
     questions_with_answers = cursor.fetchall()
 
-    add_answer_snippets(questions_with_answers)
-    highlight_search_phrases_in_lists(questions_with_answers, original_phrase, answers=True)
-    process_phrase_searched_in_both_question_and_answer(questions, questions_with_answers)
+    return questions_with_answers
 
-    return questions, questions_with_answers
 
 def add_answer_snippets(questions_list):
 
     for question in questions_list:
         question['answers'] = get_answers_for_question(question['id'])
+
 
 @data_handler.connection_handler
 def delete_question(cursor: RealDictCursor, question_id: str):

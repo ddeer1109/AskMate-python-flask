@@ -1,19 +1,28 @@
 import time
 import datetime
 import bcrypt
-#
-# from data_management.service_answer import get_answers_for_question
-# from data_management.service_user import is_existing_user, is_password_ok
 
 
-def get_current_timestamp():
-    """Return current timestamp in seconds"""
+def init_complete_dict_entry(entry_type, form_data=None, request_files=None, question_id=None):
+    if entry_type == 'question':
+        complete_entry = set_init_entry_values(form_data, request_files)
+        complete_entry['view_number'] = 0
 
-    return round(int(time.time()), 0)
+    elif entry_type == 'answer':
+        complete_entry = set_init_entry_values(form_data, request_files)
+        complete_entry['question_id'] = question_id
+
+    return complete_entry
 
 
-def get_datetime_now():
-    return datetime.datetime.fromtimestamp(get_current_timestamp())
+def set_init_entry_values(form_data, request_files):
+    requested_data = dict(form_data)
+
+    requested_data['image'] = get_image_name(request_files['image'])
+    requested_data['vote_number'] = 0
+    requested_data['submission_time'] = get_datetime_now()
+
+    return requested_data
 
 
 def get_image_name(image_storage_obj):
@@ -30,27 +39,30 @@ def get_image_name(image_storage_obj):
     return image_name
 
 
-def set_init_entry_values(form_data, request_files):
-    requested_data = dict(form_data)
-    image_filename = get_image_name(request_files['image'])
+def get_current_timestamp():
+    """Return current timestamp in seconds"""
 
-    requested_data['image'] = image_filename
-    requested_data['vote_number'] = 0
-    requested_data['submission_time'] = get_datetime_now()
-
-    return requested_data
+    return round(int(time.time()), 0)
 
 
-def init_complete_dict_entry(entry_type, form_data=None, request_files=None, question_id=None):
-    if entry_type == 'question':
-        complete_entry = set_init_entry_values(form_data, request_files)
-        complete_entry['view_number'] = 0
+def get_datetime_now():
+    return datetime.datetime.fromtimestamp(get_current_timestamp())
 
-    elif entry_type == 'answer':
-        complete_entry = set_init_entry_values(form_data, request_files)
-        complete_entry['question_id'] = question_id
 
-    return complete_entry
+def hash_given_password(password):
+    password = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password, salt)
+
+    return hashed
+
+
+def check_password(password, hashed):
+    user_pass = password.encode('utf-8')
+    hashed_pass = hashed.encode('utf-8')
+    checker = bcrypt.checkpw(user_pass, hashed_pass)
+
+    return checker
 
 
 def highlight_search_phrases_in_lists(list_of_entries, search_phrase, answers=False):
@@ -95,38 +107,3 @@ def process_phrase_searched_in_both_question_and_answer(highlighted_questions, h
     for index in indexes_to_delete:
         del highlighted_questions[index]
 
-
-def hash_given_password(password):
-    password = password.encode('utf-8')
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password, salt)
-
-    return hashed
-
-
-def check_password(password, hashed):
-    user_pass = password.encode('utf-8')
-    hashed_pass = hashed.encode('utf-8')
-    checker = bcrypt.checkpw(user_pass, hashed_pass)
-
-    return checker
-
-
-#
-# def get_question_id_from_entry(entry_type, entry_id):
-#     if entry_type == 'question':
-#         return entry_id
-#
-#     elif entry_type == 'comment':
-#         qst_id = get_comment_by_id(entry_id).get('question_id', None)
-#         ans_id = get_comment_by_id(entry_id).get('answer', None)
-#
-#         if qst_id is not None:
-#             return qst_id
-#         else:
-#             get_answer(ans_id)['question_id']
-#
-#     else:
-#         return get_answer(entry_id)['question_id']
-#
-#

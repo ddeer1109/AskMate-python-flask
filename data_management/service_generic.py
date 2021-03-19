@@ -48,11 +48,7 @@ def add_new_entry(cursor: RealDictCursor, table_name: str, form_data=None, reque
         add_user_question_activity(user_id, entry_id)
 
     if request_files['image'].filename:
-
-        if table_name == 'question':
-            data_handler.save_image(request_files['image'], 'questions', entry_id)
-        elif table_name == 'answer':
-            data_handler.save_image(request_files['image'], 'answers', entry_id)
+        data_handler.save_image(request_files['image'], table_name+'s', entry_id)
 
     return entry_id
 

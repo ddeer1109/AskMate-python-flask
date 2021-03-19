@@ -33,6 +33,17 @@ def save_edited_answer(answer_id):
     return redirect(url_for('display_question', question_id=redirection_id))
 
 
+@app.route("/comment/<comment_id>/edit", methods=["POST"])
+@login_required
+def edit_comment(comment_id):
+    new_message = request.form['message']
+    com.update_comment(comment_id, new_message)
+
+    redirection_id = get_question_id_from_entry('comment', comment_id)
+
+    return redirect(url_for('display_question', question_id=redirection_id))
+
+
 @app.route("/<entry_type>/<entry_id>/<vote_value>", methods=["POST"])
 @login_required
 def vote_on_post(entry_id, vote_value, entry_type):
@@ -44,16 +55,5 @@ def vote_on_post(entry_id, vote_value, entry_type):
         usr.add_user_answer_activity(get_logged_user_id(), entry_id)
     else:
         usr.add_user_question_activity(get_logged_user_id(), entry_id)
-
-    return redirect(url_for('display_question', question_id=redirection_id))
-
-
-@app.route("/comment/<comment_id>/edit", methods=["POST"])
-@login_required
-def edit_comment(comment_id):
-    new_message = request.form['message']
-    com.update_comment(comment_id, new_message)
-
-    redirection_id = get_question_id_from_entry('comment', comment_id)
 
     return redirect(url_for('display_question', question_id=redirection_id))

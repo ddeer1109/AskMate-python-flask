@@ -27,7 +27,7 @@ question['image']
     {% for header in wished_headers %}
         <th class="{{ header }} text-center">{{ header.capitalize().replace('_', ' ') }}</th>
     {% endfor %}
-{% endmacro %}
+{%- endmacro %}
 
 
 
@@ -46,20 +46,7 @@ question['image']
         </button>
     </form>
 
-{#
-{#            <td class="votes">
-{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_up', entry_type='question') }}" method="post">
-{#                    <button type="submit" class="btn btn-primary {{ question_to_render['vote_up'] }} btn-sm mt-1">
-{#                       <i class="far fa-thumbs-up"></i>
-{#                    </button>
-{#                </form>
-{#                <form action="{{ url_for('vote_on_post', entry_id=question['id'], vote_value='vote_down', entry_type='question') }}" method="post">
-{#                    <button type="submit" class="btn btn-primary {{ question_to_render['vote_down'] }} btn-sm mt-1">
-{#                        <i class="far fa-thumbs-down"></i>
-{#                    </button>
-{#                </form>
-{#            </td> #}
-{% endmacro %}
+{%- endmacro %}
 
 
 
@@ -90,4 +77,76 @@ question['image']
     {% else %}
         <p>No comments</p>
     {% endif %}
+{%- endmacro %}
+
+
+{% macro generate_accordion_answer_section(question, answers_highlighted) -%}
+
+        {% set showing_trigger = "" %}
+        {% set collapse = "collapsed" %}
+
+        {% if question.get('answers', None) == None %}
+            {% set answers_header = "No answers for this question" %}
+        {% else %}
+            {% set answers_header = "Answers" %}
+            {% if question['id'] in answers_highlighted %}
+                {% set showing_trigger = "show" %}
+                {% set collapse = "" %}
+            <hr class="before snippets">
+            {% endif %}
+
+            <div class="accordion-flush" id="accordionExample">
+
+                <div class="accordion-item {{ collapse }} float-end">
+                    <h4 class="accordion-header mt-3" id="heading{{ question.id }}" style="line-height: 1;">
+
+                        <button class="accordion-button {{ collapse }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ question.id }}" aria-expanded="true" aria-controls="collapseOne" style="font-size:0.6em;">
+                            <span>{{ answers_header }}</span>
+                        </button>
+                    </h4>
+                {% if answers_header == "Answers" %}
+                    <div id="collapse{{ question.id }}" class="accordion-collapse collapse {{ showing_trigger }}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+
+                        <div class="accordion-body">
+
+                        {% for answer in question.answers %}
+                            {% if showing_trigger == "" %}
+                                <p>{{ answer.post_time }}   |   {{ answer.message[:10] }} (...)</p>
+                            {% else %}
+                                <p>{{ answer.post_time }}   |   {{ answer.message|safe }}</p>
+                            {% endif %}
+                        {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+                {% endif %}
+            {% endif %}
+{%- endmacro %}
+
+
+{% macro generate_sorting_panel() -%}
+
+     <form action="" method="get">
+            <label for="order_by" class="form-label" >Sort by:</label>
+            <select id="order_by" name="order_by" class="form-select">
+                <option value="title">Title</option>
+                <option selected value="submission_time">Submission time</option>
+                <option value="message">Message</option>
+                <option value="view_number">View number</option>
+                <option value="vote_number">Vote number</option>
+            </select>
+            <br>
+            <label for="order_direction" class="form-label">Order by:</label>
+            <select id="order_direction" name="order_direction" class="form-select">
+                <option selected value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-primary">Sort</button>
+        </form>
+    <hr>
+
 {%- endmacro %}

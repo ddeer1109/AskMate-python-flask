@@ -11,18 +11,18 @@ import client_manager as client
 
 
 #
-#          ------>> DISPLAY OF CONTENT <<------
+#          ------>> DISPLAY OF MAIN CONTENT <<------
 #
 
 @app.route("/")
-def get_five_question():
+def display_5_questions_list():
     """Services redirection to main page with loaded list of the 5 latest questions."""
     questions = qst.get_five_questions()
     return render_template('list.html', questions=questions, sorted=False)
 
 
 @app.route("/list")
-def get_list_of_questions():
+def display_full_questions_list():
     """Services redirection to main page with loaded list of all questions."""
     if len(request.args) == 0:
         questions = qst.get_all_data()
@@ -34,10 +34,10 @@ def get_list_of_questions():
 
 
 @app.route("/search")
-def get_entries_by_search_phrase():
+def display_questions_after_searching():
     search_phrase = request.args.get('q')
-
     questions, questions_with_answers = qst.get_entries_by_search_phrase(search_phrase)
+
     highlighted_questions_id = [question['id'] for question in questions_with_answers]
     return render_template("list.html",
                            searched=True,
@@ -51,10 +51,10 @@ def display_question(question_id):
 
     client.process_views_update(question_id)
 
-    question = qst.get_question_by_id(question_id)
-    answers = ans.get_answers_for_question(question_id)
+    question, answers = qst.get_question_by_id(question_id), ans.get_answers_for_question(question_id)
     tags = qst.get_tags_for_question(question_id)
     comments = qst.get_comments_for_question(question_id)
+
     question_to_render = []
     answers_to_render = {}
 
@@ -75,24 +75,19 @@ def display_question(question_id):
 #          ------>> DISPLAY OF INSERTS CONTENT  <<------
 #
 
+
 @app.route("/add-question")
 @client.login_required
 def display_add_question():
     """Services redirection to displaying interface of adding question"""
-    # if session.get('logged_user', None):
     return render_template("add_question.html")
-    # else:
-    #     return render_template("login.html", message="You have to be logged in to add questions or answers")
 
 
 @app.route("/question/<question_id>/add-answer")
 @client.login_required
 def display_add_answer(question_id):
     """Services redirection to displaying interface of adding answer."""
-    # if session.get('logged_user', None):
     return render_template("add_answer.html")
-    # else:
-    #     return render_template("login.html", message="You have to be logged in to add questions or answers")
 
 
 @app.route("/<entry_type>/<entry_id>/add-comment")
@@ -117,12 +112,13 @@ def display_new_tag(question_id):
 #          ------>> DISPLAY OF EDITION CONTENT  <<------
 #
 
+
 @app.route("/question/<question_id>/edit")
 @client.login_required
-def edit_question(question_id):
+def display_question_to_edit(question_id):
     """Services displaying edition of question and posting edited version."""
     if client.get_post_if_permitted(question_id, 'question'):
-        question = qst.get_single_question(question_id)
+        question = qst.get_question_by_id(question_id)
         return render_template('edit_question.html', question_id=question_id, question=question)
     else:
         return render_template("login.html", message="You don't have permission to perform this action")
@@ -156,7 +152,7 @@ def display_comment_edit(comment_id):
 
 
 @app.route('/login')
-def login():
+def display_login_page():
     return render_template('login.html')
 
 
@@ -167,14 +163,14 @@ def display_registration():
 
 @app.route('/users')
 @client.login_required
-def users():
+def display_users_list():
     users = usr.get_users()
     return render_template("users.html", users=users)
 
 
 @app.route('/user/<user_id>')
 @client.login_required
-def user_page(user_id):
+def display_user_page(user_id):
     user = usr.get_user_data(user_id)
     questions = usr.get_questions_of_user(user_id)
     answers = usr.get_answers_of_user(user_id)
