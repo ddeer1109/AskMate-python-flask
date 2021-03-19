@@ -130,8 +130,8 @@
                                 {{ blocks.generate_votes_section(
                                         answer['id'],
                                         entry_type='answer',
-                                        votes_value=answer['votes'],
-                                        votes_to_render=answers_to_render[answer['id']|int]
+                                        votes_value=answer.get('votes'),
+                                        votes_to_render=answers_to_render.get(answer['id']|int, None)
                                     )
                                         }}
 

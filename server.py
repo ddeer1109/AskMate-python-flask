@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-# from flask import flash
 import client_manager as client
 import service_user as usr
 import service_question as qst
@@ -68,7 +67,7 @@ def get_entries_by_search_phrase():
 def display_question(question_id):
     """Services redirection to specific question page."""
 
-    qst.update_views_count(question_id)
+    client.process_views_update(question_id)
 
     question = qst.get_question_by_id(question_id)
     answers = ans.get_answers_for_question(question_id)

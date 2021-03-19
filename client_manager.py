@@ -1,12 +1,21 @@
+from service_question import update_views_count
+from service_user import create_new_user, get_user_vote, get_user_post, is_existing_user
+from random import random
 from flask import session
+
+
 import data_manager
 import util
-from service_user import create_new_user, get_user_vote, get_user_post, is_existing_user
+import random
+
+sessions_visited_questions = dict()
 
 
 def set_session(login, id):
+    session['session_id'] = str(random.randint(0, 200))+random.choice('abcdef')
     session['logged_user'] = login
     session['user_id'] = id
+    sessions_visited_questions[session['session_id']] = []
 
 
 def drop_session():
@@ -40,6 +49,20 @@ def process_registration(login, password):
     create_new_user(login, password)
 
     return ""
+
+
+def process_views_update(question_id):
+    try:
+        if get_logged_user() is not None:
+            if question_id not in sessions_visited_questions[session['session_id']]:
+                update_views_count(question_id)
+                mark_question_as_visited_in_this_session(question_id)
+    except KeyError:
+        return
+
+
+def mark_question_as_visited_in_this_session(question_id):
+    sessions_visited_questions[session['session_id']].append(question_id)
 
 
 def process_voting(entry_id, vote_value, entry_type):
@@ -83,4 +106,6 @@ def get_voted_posts_to_render(question_id, answers_ids):
                 answers[ans_id] = states[0]
 
         return question_vote, answers
+
+
 
