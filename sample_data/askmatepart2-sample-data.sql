@@ -23,17 +23,6 @@ ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_co
 ALTER TABLE IF EXISTS ONLY public.users_activity DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
 
-DROP TABLE IF EXISTS public.users_statistics;
-CREATE TABLE users_statistics(
-    id serial NOT NULL,
-    user_id integer NOT NULL,
-    question_count integer,
-    answer_count integer,
-    comment_count integer,
-    reputation_value integer
-);
-
-
 DROP TABLE IF EXISTS public.users;
 CREATE TABLE users (
     id serial NOT NULL,
@@ -52,6 +41,28 @@ CREATE TABLE users_activity (
     comment_id integer,
     tag_id integer
 );
+
+
+DROP TABLE IF EXISTS public.users_statistics;
+CREATE TABLE users_statistics(
+    id serial NOT NULL,
+    user_id integer NOT NULL,
+    question_count integer,
+    answer_count integer,
+    comment_count integer,
+    reputation_value integer
+);
+
+
+DROP TABLE IF EXISTS public.users_votes;
+CREATE TABLE users_votes(
+    user_id integer NOT NULL,
+    question_id integer,
+    answer_id integer,
+    vote_value integer
+);
+
+
 
 -- ==============================================================================
 DROP TABLE IF EXISTS public.question;
