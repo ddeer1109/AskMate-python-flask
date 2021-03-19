@@ -98,19 +98,21 @@
 
         <h3 class="display-6 mt-4"><i class="fas fa-voicemail text-warning"></i>Answers</h3>
         <hr>
-            {% if  answers|length > 0  %}
-                <table class="table table-striped table-hover">
-                    <tr>
-                    {{ blocks.generate_headers(
-                            wished_headers = ['post_time', 'message', 'image', 'votes', 'actions', 'comments']
-                            ) }}
-                    </tr>
+        {% if  answers|length > 0  %}
+            <table class="table table-striped table-hover">
+                <tr>
+                {{ blocks.generate_headers(
+                        wished_headers = ['post_time', 'message', 'image', 'votes', 'actions', 'comments']
+                        ) }}
+                </tr>
 
-                        {% for answer in answers %}
-                            <tr>
-                            {% for data in ['post_time', 'message', 'image'] %}
-                                {% if data != 'comments' %}
-                                <td class="{{ data }} align-middle">
+                {% for answer in answers %}
+                    <tr>
+                        {% for data in ['post_time', 'message', 'image'] %}
+
+                            {% if data != 'comments' %}
+                            <td class="{{ data }} align-middle">
+
                                     {% if data == "image" %}
                                             {{ blocks.get_image(
                                             answer['image'],
@@ -121,9 +123,11 @@
                                         {{ answer[data] }}
 
                                     {% endif %}
-                                </td>
-                                {% endif %}
-                            {% endfor %}
+
+                            </td>
+                            {% endif %}
+
+                        {% endfor %}
 
                             <td class="votes align-middle">
 
@@ -132,26 +136,27 @@
                                         entry_type='answer',
                                         votes_value=answer.get('votes'),
                                         votes_to_render=answers_to_render.get(answer['id']|int, None)
-                                    )
-                                        }}
-
+                                    ) }}
 
                             </td>
 
-                                <td class="actions align-middle">
-                                    <div class="d-flex flex-column actions" >
-                                        <a class="btn btn-danger btn-sm mt-1" href="../answer/{{ answer['id'] }}/delete">DELETE</a>
-                                        <a class="btn btn-success btn-sm mt-1" href="../answer/{{ answer['id'] }}/edit">EDIT</a>
-                                        <a class="btn btn-primary btn-sm mt-1" href="../answer/{{ answer['id'] }}/add-comment" method="GET">COMMENT</a>
-                                    </div>
-                                </td>
+                            <td class="actions align-middle">
+                                <div class="d-flex flex-column actions" >
 
-                                <td class="comments section">
-                                    {{ blocks.generate_comment_section(answer['comments']) }}
-                                </td>
+                                    <a class="btn btn-danger btn-sm mt-1" href="../answer/{{ answer['id'] }}/delete">DELETE</a>
+                                    <a class="btn btn-success btn-sm mt-1" href="../answer/{{ answer['id'] }}/edit">EDIT</a>
+                                    <a class="btn btn-primary btn-sm mt-1" href="../answer/{{ answer['id'] }}/add-comment" method="GET">COMMENT</a>
 
-                    {% endfor %}
-            </tr>
+                                </div>
+                            </td>
+
+                            <td class="comments section">
+
+                                {{ blocks.generate_comment_section(answer['comments']) }}
+
+                            </td>
+                    </tr>
+                {% endfor %}
             </table>
         {% else %}
             <h3 class="display-6">no answers</h3>
