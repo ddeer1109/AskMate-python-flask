@@ -27,7 +27,7 @@ def get_five_questions(cursor: RealDictCursor) -> list:
 def get_all_data(cursor: RealDictCursor) -> list:
 
     query = """
-        SELECT *
+        SELECT id, submission_time as post_time, title, message, view_number as views, vote_number as votes, image
         FROM question
         ORDER BY submission_time DESC"""
 

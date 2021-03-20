@@ -16,12 +16,12 @@
     <hr>
 
     {% if sorted %}
-        {% set displayed_headers = ['post_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
+        {% set displayed_headers = ['post_time', 'votes', 'views', 'title', 'message', 'image'] %}
         {% set page_header = 'Detailed view' %}
         {{ blocks.generate_sorting_panel() }}
 
     {% elif searched %}
-        {% set displayed_headers = ['post_time', 'vote_number', 'view_number', 'title', 'message', 'image'] %}
+        {% set displayed_headers = ['post_time', 'votes', 'views', 'title', 'message', 'image'] %}
         {% set page_header = 'Search results' %}
 
     {% elif questions|length == 0 %}
@@ -41,11 +41,7 @@
             {{ page_header|safe }}
         </h3>
         <tr>
-            {% for header in displayed_headers %}
-            <th class="main {{ header }}">
-                {{ header.capitalize().replace('_', ' ') }}
-            </th>
-            {% endfor %}
+            {{ blocks.generate_headers(displayed_headers) }}
         </tr>
 
 

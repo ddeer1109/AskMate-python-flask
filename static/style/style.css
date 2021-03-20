@@ -178,6 +178,7 @@ span.badge.votes-value {
 
 .post_time {
     width: 12vw;
+    text-align: center;
 }
 
 div.question.comment.buttons {
@@ -223,8 +224,9 @@ div#answers_section td.post_time, th.message {
     width:20vw;
 }
 
-td.votes {
-    width:6vw;
+td.votes, td.views {
+    width:3vw;
+    text-align: center;
 }
 
 td.actions, th.actions {
