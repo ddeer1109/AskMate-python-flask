@@ -231,6 +231,10 @@ td.actions, th.actions {
     width:7vw;
 }
 
+td.image, th.image {
+    width:3vw;
+}
+
 /*button.btn.btn-primary.answer.comments_button {*/
 /*    height: initial;*/
 /*}*/
