@@ -19,6 +19,7 @@ def set_session(login, id):
 def drop_session():
     session.pop('logged_user', None)
     session.pop('user_id', None)
+    sessions_visited_questions.pop(session.get('session_id'), None)
 
 
 def get_logged_user():
@@ -52,7 +53,7 @@ def process_registration(login, password):
 def process_views_update(question_id):
     try:
         if get_logged_user() is not None:
-            if question_id not in sessions_visited_questions[session['session_id']]:
+            if question_id not in sessions_visited_questions.get(session.get('session_id', None), None):
                 update_views_count(question_id)
                 mark_question_as_visited_in_this_session(question_id)
     except KeyError:

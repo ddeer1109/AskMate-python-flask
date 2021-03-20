@@ -74,7 +74,7 @@ def post_login():
         user = get_users_session_data(login)
         set_session(user['login'], user['id'])
 
-        return redirect(url_for('get_five_question'))
+        return redirect(url_for('display_5_questions_list'))
 
     return render_template('login.html', message="Incorrect Login or Password")
 
