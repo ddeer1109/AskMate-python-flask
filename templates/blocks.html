@@ -1,0 +1,160 @@
+{#{% block image_getter %}#}
+{#    {% variables %}#}
+{##}
+{#    {% endblock %}#}
+{##}
+{#    {% if entry_type['image'] == 'none.jpg' %}#}
+{#        <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">#}
+{#    {% else %}#}
+{#        <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/questions/" + question['id']|string + "/" + question['image']) }}" alt="">#}
+{#    {% endif %}#}
+{#{% endblock %}#}
+{% extends 'base.html' %}
+
+
+question['image']
+{% macro get_image(image, entry_id, entry_type='question') -%}
+    {% if image == 'none.jpg' %}
+        <img style="width: 50px; height: 50px" src={{ url_for('static', filename="images/none.jpg")}}  alt="">
+    {% else %}
+        <img style="width: 50px; height: 50px" src="{{ url_for('static', filename="images/" + entry_type+"s" + "/" + entry_id|string + "/" + image) }}" alt="">
+    {% endif %}
+{%- endmacro %}
+
+
+
+{% macro generate_headers(wished_headers) -%}
+    {% for header in wished_headers %}
+        <th class="{{ header }} text-center">{{ header.capitalize().replace('_', ' ') }}</th>
+    {% endfor %}
+{%- endmacro %}
+
+
+
+{% macro generate_votes_section(entry_id, entry_type, votes_value, votes_to_render=None) -%}
+
+    <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_up', entry_type=entry_type) }}" method="post">
+        <button type="submit" class="btn btn-success btn-sm d-block mx-auto vote-up {{ votes_to_render['vote_up'] }}">
+           <i class="far fa-thumbs-up"></i>
+        </button>
+    </form>
+
+        <span class="badge d-block mx-auto mt-1 mb-1 votes-value" ><i>{{ votes_value }}</i></span>
+
+    <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_down', entry_type=entry_type) }}" method="post">
+        <button type="submit" class="btn btn-danger btn-sm d-block mx-auto vote-down {{ votes_to_render['vote_down'] }}">
+            <i class="far fa-thumbs-down"></i>
+        </button>
+    </form>
+
+{%- endmacro %}
+
+
+
+{% macro generate_comment_section(comments) -%}
+
+    {% if comments|length != 0 %}
+{#            <tr>#}
+{#                {{ generate_headers([#}
+{#                    "post_time",#}
+{#                   "message",#}
+{#                    ""])}}#}
+{#            </tr>#}
+            {% for comment in comments %}
+                <div class="d-flex flex-column pl-5">
+
+                    <div class="flex-row d-flex flex-row bd-highlight align-self-start border-bottom-1">
+                        <div class="post_time pt-2 pb-2 flex-shrink-1  border-bottom-1">
+                            {{ comment.get("post_time") }}
+                        </div>
+
+                        <div class="question comment buttons p-2  border-bottom-1 d-flex align-items-center">
+                            <a class="btn btn-danger btn-sm delete-button" href="../comment/{{ comment['id'] }}/delete"><i class="fas fa-trash"></i></a>
+                            <a class="btn btn-success btn-sm edit-button" href="../comment/{{ comment['id'] }}/edit"><i class="fas fa-edit"></i></a>
+                        </div>
+                        <div class="message p-2 flex-fill d-flex">
+                            <p>{{ comment.get('message') }}</p>
+                        </div>
+                    </div>
+                <hr>
+
+                </div>
+
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No comments</p>
+    {% endif %}
+{%- endmacro %}
+
+
+{% macro generate_accordion_answer_section(question, answers_highlighted) -%}
+
+        {% set showing_trigger = "" %}
+        {% set collapse = "collapsed" %}
+
+        {% if question.get('answers', None) == None %}
+            {% set answers_header = "No answers for this question" %}
+        {% else %}
+            {% set answers_header = "Answers" %}
+            {% if question['id'] in answers_highlighted %}
+                {% set showing_trigger = "show" %}
+                {% set collapse = "" %}
+            <hr class="before snippets">
+            {% endif %}
+
+            <div class="accordion-flush" id="accordionExample">
+
+                <div class="accordion-item {{ collapse }} float-end">
+                    <h4 class="accordion-header mt-3" id="heading{{ question.id }}" style="line-height: 1;">
+
+                        <button class="accordion-button {{ collapse }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ question.id }}" aria-expanded="true" aria-controls="collapseOne" style="font-size:0.6em;">
+                            <span>{{ answers_header }}</span>
+                        </button>
+                    </h4>
+                {% if answers_header == "Answers" %}
+                    <div id="collapse{{ question.id }}" class="accordion-collapse collapse {{ showing_trigger }}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+
+                        <div class="accordion-body">
+
+                        {% for answer in question.answers %}
+                            {% if showing_trigger == "" %}
+                                <p>{{ answer.post_time }}   |   {{ answer.message[:10] }} (...)</p>
+                            {% else %}
+                                <p>{{ answer.post_time }}   |   {{ answer.message|safe }}</p>
+                            {% endif %}
+                        {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+                {% endif %}
+            {% endif %}
+{%- endmacro %}
+
+
+{% macro generate_sorting_panel() -%}
+
+     <form action="" method="get">
+            <label for="order_by" class="form-label" >Sort by:</label>
+            <select id="order_by" name="order_by" class="form-select">
+                <option value="title">Title</option>
+                <option selected value="submission_time">Submission time</option>
+                <option value="message">Message</option>
+                <option value="view_number">View number</option>
+                <option value="vote_number">Vote number</option>
+            </select>
+            <br>
+            <label for="order_direction" class="form-label">Order by:</label>
+            <select id="order_direction" name="order_direction" class="form-select">
+                <option selected value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-primary">Sort</button>
+        </form>
+    <hr>
+
+{%- endmacro %}
