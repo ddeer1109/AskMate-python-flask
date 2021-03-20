@@ -1,8 +1,7 @@
-/*div#content {*/
-/*  padding:2%;*/
-/*  margin-left: auto;*/
-/*  margin-right: auto;*/
-
+div.container {
+    min-width: 80vw;
+    overflow: no-display;
+}
 /*}*/
 
 /*.btn-link{*/
@@ -102,31 +101,6 @@ button:hover.btn.btn-outline-secondary.btn-warning {
     background-color: lightgrey;
 }
 
-td.message, th.message {
-    min-width: 20vw;
-}
-td.post_time, th.post_time {
-    width: 10vw;
-}
-
-td.title, th.title {
-    width: 10vw;
-}
-td.tags, th.tags {
-    max-width: 6vw;
-}
-td.votes, th.votes {
-    max-width: 3vw;
-}
-td.actions, th.actions {
-    width:1vw;
-}
-
-td.image {
-    text-align: center;
-}
-
-
 div.accordion-item {
     width:80%;
     margin-left: 5%;
@@ -147,9 +121,9 @@ button.accordion-button {
 
 }
 
-button.accordion-button::after {
-    margin-left: 3%;
-}
+/*button.accordion-button::after {*/
+/*    margin-left: 3%;*/
+/*}*/
 
 td.d-flex.flex-column.actions {
     height: 100%;
@@ -171,24 +145,97 @@ td.d-flex.flex-column.actions {
 }
 
 
-#question_respond_container>div.comments_section>table{
-    width: 80%;
-    margin-left: 10%;
+
+.question.comments_section{
+    margin-left: 15%;
 }
 
-#question_respond_container>div.comments_section>a.btn.btn-primary{
-    margin-left:10%;
-}
+/*#question_respond_container > a*/
+/*{*/
+/*    margin-left: 15%;*/
+/*}*/
 
-#question_respond_container>div.comments_section>h5, p {
-    font-size: 120%;
-        margin-left:10%;
+/*#question_respond_container>div.comments_section>a.btn.btn-primary{*/
+/*    margin-left:10%;*/
+/*}*/
 
-}
 
 hr.before.snippets {
     margin-bottom: 0;
 }
 
 
+span.badge.votes-value {
+    color: black;
+}
 
+.message {
+    width:35vw;
+    text-align: justify;
+}
+
+
+
+.post_time {
+    width: 12vw;
+}
+
+div.question.comment.buttons {
+    min-width: 5vw;
+}
+
+.title, .title {
+    width: 15vw;
+}
+
+td.image {
+    text-align: center;
+}
+
+#answers_section {
+    width: 90%;
+    margin-left: 10%;
+}
+
+#answers_section > hr:first-child {
+    margin-left: 0;
+
+}
+
+div#answers_section > tr.answer_comments > div.message {
+    width: 22vw;
+}
+
+div#answers_section > tr.answer_comments > div.post_time {
+    width: 8vw;
+}
+
+div#answers_section td.post_time, th.message {
+    width: 10vw;
+}
+
+
+/*#answers_section > table > tbody > tr:nth-child(1) > th.message.text-center {*/
+/*    width:20vw;*/
+/*}*/
+
+#answers_section > table > tbody > tr:nth-child(1) > td.message.text-center {
+    width:20vw;
+}
+
+td.votes {
+    width:6vw;
+}
+
+td.actions, th.actions {
+    width:7vw;
+}
+
+/*button.btn.btn-primary.answer.comments_button {*/
+/*    height: initial;*/
+/*}*/
+
+/*td.button_cell {*/
+/*    padding: 5% 0;*/
+/*    min-height: 10vh;*/
+/*}*/

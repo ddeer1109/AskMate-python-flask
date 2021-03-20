@@ -32,13 +32,14 @@ question['image']
 
 
 {% macro generate_votes_section(entry_id, entry_type, votes_value, votes_to_render=None) -%}
+
     <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_up', entry_type=entry_type) }}" method="post">
         <button type="submit" class="btn btn-success btn-sm d-block mx-auto vote-up {{ votes_to_render['vote_up'] }}">
            <i class="far fa-thumbs-up"></i>
         </button>
     </form>
 
-        <span class="badge bg-primary d-block mx-auto mt-1 mb-1 votes-value" style="width: 2vw;">{{ votes_value }}</span>
+        <span class="badge d-block mx-auto mt-1 mb-1 votes-value" ><i>{{ votes_value }}</i></span>
 
     <form action="{{ url_for('vote_on_post', entry_id=entry_id, vote_value='vote_down', entry_type=entry_type) }}" method="post">
         <button type="submit" class="btn btn-danger btn-sm d-block mx-auto vote-down {{ votes_to_render['vote_down'] }}">
@@ -53,27 +54,34 @@ question['image']
 {% macro generate_comment_section(comments) -%}
 
     {% if comments|length != 0 %}
-    <table class="table">
-            <tr>
-                {{ generate_headers([
-                    "post_time",
-                   "message",
-                    "actions"])}}
-            </tr>
+{#            <tr>#}
+{#                {{ generate_headers([#}
+{#                    "post_time",#}
+{#                   "message",#}
+{#                    ""])}}#}
+{#            </tr>#}
             {% for comment in comments %}
-            <tr>
-                    <td class="post_time">{{ comment.get("post_time") }}</td>
-                    <td class="message">{{ comment.get('message') }}</td>
-                    <td class="actions">
-                        <div class="d-flex flex-column actions-div">
-                            <a class="btn btn-danger btn-sm mt-1 delete-button" href="../comment/{{ comment['id'] }}/delete">DELETE</a>
-                            <a class="btn btn-success btn-sm mt-1 edit-button" href="../comment/{{ comment['id'] }}/edit">EDIT</a>
-                        </div>
-                    </td>
-            </tr>
-            {% endfor %}
+                <div class="d-flex flex-column pl-5">
 
-    </table>
+                    <div class="flex-row d-flex flex-row bd-highlight align-self-start border-bottom-1">
+                        <div class="post_time pt-2 pb-2 flex-shrink-1  border-bottom-1">
+                            {{ comment.get("post_time") }}
+                        </div>
+
+                        <div class="question comment buttons p-2  border-bottom-1 d-flex align-items-center">
+                            <a class="btn btn-danger btn-sm delete-button" href="../comment/{{ comment['id'] }}/delete"><i class="fas fa-trash"></i></a>
+                            <a class="btn btn-success btn-sm edit-button" href="../comment/{{ comment['id'] }}/edit"><i class="fas fa-edit"></i></a>
+                        </div>
+                        <div class="message p-2 flex-fill d-flex">
+                            <p>{{ comment.get('message') }}</p>
+                        </div>
+                    </div>
+                <hr>
+
+                </div>
+
+            {% endfor %}
+        </div>
     {% else %}
         <p>No comments</p>
     {% endif %}

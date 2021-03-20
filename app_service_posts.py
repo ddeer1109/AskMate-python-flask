@@ -5,7 +5,7 @@ from client_manager import get_logged_user_id, set_session, process_registration
 
 from data_management.service_comment import add_comment
 from data_management.service_generic import add_new_entry
-from data_management.service_tag import add_new_tag_to_db
+from data_management.service_tag import add_new_tag_to_db, add_new_tag_to_question as add_new_tag_question_db
 from data_management.service_user import get_users_session_data
 from data_management.service_generic import get_question_id_from_entry
 
@@ -61,7 +61,7 @@ def add_new_tag(question_id):
 @app.route("/question/<question_id>/new-tag-question", methods=['POST'])
 @login_required
 def add_new_tag_to_question(question_id):
-    add_new_tag_to_question(question_id, request.form['tag_id'])
+    add_new_tag_question_db(question_id, request.form['tag_id'])
     return redirect(url_for('display_question', question_id=question_id))
 
 
