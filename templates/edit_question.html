@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    {{ super() }}
+{#    <link rel="stylesheet" href="../../../static/style/style.css">#}
+
+{% endblock %}
+{% block content %}
+    <h3 class="display-3"><i class="fas fa-edit text-warning"></i> Edit Question</h3>
+    <hr>
+
+    <form action="{{ url_for('save_edited_question', question_id=question_id) }}" method="post">
+        <label class="form-label" for="title">Question:</label><br>
+        <input class="form-control" type="text" name="title" id="title" value="{{ question['title'] }}" required><br>
+
+        <label class="form-label" for="message">Message:</label><br>
+        <textarea class="form-control" rows="10" cols="30" name="message" id="message" required>{{ question['message'] }}</textarea><br>
+
+        <br>
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% import 'blocks.html' as blocks %}
+{% block head %}
+
+    {{ super() }}
+
+{% endblock %}
+{% block header %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+    <h3 class="display-6"><i class="far fa-question-circle text-warning"></i> Question</h3>
+    <hr>
+
+    <table class="table table-striped table-hover">
+        <tr>
+            {{ blocks.generate_headers(
+                                wished_headers = [
+                                'post_time',
+                                 'title',
+                                 'message',
+                                 'image',
+                                 'views',
+                                 'votes',
+                                 'actions',
+                                 'tags'
+                                 ]
+                                ) }}
+        </tr>
+
+        <tr>
+
+                {% for data in ['post_time', 'title', 'message', 'image', 'views'] %}
+                    <td class="{{ data }} align-middle">
+                {% if data == "title" %}
+
+                    <b>{{ question[data] }}</b>
+
+                {% elif data == "image" %}
+                    {{ blocks.get_image(
+                                        question['image'],
+                                        entry_id=question['id'],
+                                        entry_type='question') }}
+                {% else %}
+
+                    {{ question[data] }}
+
+                {% endif %}
+                    </td>
+                {% endfor %}
+
+
+            <td class="votes align-middle">
+                <div class="flex-column">
+                {{ blocks.generate_votes_section(
+                                    question['id'],
+                                    entry_type='question',
+                                    votes_value=question['votes'],
+                                    votes_to_render=question_to_render
+                        )
+                                    }}</div>
+            </td>
+
+            <td class="align-middle">
+                <div class="d-flex flex-column align-items-center">
+
+                <a class="btn btn-danger btn-sm mt-1" href="{{ question['id'] }}/delete"><i class="fas fa-trash"></i></a>
+                <a class="btn btn-success btn-sm mt-1" href="{{ question['id'] }}/edit"><i class="fas fa-edit"></i></a>
+                <a class="btn btn-primary btn-sm mt-1" href="{{ question['id'] }}/new-tag"><i class="fas fa-hashtag"></i></a>
+                </div>
+            </td>
+
+
+            <td class="tags align-middle">
+                    {% for tag in tags %}
+                        <div style="display: flex; justify-content: center; align-items: center">
+                            <span>{{ tag['name'] }}</span>
+                            <a class="btn btn-danger btn-sm m-1" href="/question/{{ question["id"] }}/tag/{{ tag["id"] }}/delete">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    {% endfor %}
+
+            </td>
+
+        </tr>
+    </table>
+
+    <div id="question_respond_container">
+
+        <div class="collapse" id="question_comments">
+            <div class="question comments_section">
+
+
+
+                <h5 >Comments</h5>
+
+                {{ blocks.generate_comment_section(comments) }}
+
+            </div>
+        </div>
+        <button class="btn btn-primary question comments_section"
+                    type="button" data-bs-toggle="collapse"
+                    data-bs-target="#question_comments"
+                    aria-expanded="false"
+                    aria-controls="question_comments"
+            >
+                Show comments
+          </button>
+        <a class="btn btn-primary" href="/question/{{ question['id'] }}/add-comment" methods="GET">
+            Add comment
+            <i class="fas fa-comments"></i>
+        </a>
+
+                <hr class="mt-5 question comments_section">
+        <h3 class="before answers display-6"><i class="fas fa-voicemail text-warning"></i>Answers</h3>
+        <hr class="before answers">
+
+        <div id="answers_section">
+
+        {% if  answers|length > 0  %}
+            <table class="table table-striped table-hover">
+                <tr>
+                {{ blocks.generate_headers(
+                        wished_headers = ['post_time',  'message', 'image', 'votes', 'actions']
+                        ) }}
+                </tr>
+
+                {% for answer in answers %}
+                    <tr class="answer">
+                        {% for data in ['post_time', 'message', 'image'] %}
+
+                            {% if data != 'comments' %}
+                            <td class="{{ data }} answer align-middle">
+
+                                    {% if data == "image" %}
+                                            {{ blocks.get_image(
+                                            answer['image'],
+                                            entry_id=answer['id'],
+                                            entry_type='answer') }}
+                                    {% else %}
+
+                                        {{ answer[data] }}
+
+                                    {% endif %}
+
+                            </td>
+                            {% endif %}
+
+                        {% endfor %}
+
+                            <td class="votes align-middle   ">
+                                <div class="d-flex flex-column align-items-center">
+
+                                {{ blocks.generate_votes_section(
+                                        answer['id'],
+                                        entry_type='answer',
+                                        votes_value=answer.get('votes'),
+                                        votes_to_render=answers_to_render.get(answer['id']|int, None)
+                                    ) }}
+
+                                </div>
+                            </td>
+
+                            <td class="d-flex flex-column align-items-center">
+                                <div class="d-flex flex-column actions" >
+
+                                    <a class="btn btn-danger btn-sm mt-1" href="../answer/{{ answer['id'] }}/delete"><i class="fas fa-trash"></i></a>
+                                    <a class="btn btn-success btn-sm mt-1" href="../answer/{{ answer['id'] }}/edit"><i class="fas fa-edit"></i></a>
+                                    <a class="btn btn-primary btn-sm mt-1" href="../answer/{{ answer['id'] }}/add-comment" method="GET"><i class="fas fa-comments"></i></a>
+
+                                </div>
+                            </td>
+
+                    </tr>
+                            <tr class="answer_comments">
+                                <td class="button_cell" colspan="1">
+
+<button class="btn btn-primary answer comments_button align-items-center"
+        type="button" data-bs-toggle="collapse" data-bs-target="#answer{{ answer['id'] }}comments"
+        aria-expanded="false" aria-controls="answer{{ answer['id'] }}comments">
+
+                <i class="fas fa-comments"></i>
+
+</button>
+                                </td>
+
+                                <td colspan="1">
+                                    <div class="collapse" id="answer{{ answer['id'] }}comments">
+                                        {{ blocks.generate_comment_section(answer['comments']) }}
+                                    </div>
+                                </td>
+
+                                <td colspan="3"></td>
+                            </tr>
+
+
+                {% endfor %}
+            </table>
+        {% else %}
+            <h3 class="display-6">no answers</h3>
+        {% endif %}
+            <a class="btn btn-primary mt-1" href="/question/{{ question['id'] }}/add-answer">Add an answer</a>
+        </div>
+        </div>
+{% endblock %}
