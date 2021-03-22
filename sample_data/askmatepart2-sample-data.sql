@@ -221,10 +221,9 @@ INSERT INTO users_activity VALUES (4, 1, null, 2, null, null);
 
 INSERT INTO users_activity VALUES (5, 1, null, null, 1, null);
 INSERT INTO users_activity VALUES (6, 1, null, null, 2, null);
+SELECT pg_catalog.setval('users_activity_id_seq',7,true);
 
-INSERT INTO users_activity VALUES (7, 1, null, null, null, 1);
-INSERT INTO users_activity VALUES (8, 1, null, null, null, 2);
-SELECT pg_catalog.setval('users_activity_id_seq',9,true);
+
 
 INSERT INTO users_statistics VALUES (1, 1, 1, 1, 1, 6);
 INSERT INTO users_statistics VALUES (2, 2, 2, 2, 2, 4);

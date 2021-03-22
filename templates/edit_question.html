@@ -9,7 +9,7 @@
     <h3 class="display-3"><i class="fas fa-edit text-warning"></i> Edit Question</h3>
     <hr>
 
-    <form action="{{ url_for('edit_question', question_id=question_id) }}" method="post">
+    <form action="{{ url_for('save_edited_question', question_id=question_id) }}" method="post">
         <label class="form-label" for="title">Question:</label><br>
         <input class="form-control" type="text" name="title" id="title" value="{{ question['title'] }}" required><br>
 

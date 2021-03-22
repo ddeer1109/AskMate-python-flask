@@ -57,6 +57,10 @@ def process_views_update(question_id):
                 update_views_count(question_id)
                 mark_question_as_visited_in_this_session(question_id)
     except KeyError:
+        drop_session()
+        return
+    except TypeError:
+        drop_session()
         return
 
 
