@@ -51,9 +51,6 @@ def vote_on_post(entry_id, vote_value, entry_type):
     process_voting(entry_id, vote_value, entry_type)
     redirection_id = get_question_id_from_entry(entry_type, entry_id)
 
-    if entry_type == 'answer':
-        usr.add_user_answer_activity(get_logged_user_id(), entry_id)
-    else:
-        usr.add_user_question_activity(get_logged_user_id(), entry_id)
+
 
     return redirect(url_for('display_question', question_id=redirection_id))
