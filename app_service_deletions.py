@@ -51,7 +51,9 @@ def delete_single_tag_from_question(question_id, tag_id):
         remove_single_tag_from_question(question_id, tag_id)
         return redirect(url_for('display_question', question_id=question_id))
     else:
-        return render_template("login.html", message="You don't have permission to perform this action")
+        return render_template('login.html', not_allowed_message="Only post's author may manage this post.")
+
+
 
 
 @app.route('/logout')

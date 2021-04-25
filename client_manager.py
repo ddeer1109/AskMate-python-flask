@@ -1,6 +1,6 @@
 from data_management.service_question import update_views_count
 from data_management.service_user import create_new_user, get_user_vote, get_user_post, is_existing_user, is_password_ok
-from flask import session, render_template
+from flask import session, render_template, url_for
 from functools import wraps
 
 from data_management import service_generic, util
@@ -115,7 +115,8 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if get_logged_user_id() is None:
-            return render_template("login.html", message="You have to be logged in to perform this action.")
+            return render_template("login.html", message="You have to be logged in to perform such action.")
+
         return f(*args, **kwargs)
     return decorated_function
 

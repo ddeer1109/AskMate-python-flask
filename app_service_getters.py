@@ -121,7 +121,7 @@ def display_question_to_edit(question_id):
         question = qst.get_question_by_id(question_id)
         return render_template('edit_question.html', question_id=question_id, question=question)
     else:
-        return render_template("login.html", message="You don't have permission to perform this action")
+        return render_template('login.html', not_allowed_message="Only post's author may manage this post.")
 
 
 @app.route("/answer/<answer_id>/edit")
